@@ -1,0 +1,40 @@
+JFDML JFormDesigner: "8.0.1.0.199" Java: "17.0.5" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {comp rootPanel::t:::x}"
+			"$verticalGroup": "par l {comp rootPanel::t:::x}"
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq t {space ::169:x, comp registerButton:::p:146:p, space :p:32:p, par l:::p {comp userPassField::t::186:x, comp userIDField::t::186:x, comp loginButton::l::186:x}, space :p:150:p}, seq l {space :p:132:p, comp label1:::p:128:p, space ::423:x}}"
+				"$verticalGroup": "par l {seq l {space :p:86:p, comp label1::::118:x, space s:::p, comp userIDField:::p::p, space u:::p, comp userPassField:::p::p, space :p:30:p, par b {comp loginButton::b:p:36:p, comp registerButton::b:p:36:p}, space :p:59:p}}"
+			} ) {
+				name: "rootPanel"
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "registerButton"
+					"text": "REGISTRATI"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "loginButton"
+					"text": "ACCEDI"
+				} )
+				add( new FormComponent( "javax.swing.JPasswordField" ) {
+					name: "userPassField"
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "userIDField"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label1"
+					"text": "text"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 165, 130 )
+			"size": new java.awt.Dimension( 685, 450 )
+		} )
+	}
+}

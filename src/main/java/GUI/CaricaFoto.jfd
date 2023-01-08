@@ -1,0 +1,50 @@
+JFDML JFormDesigner: "8.0.1.0.199" Java: "17.0.5" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq t {space :::x, comp panel1:::p::p, space :::p}}"
+			"$verticalGroup": "par l {seq l {comp panel1:::p::p, space :0:0:x}}"
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq t {par l {seq l {space :p:56:p, comp goBackButton:::p::p, space ::241:x, comp confermaButton:::p:151:p}, seq t {space :p:85:p, comp fotoPanel:::p::p, space ::137:x, par l:::p {comp selDisp:::::x, comp toggleButton1::t:::x, comp apriFoto:::::x}}, seq t {space ::437:x, comp tags:::p:140:p}}, space :p:76:p}}"
+				"$verticalGroup": "par l {seq t {par l {seq {space :p:64:p, comp toggleButton1:::p::p, space :p:109:p, comp selDisp:::p::p, space u:::p, comp apriFoto:::p::p}, seq {space :p:73:p, comp fotoPanel:::p::p}}, space :p:8:p, comp tags:::p::p, space ::35:x, par b {comp confermaButton::b:p::p, comp goBackButton::b:p::p}, space :p:26:p}}"
+			} ) {
+				name: "panel1"
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "apriFoto"
+					"text": "Apri Foto"
+				} )
+				add( new FormComponent( "javax.swing.JToggleButton" ) {
+					name: "toggleButton1"
+					"text": "privata?"
+				} )
+				add( new FormComponent( "javax.swing.JComboBox" ) {
+					name: "selDisp"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "goBackButton"
+					"text": "TORNA INDIETRO"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "confermaButton"
+					"text": "CONFERMA"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {space :0:271:x}"
+					"$verticalGroup": "par l {space :0:237:x}"
+				} ) {
+					name: "fotoPanel"
+				} )
+				add( new FormComponent( "GUI.TagTextField" ) {
+					name: "tags"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 655, 470 )
+		} )
+	}
+}

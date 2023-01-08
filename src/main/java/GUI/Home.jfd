@@ -1,0 +1,29 @@
+JFDML JFormDesigner: "8.0.1.0.199" Java: "17.0.5" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {comp panel::l:::x}"
+			"$verticalGroup": "par l {comp panel::l:::x}"
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq t {space :::p, comp scrollPanel:::p:402:p, space s:::p, comp caricaFoto:::p::p, space :p:94:p}}"
+				"$verticalGroup": "par l {seq {par l {seq {space :p:46:p, comp caricaFoto:::p::p}, seq l {space :::p, comp scrollPanel:::p:380:p}}, space ::33:x}}"
+			} ) {
+				name: "panel"
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "caricaFoto"
+					"text": "CARICA FOTO"
+				} )
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "scrollPanel"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 630, 450 )
+		} )
+	}
+}
