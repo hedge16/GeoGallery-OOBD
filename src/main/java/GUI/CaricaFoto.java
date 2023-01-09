@@ -7,6 +7,7 @@ import javax.swing.border.*;
 import javax.swing.filechooser.FileFilter;
 
 import Controller.Controller;
+import Model.CategoriaSoggetto;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -29,9 +30,13 @@ public class CaricaFoto extends JFrame {
 
 
         initComponents(controller, username);
+        String[] categorie = controller.getCategorie();
+        for (int i = 0; i < categorie.length; i++){
+            categoriaSoggList.addItem(categorie[i]);
+        }
 
 
-        mainFrame = new JFrame();
+        mainFrame = new JFrame("Carica la tua foto");
         mainFrame.setContentPane(panel1);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.pack();
@@ -56,12 +61,12 @@ public class CaricaFoto extends JFrame {
                 });
                 fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
                 result = fileChooser.showOpenDialog(apriFoto);
+
                 if (result == JFileChooser.APPROVE_OPTION) {
                     filePath = fileChooser.getSelectedFile().getAbsolutePath();
-                    File f = new File(filePath);
                     try{
-                        ImageIcon imageIcon = new ImageIcon(new ImageIcon(f.getAbsolutePath()).getImage().getScaledInstance(fotoAnteprima.getWidth(), fotoAnteprima.getHeight(), Image.SCALE_SMOOTH));
-                        fotoAnteprima.setIcon(imageIcon);
+                        ImageIcon foto = new ImageIcon(new ImageIcon(filePath).getImage().getScaledInstance(fotoAnteprima.getWidth(), fotoAnteprima.getHeight(), Image.SCALE_SMOOTH));
+                        fotoAnteprima.setIcon(foto);
 
                     } catch (Exception e1){
                         e1.printStackTrace();
@@ -122,12 +127,14 @@ public class CaricaFoto extends JFrame {
                     try {
                         codFoto = controller.aggiungiFoto(toggleButton1.isSelected(), false, new Date(), controller.getCodG(username), username, controller.getCodDisp((String)selDisp.getSelectedItem(), username), filePath);
                         int i = 0;
-                        String[] tagArr = tags.getText().split(",");
-                        int numTag = tagArr.length;
-                        while (i < numTag ) {
-                            controller.aggiungiTagFoto(tagArr[i], codFoto);
+                        if (!tags.getText().equals("")) {
+                            String[] tagArr = tags.getText().split(",");
+                            int numTag = tagArr.length;
+                            while (i < numTag) {
+                                controller.aggiungiTagFoto(tagArr[i], codFoto);
+                            }
                         }
-                        //controller.aggiungiSoggettoFoto(qua c'è il );
+                        controller.aggiungiSoggettoFoto(categorie[categoriaSoggList.getSelectedIndex()], nomeSoggTextField.getText());
                         //controller.aggiungiLuogo
                         JOptionPane.showMessageDialog(mainFrame, "Foto caricata con successo.");
                         mainFrame.setVisible(false);
@@ -173,7 +180,13 @@ public class CaricaFoto extends JFrame {
         panel1 = new JPanel();
         apriFoto = new JButton();
         toggleButton1 = new JToggleButton();
-        selDisp = new JComboBox();
+        String[] dispositivi = new String[0];
+        try {
+            dispositivi = controller.getDisp(username).toArray(new String[0]);
+        } catch (SQLException s) {
+            s.printStackTrace();
+        }
+        selDisp = new JComboBox(dispositivi);
         goBackButton = new JButton();
         confermaButton = new JButton();
         fotoPanel = new JPanel();
@@ -181,8 +194,8 @@ public class CaricaFoto extends JFrame {
         tags = new TagTextField(controller);
         label1 = new JLabel();
         label2 = new JLabel();
-        comboBox1 = new JComboBox();
-        textField1 = new JTextField();
+        categoriaSoggList = new JComboBox();
+        nomeSoggTextField = new JTextField();
         label3 = new JLabel();
         label4 = new JLabel();
         textField2 = new JTextField();
@@ -278,7 +291,7 @@ public class CaricaFoto extends JFrame {
                             .addGroup(panel1Layout.createSequentialGroup()
                                 .addComponent(label4)
                                 .addGap(18, 18, 18)
-                                .addComponent(textField1, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE))
+                                .addComponent(nomeSoggTextField, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE))
                             .addGroup(panel1Layout.createSequentialGroup()
                                 .addComponent(label6, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
@@ -292,7 +305,7 @@ public class CaricaFoto extends JFrame {
                             .addGroup(panel1Layout.createSequentialGroup()
                                 .addComponent(label3, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(comboBox1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(categoriaSoggList, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 74, Short.MAX_VALUE))
             );
             panel1Layout.setVerticalGroup(
@@ -311,11 +324,11 @@ public class CaricaFoto extends JFrame {
                                     .addComponent(label6))
                                 .addGap(18, 18, 18)
                                 .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                    .addComponent(comboBox1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(categoriaSoggList, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(label3))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                    .addComponent(textField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(nomeSoggTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(label4))
                                 .addGap(18, 18, 18)
                                 .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -365,8 +378,8 @@ public class CaricaFoto extends JFrame {
     private TagTextField tags;
     private JLabel label1;
     private JLabel label2;
-    private JComboBox comboBox1;
-    private JTextField textField1;
+    private JComboBox categoriaSoggList;
+    private JTextField nomeSoggTextField;
     private JLabel label3;
     private JLabel label4;
     private JTextField textField2;

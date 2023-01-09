@@ -3,7 +3,7 @@ package Model;
 import java.util.ArrayList;
 
 public class Foto {
-    private String codFoto;
+    private int codFoto;
     private boolean privata;
     private boolean rimossa;
     private String codAlbum;//chiave esterna
@@ -12,7 +12,7 @@ public class Foto {
     private ArrayList<SoggettoFoto> soggetti;
 
 
-    public Foto(String codFoto, boolean privata, boolean rimossa, String codAlbum, String codGalleria, String dispositivo) {
+    public Foto(int codFoto, boolean privata, boolean rimossa, String codAlbum, String codGalleria, String dispositivo) {
         this.codFoto = codFoto;
         this.privata = privata;
         this.rimossa = rimossa;
@@ -57,6 +57,9 @@ public class Foto {
     public void setDispositivo(String dispositivo) {
         this.dispositivo = dispositivo;
     }
+    public void aggiungiSoggetto (int idSogg, String nome, CategoriaSoggetto categoria) {
+        soggetti.add(new SoggettoFoto(idSogg, nome, categoria));
+    };
 
 
 }

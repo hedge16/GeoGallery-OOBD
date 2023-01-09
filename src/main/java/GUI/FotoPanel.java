@@ -17,7 +17,7 @@ public class FotoPanel extends JPanel {
         labelFoto = new JLabel[numFoto];
         setLayout(new GridLayout(numFoto / 3, 3));
 
-        Dimension miniatureSize = new Dimension(100, 100);
+        Dimension miniatureSize = new Dimension(150, 150);
 
         for (int i = 0; i < numFoto; i++) {
 

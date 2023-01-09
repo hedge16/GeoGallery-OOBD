@@ -3,21 +3,21 @@ package Model;
 import java.util.ArrayList;
 
 public class Galleria_personale {
-    private String codGalleria;
+    private int codGalleria;
     private String proprietario;
     private ArrayList<Foto> foto; // chiavi esterne
 
-    public Galleria_personale(String codGalleria, String proprietario) {
+    public Galleria_personale(int codGalleria, String proprietario) {
         this.codGalleria = codGalleria;
         this.proprietario = proprietario;
         this.foto = new ArrayList<>();
     }
 
-    public String getCodGalleria() {
+    public int getCodGalleria() {
         return codGalleria;
     }
 
-    public void setCodGalleria(String codGalleria) {
+    public void setCodGalleria(int codGalleria) {
         this.codGalleria = codGalleria;
     }
 

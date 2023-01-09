@@ -2,6 +2,7 @@ package Controller;
 
 import DAO.*;
 import ImplementazionePostgresDAO.*;
+import Model.CategoriaSoggetto;
 import Model.Utente;
 import org.postgresql.util.PSQLException;
 import org.postgresql.util.ServerErrorMessage;
@@ -153,6 +154,22 @@ public class Controller {
 
         } catch (SQLException s){
             s.printStackTrace();
+            throw new SQLException();
+        }
+
+    }
+
+    public String [] getCategorie () {
+        String[] categorie = {"Paesaggi", "Eventi sportivi", "Gruppi di persone", "Ritratti", "Selfie", "Animali", "Cibo", "Matrimoni", "Viaggi", "Natura"};
+        return categorie;
+    }
+
+    public void aggiungiSoggettoFoto (String categoria, String nomeSogg) throws SQLException{
+        SoggettoFotoDAO s = new SoggettoFotoImplementazionePostgresDAO();
+        try{
+            s.aggiungiSoggettoFotoDB(categoria, nomeSogg);
+        }catch (SQLException s1){
+            s1.printStackTrace();
             throw new SQLException();
         }
 

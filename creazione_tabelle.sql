@@ -1,4 +1,5 @@
 DROP SCHEMA galleria_schema CASCADE;
+CREATE TYPE categoria_soggetto AS ENUM ('Paesaggi', 'Eventi sportivi', 'Gruppi di persone', 'Ritratti', 'Selfie', 'Animali', 'Cibo', 'Matrimoni', 'Viaggi', 'Natura');
 CREATE SCHEMA IF NOT EXISTS galleria_schema;
 
 CREATE TABLE IF NOT EXISTS galleria_schema.utente (
@@ -54,7 +55,7 @@ CREATE TABLE IF NOT EXISTS galleria_schema.dispositivo (
 CREATE TABLE IF NOT EXISTS galleria_schema.soggettofoto(
 	codSogg SERIAL,
 	nome VARCHAR(50),
-	categoria VARCHAR(50),
+	categoria categoria_soggetto,
 	CONSTRAINT pk_soggettofoto PRIMARY KEY (codSogg)
 
 );
@@ -90,8 +91,8 @@ CREATE TABLE IF NOT EXISTS galleria_schema.partecipazione(
 
 CREATE TABLE IF NOT EXISTS galleria_schema.tag (
 
-	codFoto SERIAL,
-	codUtente VARCHAR(20),
+	codFoto INTEGER NOT NULL,
+	codUtente VARCHAR(20) NOT NULL,
 	CONSTRAINT pk_tag PRIMARY KEY (codUtente, codFoto),
 	CONSTRAINT fk_tagutente FOREIGN KEY (codUtente) REFERENCES galleria_schema.utente(username) ON DELETE CASCADE,
 	CONSTRAINT fk_tagtfoto FOREIGN KEY (codFoto) REFERENCES galleria_schema.foto(codFoto) ON DELETE CASCADE
@@ -101,8 +102,8 @@ CREATE TABLE IF NOT EXISTS galleria_schema.tag (
 
 CREATE TABLE IF NOT EXISTS galleria_schema.presenzafoto(
 
-	codGalleriaC INTEGER,
-	codFoto INTEGER,
+	codGalleriaC INTEGER NOT NULL,
+	codFoto INTEGER NOT NULL,
 	CONSTRAINT pk_presfoto PRIMARY KEY (codGalleriaC, codFoto),
 	CONSTRAINT fk_presfgall FOREIGN KEY (codGalleriaC) REFERENCES galleria_schema.galleria_condivisa(codGalleria) ON DELETE CASCADE,
 	CONSTRAINT fk_presffoto FOREIGN KEY (codFoto) REFERENCES galleria_schema.foto(codFoto) ON DELETE CASCADE
@@ -122,6 +123,9 @@ CREATE TABLE IF NOT EXISTS galleria_schema.contenuto (
 
 
 );
+
+
+
 
 
 

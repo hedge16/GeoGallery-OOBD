@@ -1,23 +1,23 @@
 package Model;
 
 public class Luogo {
-    private String codLuogo;
+    private int codLuogo;
     private String nomeMnemonico;
     private double latitudine;
     private double longitudine;
 
-    public Luogo(String codLuogo, String nomeMnemonico, double latitudine, double longitudine) {
+    public Luogo(int codLuogo, String nomeMnemonico, double latitudine, double longitudine) {
         this.codLuogo = codLuogo;
         this.nomeMnemonico = nomeMnemonico;
         this.latitudine = latitudine;
         this.longitudine = longitudine;
     }
 
-    public String getCodLuogo() {
+    public int getCodLuogo() {
         return codLuogo;
     }
 
-    public void setCodLuogo(String codLuogo) {
+    public void setCodLuogo(int codLuogo) {
         this.codLuogo = codLuogo;
     }
 

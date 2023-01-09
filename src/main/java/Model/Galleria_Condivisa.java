@@ -3,21 +3,21 @@ package Model;
 import java.util.ArrayList;
 
 public class Galleria_Condivisa {
-    private String codGalleria;
+    private int codGalleria;
     private String nomeGalleria;
     private ArrayList<String> utenti; // chiavi esterne
 
-    public Galleria_Condivisa(String codGalleria, String nomeGalleria) {
+    public Galleria_Condivisa(int codGalleria, String nomeGalleria) {
         this.codGalleria = codGalleria;
         this.nomeGalleria = nomeGalleria;
         this.utenti = new ArrayList<String>();
     }
 
-    public String getCodGalleria() {
+    public int getCodGalleria() {
         return codGalleria;
     }
 
-    public void setCodGalleria(String codGalleria) {
+    public void setCodGalleria(int codGalleria) {
         this.codGalleria = codGalleria;
     }
 

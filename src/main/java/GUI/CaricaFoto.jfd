@@ -9,8 +9,8 @@ new FormModel {
 		} ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq t {space :p:334:p, comp goBackButton:::p::p, space s:::p, comp confermaButton:::p::p, space ::76:x}, seq t {space :p:36:p, comp fotoPanel:::p::p, space :p:34:p, par t {seq t {comp label2:::p::p, space s:::p, comp tags:::p:140:p}, seq t {comp toggleButton1:::p:67:p, space s:::p, comp apriFoto:::p::p}, seq t {comp label1:::p::p, space :::p, comp selDisp:::p:157:p}, seq t {comp label4:::p::p, space s:::p, comp textField1:::p:105:p}, seq t {comp label6:::p:65:p, space s:::p, comp textField3:::p:66:p, space :::p, comp textField2:::p:69:p}, seq t {comp label5:::p:77:p, space :::p, comp textField4:::p:69:p}, seq t {comp label3:::p:74:p, space :::p, comp comboBox1:::p::p}}, space :0:74:x}}"
-				"$verticalGroup": "par l {seq t {space :p:53:p, par l {seq {par b {comp textField4::b:p::p, comp label5::b:p::p}, space u:::p, par b {comp textField2::b:p::p, comp textField3::b:p::p, comp label6::b:p::p}, space s:::p, par b {comp comboBox1::b:p::p, comp label3::b:p::p}, space u:::p, par b {comp textField1::b:p::p, comp label4::b:p::p}, space s:::p, par b {comp selDisp::b:p::p, comp label1::b:p::p}, space u:::p, par b {comp tags::b:p::p, comp label2::b:p::p}, space s:::p, par l {comp apriFoto:::p::p, comp toggleButton1::l:p::p}}, comp fotoPanel:::p::p}, space s:::p, par b {comp confermaButton::b:p::p, comp goBackButton::b:p::p}, space :::x}}"
+				"$horizontalGroup": "par l {seq t {space :p:334:p, comp goBackButton:::p::p, space s:::p, comp confermaButton:::p::p, space ::76:x}, seq t {space :p:36:p, comp fotoPanel:::p::p, space :p:34:p, par t {seq t {comp label2:::p::p, space s:::p, comp tags:::p:140:p}, seq t {comp toggleButton1:::p:67:p, space s:::p, comp apriFoto:::p::p}, seq t {comp label1:::p::p, space :::p, comp selDisp:::p:157:p}, seq t {comp label4:::p::p, space s:::p, comp nomeSoggTextField:::p:105:p}, seq t {comp label6:::p:65:p, space s:::p, comp textField3:::p:66:p, space :::p, comp textField2:::p:69:p}, seq t {comp label5:::p:77:p, space :::p, comp textField4:::p:69:p}, seq t {comp label3:::p:74:p, space :::p, comp categoriaSoggList:::p::p}}, space :0:74:x}}"
+				"$verticalGroup": "par l {seq t {space :p:53:p, par l {seq {par b {comp textField4::b:p::p, comp label5::b:p::p}, space u:::p, par b {comp textField2::b:p::p, comp textField3::b:p::p, comp label6::b:p::p}, space s:::p, par b {comp categoriaSoggList::b:p::p, comp label3::b:p::p}, space u:::p, par b {comp nomeSoggTextField::b:p::p, comp label4::b:p::p}, space s:::p, par b {comp selDisp::b:p::p, comp label1::b:p::p}, space u:::p, par b {comp tags::b:p::p, comp label2::b:p::p}, space s:::p, par l {comp apriFoto:::p::p, comp toggleButton1::l:p::p}}, comp fotoPanel:::p::p}, space s:::p, par b {comp confermaButton::b:p::p, comp goBackButton::b:p::p}, space :::x}}"
 			} ) {
 				name: "panel1"
 				add( new FormComponent( "javax.swing.JButton" ) {
@@ -54,10 +54,10 @@ new FormModel {
 					"text": "Tags :"
 				} )
 				add( new FormComponent( "javax.swing.JComboBox" ) {
-					name: "comboBox1"
+					name: "categoriaSoggList"
 				} )
 				add( new FormComponent( "javax.swing.JTextField" ) {
-					name: "textField1"
+					name: "nomeSoggTextField"
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "label3"

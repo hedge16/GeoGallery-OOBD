@@ -3,22 +3,22 @@ package Model;
 import java.util.ArrayList;
 
 public class SoggettoFoto {
-    private String id;
+    private int id;
     private String nome;
-    private String categoria;
+    private CategoriaSoggetto categoria;
 
 
-    public SoggettoFoto(String id, String nome, String categoria) {
+    public SoggettoFoto(int id, String nome, CategoriaSoggetto categoria) {
         this.id = id;
         this.nome = nome;
         this.categoria = categoria;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -30,11 +30,11 @@ public class SoggettoFoto {
         this.nome = nome;
     }
 
-    public String getCategoria() {
+    public CategoriaSoggetto getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(String categoria) {
+    public void setCategoria(CategoriaSoggetto categoria) {
         this.categoria = categoria;
     }
 

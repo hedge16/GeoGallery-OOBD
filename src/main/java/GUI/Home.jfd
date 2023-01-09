@@ -8,6 +8,7 @@ new FormModel {
 			"$verticalGroup": "par l {comp panel::l:::x}"
 		} ) {
 			name: "this"
+			"iconImage": new com.jformdesigner.model.SwingIcon( 1, "D:\\Desktop\\GalleriaGeolocalizzata\\src\\icons\\download.png" )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 				"$horizontalGroup": "par l {seq t {space :::p, comp scrollPanel:::p:402:p, space s:::p, comp caricaFoto:::p::p, space :p:94:p}}"
 				"$verticalGroup": "par l {seq {par l {seq {space :p:46:p, comp caricaFoto:::p::p}, seq l {space :::p, comp scrollPanel:::p:380:p}}, space ::33:x}}"

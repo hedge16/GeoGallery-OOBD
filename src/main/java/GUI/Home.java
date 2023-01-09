@@ -77,8 +77,8 @@ public class Home extends JFrame {
         scrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-
         //======== this ========
+        setIconImage(new ImageIcon("D:\\Desktop\\GalleriaGeolocalizzata\\src\\icons\\download.png").getImage());
         var contentPane = getContentPane();
 
         //======== panel ========
@@ -128,6 +128,7 @@ public class Home extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
+
     private JButton caricaFoto;
     private JScrollPane scrollPanel;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
