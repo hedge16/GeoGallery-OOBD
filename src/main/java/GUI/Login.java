@@ -141,9 +141,6 @@ public class Login extends JFrame {
             //---- loginButton ----
             loginButton.setText("ACCEDI");
 
-            //---- label1 ----
-            label1.setText("text");
-
             GroupLayout rootPanelLayout = new GroupLayout(rootPanel);
             rootPanel.setLayout(rootPanelLayout);
             rootPanelLayout.setHorizontalGroup(
@@ -166,7 +163,7 @@ public class Login extends JFrame {
                 rootPanelLayout.createParallelGroup()
                     .addGroup(rootPanelLayout.createSequentialGroup()
                         .addGap(86, 86, 86)
-                        .addComponent(label1, GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
+                        .addComponent(label1, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(userIDField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)

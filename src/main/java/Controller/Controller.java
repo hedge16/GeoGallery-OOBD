@@ -67,7 +67,7 @@ public class Controller {
         FotoDAO u = new FotoImplementazionePostgresDAO();
         try{
             codFoto = u.inserisciFotoDB(privata, rimossa, dataScatto, codgalleriap, autore, codDispositivo, percorsoFoto);
-            if (codFoto == 1){
+            if (codFoto == -1){
                 throw new SQLException();
             }
             return codFoto;

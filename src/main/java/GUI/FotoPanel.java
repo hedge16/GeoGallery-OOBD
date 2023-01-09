@@ -4,9 +4,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.*;
 
-import ij.process.ColorProcessor;
-import ij.process.ImageProcessor;
-
 public class FotoPanel extends JPanel {
     private ArrayList<ImageIcon> foto;
     private JLabel[] labelFoto;
@@ -20,7 +17,7 @@ public class FotoPanel extends JPanel {
         labelFoto = new JLabel[numFoto];
         setLayout(new GridLayout(numFoto / 3, 3));
 
-        Dimension miniatureSize = new Dimension(200, 200);
+        Dimension miniatureSize = new Dimension(100, 100);
 
         for (int i = 0; i < numFoto; i++) {
 

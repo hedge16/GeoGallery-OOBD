@@ -1,14 +1,18 @@
 package GUI;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.GroupLayout;
+import javax.swing.border.*;
 import javax.swing.filechooser.FileFilter;
 
 import Controller.Controller;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -47,13 +51,22 @@ public class CaricaFoto extends JFrame {
 
                     @Override
                     public String getDescription() {
-                        return "Image files (*.png, *.jpg)";
+                        return "File immagine (*.png, *.jpg)";
                     }
                 });
                 fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
                 result = fileChooser.showOpenDialog(apriFoto);
                 if (result == JFileChooser.APPROVE_OPTION) {
                     filePath = fileChooser.getSelectedFile().getAbsolutePath();
+                    File f = new File(filePath);
+                    try{
+                        ImageIcon imageIcon = new ImageIcon(new ImageIcon(f.getAbsolutePath()).getImage().getScaledInstance(fotoAnteprima.getWidth(), fotoAnteprima.getHeight(), Image.SCALE_SMOOTH));
+                        fotoAnteprima.setIcon(imageIcon);
+
+                    } catch (Exception e1){
+                        e1.printStackTrace();
+                    }
+
                 }
 
             }
@@ -160,18 +173,23 @@ public class CaricaFoto extends JFrame {
         panel1 = new JPanel();
         apriFoto = new JButton();
         toggleButton1 = new JToggleButton();
-        String[] dispositivi = new String[0];
-        try {
-            dispositivi = controller.getDisp(username).toArray(new String[0]);
-        } catch (SQLException s) {
-            s.printStackTrace();
-        }
-
-        selDisp = new JComboBox(dispositivi);
+        selDisp = new JComboBox();
         goBackButton = new JButton();
         confermaButton = new JButton();
         fotoPanel = new JPanel();
+        fotoAnteprima = new JLabel();
         tags = new TagTextField(controller);
+        label1 = new JLabel();
+        label2 = new JLabel();
+        comboBox1 = new JComboBox();
+        textField1 = new JTextField();
+        label3 = new JLabel();
+        label4 = new JLabel();
+        textField2 = new JTextField();
+        textField3 = new JTextField();
+        textField4 = new JTextField();
+        label5 = new JLabel();
+        label6 = new JLabel();
 
         //======== this ========
         var contentPane = getContentPane();
@@ -193,64 +211,130 @@ public class CaricaFoto extends JFrame {
 
             //======== fotoPanel ========
             {
+                fotoPanel.setBorder(new TitledBorder("Anteprima"));
 
                 GroupLayout fotoPanelLayout = new GroupLayout(fotoPanel);
                 fotoPanel.setLayout(fotoPanelLayout);
                 fotoPanelLayout.setHorizontalGroup(
                     fotoPanelLayout.createParallelGroup()
-                        .addGap(0, 271, Short.MAX_VALUE)
+                        .addGroup(fotoPanelLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(fotoAnteprima, GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+                            .addContainerGap())
                 );
                 fotoPanelLayout.setVerticalGroup(
                     fotoPanelLayout.createParallelGroup()
-                        .addGap(0, 237, Short.MAX_VALUE)
+                        .addGroup(fotoPanelLayout.createSequentialGroup()
+                            .addComponent(fotoAnteprima, GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
+                            .addContainerGap())
                 );
             }
+
+            //---- label1 ----
+            label1.setText("Dispositivo :");
+
+            //---- label2 ----
+            label2.setText("Tags :");
+
+            //---- label3 ----
+            label3.setText("Categoria :");
+
+            //---- label4 ----
+            label4.setText("Nome soggetto :");
+
+            //---- label5 ----
+            label5.setText("Nome luogo :");
+
+            //---- label6 ----
+            label6.setText("Coordinate :");
 
             GroupLayout panel1Layout = new GroupLayout(panel1);
             panel1.setLayout(panel1Layout);
             panel1Layout.setHorizontalGroup(
                 panel1Layout.createParallelGroup()
                     .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
-                        .addGroup(panel1Layout.createParallelGroup()
+                        .addGap(334, 334, 334)
+                        .addComponent(goBackButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(confermaButton)
+                        .addContainerGap(76, Short.MAX_VALUE))
+                    .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addComponent(fotoPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addGap(34, 34, 34)
+                        .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                             .addGroup(panel1Layout.createSequentialGroup()
-                                .addGap(56, 56, 56)
-                                .addComponent(goBackButton)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 241, Short.MAX_VALUE)
-                                .addComponent(confermaButton, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE))
-                            .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
-                                .addGap(85, 85, 85)
-                                .addComponent(fotoPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 137, Short.MAX_VALUE)
-                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(selDisp)
-                                    .addComponent(toggleButton1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(apriFoto, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
-                                .addContainerGap(437, Short.MAX_VALUE)
-                                .addComponent(tags, GroupLayout.PREFERRED_SIZE, 140, GroupLayout.PREFERRED_SIZE)))
-                        .addGap(76, 76, 76))
+                                .addComponent(label2)
+                                .addGap(18, 18, 18)
+                                .addComponent(tags, GroupLayout.PREFERRED_SIZE, 140, GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addComponent(toggleButton1, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(apriFoto))
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addComponent(label1)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(selDisp, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addComponent(label4)
+                                .addGap(18, 18, 18)
+                                .addComponent(textField1, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addComponent(label6, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(textField3, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(textField2, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addComponent(label5, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(textField4, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addComponent(label3, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(comboBox1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 74, Short.MAX_VALUE))
             );
             panel1Layout.setVerticalGroup(
                 panel1Layout.createParallelGroup()
                     .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
+                        .addGap(53, 53, 53)
                         .addGroup(panel1Layout.createParallelGroup()
                             .addGroup(panel1Layout.createSequentialGroup()
-                                .addGap(64, 64, 64)
-                                .addComponent(toggleButton1)
-                                .addGap(109, 109, 109)
-                                .addComponent(selDisp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(textField4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(label5))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(apriFoto))
-                            .addGroup(panel1Layout.createSequentialGroup()
-                                .addGap(73, 73, 73)
-                                .addComponent(fotoPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-                        .addGap(8, 8, 8)
-                        .addComponent(tags, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(textField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(textField3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(label6))
+                                .addGap(18, 18, 18)
+                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(comboBox1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(label3))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(textField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(label4))
+                                .addGap(18, 18, 18)
+                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(selDisp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(label1))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(tags, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(label2))
+                                .addGap(18, 18, 18)
+                                .addGroup(panel1Layout.createParallelGroup()
+                                    .addComponent(apriFoto)
+                                    .addComponent(toggleButton1)))
+                            .addComponent(fotoPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
                         .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                             .addComponent(confermaButton)
                             .addComponent(goBackButton))
-                        .addGap(26, 26, 26))
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             );
         }
 
@@ -258,16 +342,11 @@ public class CaricaFoto extends JFrame {
         contentPane.setLayout(contentPaneLayout);
         contentPaneLayout.setHorizontalGroup(
             contentPaneLayout.createParallelGroup()
-                .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
-                    .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap())
+                .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         contentPaneLayout.setVerticalGroup(
             contentPaneLayout.createParallelGroup()
-                .addGroup(contentPaneLayout.createSequentialGroup()
-                    .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         pack();
         setLocationRelativeTo(getOwner());
@@ -282,6 +361,18 @@ public class CaricaFoto extends JFrame {
     private JButton goBackButton;
     private JButton confermaButton;
     private JPanel fotoPanel;
+    private JLabel fotoAnteprima;
     private TagTextField tags;
+    private JLabel label1;
+    private JLabel label2;
+    private JComboBox comboBox1;
+    private JTextField textField1;
+    private JLabel label3;
+    private JLabel label4;
+    private JTextField textField2;
+    private JTextField textField3;
+    private JTextField textField4;
+    private JLabel label5;
+    private JLabel label6;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

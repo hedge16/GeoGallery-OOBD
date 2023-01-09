@@ -4,13 +4,13 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq t {space :::x, comp panel1:::p::p, space :::p}}"
-			"$verticalGroup": "par l {seq l {comp panel1:::p::p, space :0:0:x}}"
+			"$horizontalGroup": "par l {comp panel1::l:::x}"
+			"$verticalGroup": "par l {comp panel1::l:::x}"
 		} ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq t {par l {seq l {space :p:56:p, comp goBackButton:::p::p, space ::241:x, comp confermaButton:::p:151:p}, seq t {space :p:85:p, comp fotoPanel:::p::p, space ::137:x, par l:::p {comp selDisp:::::x, comp toggleButton1::t:::x, comp apriFoto:::::x}}, seq t {space ::437:x, comp tags:::p:140:p}}, space :p:76:p}}"
-				"$verticalGroup": "par l {seq t {par l {seq {space :p:64:p, comp toggleButton1:::p::p, space :p:109:p, comp selDisp:::p::p, space u:::p, comp apriFoto:::p::p}, seq {space :p:73:p, comp fotoPanel:::p::p}}, space :p:8:p, comp tags:::p::p, space ::35:x, par b {comp confermaButton::b:p::p, comp goBackButton::b:p::p}, space :p:26:p}}"
+				"$horizontalGroup": "par l {seq t {space :p:334:p, comp goBackButton:::p::p, space s:::p, comp confermaButton:::p::p, space ::76:x}, seq t {space :p:36:p, comp fotoPanel:::p::p, space :p:34:p, par t {seq t {comp label2:::p::p, space s:::p, comp tags:::p:140:p}, seq t {comp toggleButton1:::p:67:p, space s:::p, comp apriFoto:::p::p}, seq t {comp label1:::p::p, space :::p, comp selDisp:::p:157:p}, seq t {comp label4:::p::p, space s:::p, comp textField1:::p:105:p}, seq t {comp label6:::p:65:p, space s:::p, comp textField3:::p:66:p, space :::p, comp textField2:::p:69:p}, seq t {comp label5:::p:77:p, space :::p, comp textField4:::p:69:p}, seq t {comp label3:::p:74:p, space :::p, comp comboBox1:::p::p}}, space :0:74:x}}"
+				"$verticalGroup": "par l {seq t {space :p:53:p, par l {seq {par b {comp textField4::b:p::p, comp label5::b:p::p}, space u:::p, par b {comp textField2::b:p::p, comp textField3::b:p::p, comp label6::b:p::p}, space s:::p, par b {comp comboBox1::b:p::p, comp label3::b:p::p}, space u:::p, par b {comp textField1::b:p::p, comp label4::b:p::p}, space s:::p, par b {comp selDisp::b:p::p, comp label1::b:p::p}, space u:::p, par b {comp tags::b:p::p, comp label2::b:p::p}, space s:::p, par l {comp apriFoto:::p::p, comp toggleButton1::l:p::p}}, comp fotoPanel:::p::p}, space s:::p, par b {comp confermaButton::b:p::p, comp goBackButton::b:p::p}, space :::x}}"
 			} ) {
 				name: "panel1"
 				add( new FormComponent( "javax.swing.JButton" ) {
@@ -33,13 +33,56 @@ new FormModel {
 					"text": "CONFERMA"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {space :0:271:x}"
-					"$verticalGroup": "par l {space :0:237:x}"
+					"$horizontalGroup": "par l {seq l {space :::p, comp fotoAnteprima::::259:x, space :::p}}"
+					"$verticalGroup": "par l {seq l {comp fotoAnteprima::::231:x, space :::p}}"
 				} ) {
 					name: "fotoPanel"
+					"border": new javax.swing.border.TitledBorder( "Anteprima" )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "fotoAnteprima"
+					} )
 				} )
 				add( new FormComponent( "GUI.TagTextField" ) {
 					name: "tags"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label1"
+					"text": "Dispositivo :"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label2"
+					"text": "Tags :"
+				} )
+				add( new FormComponent( "javax.swing.JComboBox" ) {
+					name: "comboBox1"
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "textField1"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label3"
+					"text": "Categoria :"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label4"
+					"text": "Nome soggetto :"
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "textField2"
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "textField3"
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "textField4"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label5"
+					"text": "Nome luogo :"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label6"
+					"text": "Coordinate :"
 				} )
 			} )
 		}, new FormLayoutConstraints( null ) {
