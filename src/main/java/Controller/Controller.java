@@ -63,11 +63,11 @@ public class Controller {
         return miniature;
     }
 
-    public int aggiungiFoto (boolean privata, boolean rimossa, Date dataScatto, int codgalleriap, String autore, int codDispositivo, String percorsoFoto) throws SQLException, FileNotFoundException {
+    public int aggiungiFoto (boolean privata, boolean rimossa, Date dataScatto, int codgalleriap, String autore, int codDispositivo, String percorsoFoto, int codLuogo) throws SQLException, FileNotFoundException {
         int codFoto = -1;
         FotoDAO u = new FotoImplementazionePostgresDAO();
         try{
-            codFoto = u.inserisciFotoDB(privata, rimossa, dataScatto, codgalleriap, autore, codDispositivo, percorsoFoto);
+            codFoto = u.inserisciFotoDB(privata, rimossa, dataScatto, codgalleriap, autore, codDispositivo, percorsoFoto, codLuogo);
             if (codFoto == -1){
                 throw new SQLException();
             }
@@ -173,6 +173,17 @@ public class Controller {
             throw new SQLException();
         }
 
+    }
+
+    public int aggiungiLuogoDB (double latitudine, double longitudine, String nomeLuogo) {
+        int codLuogo = -1;
+        LuogoDAO l = new LuogoImplementazionePostgresDAO();
+        try{
+            codLuogo = l.aggiungiLuogoDB(latitudine, longitudine, nomeLuogo);
+        } catch (SQLException s) {
+            s.printStackTrace();
+        }
+        return codLuogo;
     }
 
 }

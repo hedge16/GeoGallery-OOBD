@@ -17,7 +17,7 @@ import com.intellij.uiDesigner.core.*;
 
 public class Login extends JFrame {
 
-    private static JFrame frame1;
+    protected static JFrame frame1;
 
 
 
@@ -39,7 +39,7 @@ public class Login extends JFrame {
         initComponents();
 
         ImageIcon icon = new ImageIcon("D:\\Desktop\\GalleriaGeolocalizzata\\src\\icons\\download.png");
-        label1.setIcon(icon);
+        logoLabel.setIcon(icon);
 
 
         controller = new Controller();
@@ -81,8 +81,9 @@ public class Login extends JFrame {
 
                         Home home = new Home(controller, frame1, userInput);
                         frame1.setVisible(false);
-                        home.mainFrame.setVisible(true);
                         frame1.dispose();
+                        home.mainFrame.setVisible(true);
+
 
                     } else {
                         JOptionPane.showMessageDialog(frame1, "Username o password non corretti", "Errore inserimento dati", JOptionPane.ERROR_MESSAGE);
@@ -106,6 +107,7 @@ public class Login extends JFrame {
         frame1.setContentPane(new Login().rootPanel);
         frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame1.pack();
+        frame1.setLocationRelativeTo(null);
         frame1.setVisible(true);
     }
 
@@ -117,7 +119,7 @@ public class Login extends JFrame {
     private JButton loginButton;
     private JPasswordField userPassField;
     private JTextField userIDField;
-    private JLabel label1;
+    private JLabel logoLabel;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 
     private void initComponents() {
@@ -127,7 +129,7 @@ public class Login extends JFrame {
         loginButton = new JButton();
         userPassField = new JPasswordField();
         userIDField = new JTextField();
-        label1 = new JLabel();
+        logoLabel = new JLabel();
 
         //======== this ========
         var contentPane = getContentPane();
@@ -156,14 +158,14 @@ public class Login extends JFrame {
                         .addGap(150, 150, 150))
                     .addGroup(rootPanelLayout.createSequentialGroup()
                         .addGap(132, 132, 132)
-                        .addComponent(label1, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(logoLabel, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(423, Short.MAX_VALUE))
             );
             rootPanelLayout.setVerticalGroup(
                 rootPanelLayout.createParallelGroup()
                     .addGroup(rootPanelLayout.createSequentialGroup()
                         .addGap(86, 86, 86)
-                        .addComponent(label1, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(logoLabel, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(userIDField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)

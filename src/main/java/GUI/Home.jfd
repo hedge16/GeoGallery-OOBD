@@ -5,26 +5,54 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {comp panel::l:::x}"
-			"$verticalGroup": "par l {comp panel::l:::x}"
+			"$verticalGroup": "par l {comp panel::t:::x}"
 		} ) {
 			name: "this"
 			"iconImage": new com.jformdesigner.model.SwingIcon( 1, "D:\\Desktop\\GalleriaGeolocalizzata\\src\\icons\\download.png" )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq t {space :::p, comp scrollPanel:::p:402:p, space s:::p, comp caricaFoto:::p::p, space :p:94:p}}"
-				"$verticalGroup": "par l {seq {par l {seq {space :p:46:p, comp caricaFoto:::p::p}, seq l {space :::p, comp scrollPanel:::p:380:p}}, space ::33:x}}"
+				"$horizontalGroup": "par l {seq {space :p:51:p, par l {comp benvenutoLabel:::p:313:p, comp scrollPanel:::p:323:p}, space :p:16:p, par l {seq {space :p:116:p, comp caricaFoto:::p::p}, comp searchBar::l:p:169:p}, space ::70:x}}"
+				"$verticalGroup": "par l {seq {space ::12:x, par l {par b {comp benvenutoLabel::b:p::p, comp searchBar::b:p::p}, seq l {space :p:416:p, comp caricaFoto:::p::p}, comp scrollPanel::t:p:409:p}, space ::24:x}}"
 			} ) {
 				name: "panel"
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "caricaFoto"
 					"text": "CARICA FOTO"
+					"font": new java.awt.Font( "Futura Bk BT", 0, 12 )
 				} )
 				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 					name: "scrollPanel"
+					"viewportBorder": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					"background": new java.awt.Color( 51, 51, 51, 255 )
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "benvenutoLabel"
+					"text": "Benvenuto, [username] !"
+					"background": new java.awt.Color( 204, 204, 255, 255 )
+					"font": new java.awt.Font( "Futura Bk BT", 0, 25 )
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "searchBar"
+					"text": "@username o #luogo"
+					"foreground": new java.awt.Color( 204, 204, 204, 255 )
+					"caretColor": new java.awt.Color( 204, 204, 204, 255 )
+					"background": new java.awt.Color( 102, 102, 102, 255 )
 				} )
 			} )
+			menuBar: new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {
+				name: "menuBar"
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "azioniMenu"
+					"text": "Azioni"
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "logoutItem"
+						"text": "Logout"
+					} )
+				} )
+			}
 		}, new FormLayoutConstraints( null ) {
-			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 630, 450 )
+			"location": new java.awt.Point( 105, 80 )
+			"size": new java.awt.Dimension( 690, 535 )
 		} )
 	}
 }

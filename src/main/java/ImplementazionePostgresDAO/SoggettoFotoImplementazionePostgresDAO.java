@@ -21,9 +21,8 @@ public class SoggettoFotoImplementazionePostgresDAO implements SoggettoFotoDAO {
     @Override
     public void aggiungiSoggettoFotoDB(String categoria, String nomeSogg) throws SQLException {
         try{
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO galleria_schema.soggettofoto VALUES (DEFAULT,?,?);");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO galleria_schema.soggettofoto VALUES (DEFAULT,?,'"+categoria+"');");
             ps.setString(1, nomeSogg);
-            ps.setString(2, categoria);
             ps.executeUpdate();
             connection.close();
         } catch (SQLException s){

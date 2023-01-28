@@ -76,7 +76,7 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
      * @throws FileNotFoundException se il file specificato dal percorso non esiste o non può essere aperto
      */
     @Override
-    public int inserisciFotoDB(boolean privata, boolean rimossa, Date dataScatto, int codgalleriap, String autore, int codDispositivo, String percorsoFoto) throws SQLException, FileNotFoundException {
+    public int inserisciFotoDB(boolean privata, boolean rimossa, Date dataScatto, int codgalleriap, String autore, int codDispositivo, String percorsoFoto, int codLuogo) throws SQLException, FileNotFoundException {
         int codFoto = -1;
         try {
 
@@ -85,7 +85,7 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
             // Crea un oggetto InputStream a partire dal file
             FileInputStream fis = new FileInputStream(file);
             // Prepara la query di inserimento
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO galleria_schema.foto VALUES (DEFAULT,?, ?, ?, ?, ?, ?, ?);");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO galleria_schema.foto VALUES (DEFAULT,?, ?, ?, ?, ?, ?, ?, ?);");
             // Imposta i valori dei parametri della query
             ps.setBoolean(1, privata);
             ps.setBoolean(2, rimossa);
@@ -95,6 +95,7 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
             ps.setString(5, autore);
             ps.setInt(6, codDispositivo);
             ps.setBinaryStream(7, fis, (int) file.length());
+            ps.setInt(8, codLuogo);
             // Esegue la query di inserimento
             ps.executeUpdate();
 

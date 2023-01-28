@@ -1,22 +1,19 @@
 package GUI;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
 import javax.swing.filechooser.FileFilter;
 
 import Controller.Controller;
-import Model.CategoriaSoggetto;
+import GUI.Components.TagTextField;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class CaricaFoto extends JFrame {
@@ -121,21 +118,22 @@ public class CaricaFoto extends JFrame {
         confermaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (result == JFileChooser.APPROVE_OPTION) {
+                if (result == JFileChooser.APPROVE_OPTION && checkLuogo() && checkDisp() && checkSogg()) {
 
                     // Carica l'immagine nel DB
                     try {
-                        codFoto = controller.aggiungiFoto(toggleButton1.isSelected(), false, new Date(), controller.getCodG(username), username, controller.getCodDisp((String)selDisp.getSelectedItem(), username), filePath);
+                        int codLuogo = controller.aggiungiLuogoDB(Double.parseDouble(latitudineText.getText()), Double.parseDouble(longitudineText.getText()), nomeLuogoText.getText());
+                        codFoto = controller.aggiungiFoto(privataSwitch.isSelected(), false, new Date(), controller.getCodG(username), username, controller.getCodDisp((String)selDisp.getSelectedItem(), username), filePath, codLuogo);
                         int i = 0;
                         if (!tags.getText().equals("")) {
                             String[] tagArr = tags.getText().split(",");
                             int numTag = tagArr.length;
                             while (i < numTag) {
                                 controller.aggiungiTagFoto(tagArr[i], codFoto);
+                                i++;
                             }
                         }
                         controller.aggiungiSoggettoFoto(categorie[categoriaSoggList.getSelectedIndex()], nomeSoggTextField.getText());
-                        //controller.aggiungiLuogo
                         JOptionPane.showMessageDialog(mainFrame, "Foto caricata con successo.");
                         mainFrame.setVisible(false);
                         mainFrame.dispose();
@@ -154,7 +152,7 @@ public class CaricaFoto extends JFrame {
 
 
                 }else{
-                    JOptionPane.showMessageDialog(mainFrame, "Non è stato selezionato il file.", "Errore selezione", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainFrame, "Non è stato selezionato alcun file o non sono stati compilati tutti i campi obbligatori.", "Errore", JOptionPane.ERROR_MESSAGE);
                 }
 
             }
@@ -162,6 +160,33 @@ public class CaricaFoto extends JFrame {
 
 
     }
+
+    private boolean checkLuogo (){
+        if (latitudineText.getText().isEmpty() || longitudineText.getText().isEmpty() || nomeLuogoText.getText().isEmpty()){
+            return false;
+        }else{
+            return true;
+        }
+
+    }
+
+    private boolean checkSogg () {
+        if(nomeSoggTextField.getText().isEmpty()){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+    private boolean checkDisp () {
+        String selezione = (String)selDisp.getSelectedItem();
+        if( selezione.equals("<Aggiungi dispositivo>")){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
 
     /*  QUALORA SI DOVESSE MODIFICARE IN AUTOMATICO INITCOMPONENTS
     *   String[] dispositivi = new String[0];
@@ -179,30 +204,25 @@ public class CaricaFoto extends JFrame {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         panel1 = new JPanel();
         apriFoto = new JButton();
-        toggleButton1 = new JToggleButton();
-        String[] dispositivi = new String[0];
-        try {
-            dispositivi = controller.getDisp(username).toArray(new String[0]);
-        } catch (SQLException s) {
-            s.printStackTrace();
-        }
-        selDisp = new JComboBox(dispositivi);
+        privataSwitch = new JRadioButton();
+        selDisp = new JComboBox();
         goBackButton = new JButton();
         confermaButton = new JButton();
         fotoPanel = new JPanel();
         fotoAnteprima = new JLabel();
-        tags = new TagTextField(controller);
-        label1 = new JLabel();
-        label2 = new JLabel();
+        tags = new TagTextField();
+        dispLabel = new JLabel();
+        tagsLabel = new JLabel();
         categoriaSoggList = new JComboBox();
         nomeSoggTextField = new JTextField();
         label3 = new JLabel();
-        label4 = new JLabel();
-        textField2 = new JTextField();
-        textField3 = new JTextField();
-        textField4 = new JTextField();
-        label5 = new JLabel();
-        label6 = new JLabel();
+        nomeSoggLabel = new JLabel();
+        longitudineText = new JTextField();
+        latitudineText = new JTextField();
+        nomeLuogoText = new JTextField();
+        nomeLuogoLabel = new JLabel();
+        coordLabel = new JLabel();
+        hSpacer1 = new JPanel(null);
 
         //======== this ========
         var contentPane = getContentPane();
@@ -213,8 +233,8 @@ public class CaricaFoto extends JFrame {
             //---- apriFoto ----
             apriFoto.setText("Apri Foto");
 
-            //---- toggleButton1 ----
-            toggleButton1.setText("privata?");
+            //---- privataSwitch ----
+            privataSwitch.setText("privata?");
 
             //---- goBackButton ----
             goBackButton.setText("TORNA INDIETRO");
@@ -243,70 +263,71 @@ public class CaricaFoto extends JFrame {
                 );
             }
 
-            //---- label1 ----
-            label1.setText("Dispositivo :");
+            //---- dispLabel ----
+            dispLabel.setText("Dispositivo :");
 
-            //---- label2 ----
-            label2.setText("Tags :");
+            //---- tagsLabel ----
+            tagsLabel.setText("Tags :");
 
             //---- label3 ----
             label3.setText("Categoria :");
 
-            //---- label4 ----
-            label4.setText("Nome soggetto :");
+            //---- nomeSoggLabel ----
+            nomeSoggLabel.setText("Nome soggetto :");
 
-            //---- label5 ----
-            label5.setText("Nome luogo :");
+            //---- nomeLuogoLabel ----
+            nomeLuogoLabel.setText("Nome luogo :");
 
-            //---- label6 ----
-            label6.setText("Coordinate :");
+            //---- coordLabel ----
+            coordLabel.setText("Coordinate :");
 
             GroupLayout panel1Layout = new GroupLayout(panel1);
             panel1.setLayout(panel1Layout);
             panel1Layout.setHorizontalGroup(
                 panel1Layout.createParallelGroup()
-                    .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
-                        .addGap(334, 334, 334)
-                        .addComponent(goBackButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(confermaButton)
-                        .addContainerGap(76, Short.MAX_VALUE))
-                    .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
+                    .addGroup(panel1Layout.createSequentialGroup()
                         .addGap(36, 36, 36)
-                        .addComponent(fotoPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addGap(34, 34, 34)
                         .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                             .addGroup(panel1Layout.createSequentialGroup()
-                                .addComponent(label2)
-                                .addGap(18, 18, 18)
-                                .addComponent(tags, GroupLayout.PREFERRED_SIZE, 140, GroupLayout.PREFERRED_SIZE))
-                            .addGroup(panel1Layout.createSequentialGroup()
-                                .addComponent(toggleButton1, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(apriFoto))
-                            .addGroup(panel1Layout.createSequentialGroup()
-                                .addComponent(label1)
+                                .addComponent(goBackButton)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(selDisp, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE))
+                                .addComponent(confermaButton))
                             .addGroup(panel1Layout.createSequentialGroup()
-                                .addComponent(label4)
-                                .addGap(18, 18, 18)
-                                .addComponent(nomeSoggTextField, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE))
-                            .addGroup(panel1Layout.createSequentialGroup()
-                                .addComponent(label6, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(textField3, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(textField2, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE))
-                            .addGroup(panel1Layout.createSequentialGroup()
-                                .addComponent(label5, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(textField4, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE))
-                            .addGroup(panel1Layout.createSequentialGroup()
-                                .addComponent(label3, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(categoriaSoggList, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(fotoPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addGap(34, 34, 34)
+                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                    .addGroup(panel1Layout.createSequentialGroup()
+                                        .addComponent(dispLabel)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(selDisp, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(panel1Layout.createSequentialGroup()
+                                        .addComponent(nomeSoggLabel)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(nomeSoggTextField, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(panel1Layout.createSequentialGroup()
+                                        .addComponent(coordLabel, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(latitudineText, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(longitudineText, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(panel1Layout.createSequentialGroup()
+                                        .addComponent(nomeLuogoLabel, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(nomeLuogoText, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(panel1Layout.createSequentialGroup()
+                                        .addComponent(label3, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(categoriaSoggList, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(panel1Layout.createSequentialGroup()
+                                        .addComponent(privataSwitch, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(apriFoto))
+                                    .addGroup(panel1Layout.createSequentialGroup()
+                                        .addComponent(tagsLabel)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(tags, GroupLayout.PREFERRED_SIZE, 140, GroupLayout.PREFERRED_SIZE)))))
                         .addGap(0, 74, Short.MAX_VALUE))
+                    .addComponent(hSpacer1, GroupLayout.DEFAULT_SIZE, 653, Short.MAX_VALUE)
             );
             panel1Layout.setVerticalGroup(
                 panel1Layout.createParallelGroup()
@@ -315,13 +336,13 @@ public class CaricaFoto extends JFrame {
                         .addGroup(panel1Layout.createParallelGroup()
                             .addGroup(panel1Layout.createSequentialGroup()
                                 .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                    .addComponent(textField4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(label5))
+                                    .addComponent(nomeLuogoText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(nomeLuogoLabel))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                    .addComponent(textField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(textField3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(label6))
+                                    .addComponent(longitudineText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(latitudineText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(coordLabel))
                                 .addGap(18, 18, 18)
                                 .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(categoriaSoggList, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -329,25 +350,26 @@ public class CaricaFoto extends JFrame {
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(nomeSoggTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(label4))
+                                    .addComponent(nomeSoggLabel))
                                 .addGap(18, 18, 18)
                                 .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(selDisp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(label1))
+                                    .addComponent(dispLabel))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(tags, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(label2))
+                                    .addComponent(tagsLabel))
                                 .addGap(18, 18, 18)
-                                .addGroup(panel1Layout.createParallelGroup()
+                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(apriFoto)
-                                    .addComponent(toggleButton1)))
+                                    .addComponent(privataSwitch)))
                             .addComponent(fotoPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                             .addComponent(confermaButton)
                             .addComponent(goBackButton))
-                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(hSpacer1, GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
             );
         }
 
@@ -369,23 +391,24 @@ public class CaricaFoto extends JFrame {
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
     private JPanel panel1;
     private JButton apriFoto;
-    private JToggleButton toggleButton1;
+    private JRadioButton privataSwitch;
     private JComboBox selDisp;
     private JButton goBackButton;
     private JButton confermaButton;
     private JPanel fotoPanel;
     private JLabel fotoAnteprima;
     private TagTextField tags;
-    private JLabel label1;
-    private JLabel label2;
+    private JLabel dispLabel;
+    private JLabel tagsLabel;
     private JComboBox categoriaSoggList;
     private JTextField nomeSoggTextField;
     private JLabel label3;
-    private JLabel label4;
-    private JTextField textField2;
-    private JTextField textField3;
-    private JTextField textField4;
-    private JLabel label5;
-    private JLabel label6;
+    private JLabel nomeSoggLabel;
+    private JTextField longitudineText;
+    private JTextField latitudineText;
+    private JTextField nomeLuogoText;
+    private JLabel nomeLuogoLabel;
+    private JLabel coordLabel;
+    private JPanel hSpacer1;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

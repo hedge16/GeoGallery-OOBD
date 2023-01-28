@@ -1,5 +1,6 @@
-DROP SCHEMA galleria_schema CASCADE;
-CREATE TYPE categoria_soggetto AS ENUM ('Paesaggi', 'Eventi sportivi', 'Gruppi di persone', 'Ritratti', 'Selfie', 'Animali', 'Cibo', 'Matrimoni', 'Viaggi', 'Natura');
+/* DROP SCHEMA galleria_schema CASCADE; */
+CREATE SCHEMA galleria_schema;
+CREATE TYPE galleria_schema.categoria_soggetto AS ENUM ('Paesaggi', 'Eventi sportivi', 'Gruppi di persone', 'Ritratti', 'Selfie', 'Animali', 'Cibo', 'Matrimoni', 'Viaggi', 'Natura');
 CREATE SCHEMA IF NOT EXISTS galleria_schema;
 
 CREATE TABLE IF NOT EXISTS galleria_schema.utente (
@@ -55,7 +56,7 @@ CREATE TABLE IF NOT EXISTS galleria_schema.dispositivo (
 CREATE TABLE IF NOT EXISTS galleria_schema.soggettofoto(
 	codSogg SERIAL,
 	nome VARCHAR(50),
-	categoria categoria_soggetto,
+	categoria galleria_schema.categoria_soggetto,
 	CONSTRAINT pk_soggettofoto PRIMARY KEY (codSogg)
 
 );
@@ -68,18 +69,20 @@ CREATE TABLE IF NOT EXISTS galleria_schema.foto(
 	codGalleriaP INTEGER,
 	autoreScatto VARCHAR(20),
 	dispositivo INTEGER,
-	img bytea,
+	img BYTEA NOT NULL,
+	codLuogo INTEGER,
 	CONSTRAINT pk_foto PRIMARY KEY (codFoto),
 	CONSTRAINT fk_fotogalleria FOREIGN KEY (codGalleriaP) REFERENCES galleria_schema.galleria_personale(codGalleria) ON DELETE CASCADE,
 	CONSTRAINT fk_fotoutente FOREIGN KEY (autoreScatto) REFERENCES galleria_schema.utente(username) ON DELETE CASCADE,
-	CONSTRAINT fk_fotodispositivo FOREIGN KEY (dispositivo) REFERENCES galleria_schema.dispositivo (codDisp)
+	CONSTRAINT fk_fotodispositivo FOREIGN KEY (dispositivo) REFERENCES galleria_schema.dispositivo(codDisp),
+	CONSTRAINT fk_fotoluogo FOREIGN KEY (codLuogo) REFERENCES galleria_schema.luogo(codLuogo)
 	
 	
 );
 
 CREATE TABLE IF NOT EXISTS galleria_schema.partecipazione(
 
-	codUtente varchar(20),
+	codUtente VARCHAR(20),
 	codFoto INTEGER,
 	CONSTRAINT pk_part PRIMARY KEY (codUtente, codFoto),
 	CONSTRAINT fk_partutente FOREIGN KEY (codUtente) REFERENCES galleria_schema.utente(username) ON DELETE CASCADE,
@@ -126,7 +129,18 @@ CREATE TABLE IF NOT EXISTS galleria_schema.contenuto (
 
 
 
-
+CREATE VIEW galleria_schema.TOP3 AS (
+	SELECT nomeLuogo, codLuogo
+	FROM galleria_schema.luogo 
+	WHERE codLuogo IN (
+		SELECT codLuogo 
+		FROM galleria_schema.foto 
+		GROUP BY codLuogo
+		ORDER BY COUNT(codLuogo)
+		LIMIT 3
+		)
+	
+	);
 
 
 
