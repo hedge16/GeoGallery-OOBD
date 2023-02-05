@@ -1,0 +1,39 @@
+JFDML JFormDesigner: "8.0.1.0.199" Java: "17.0.5" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {comp rootPanel::l:::x}"
+			"$verticalGroup": "par l {comp rootPanel::t:::x}"
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq l {space :p:26:p, comp galleriaScrollPanel:::p:314:p, space :p:32:p, par t:::p {seq {comp annullaButton:::p::p, space u:::p, comp confermaButton:::p::p}, comp nomeGalleriaText::t:::x, comp collabText::t::0:x}, space ::13:x}}"
+				"$verticalGroup": "par l {seq l {space :p:41:p, par l:::p {comp galleriaScrollPanel:::p:278:p, seq {comp nomeGalleriaText:::p::p, space s:::p, comp collabText:::p::p, space :::x, par b {comp confermaButton::b:p::p, comp annullaButton::b:p::p}}}, space ::60:x}}"
+			} ) {
+				name: "rootPanel"
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "galleriaScrollPanel"
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "nomeGalleriaText"
+				} )
+				add( new FormComponent( "GUI.Components.TagTextField" ) {
+					name: "collabText"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "confermaButton"
+					"text": "CONFERMA"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "annullaButton"
+					"text": "ANNULLA"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 40, 55 )
+			"size": new java.awt.Dimension( 600, 410 )
+		} )
+	}
+}

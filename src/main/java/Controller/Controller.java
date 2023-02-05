@@ -186,4 +186,15 @@ public class Controller {
         return codLuogo;
     }
 
+    public void aggiungiGalleriaCondivisa (String fondatore, String cofondatori, String nomeGalleria) throws SQLException {
+        String[] cofondatoriArray = cofondatori.split(",");
+        Galleria_condivisaDAO gc = new GalleriaCondivisaImplementazionePostgresDAO();
+        try {
+            gc.creaGalleriaCondivisaDB(fondatore, cofondatoriArray, nomeGalleria);
+        } catch(SQLException s) {
+            s.printStackTrace();
+            throw new SQLException();
+        }
+    }
+
 }

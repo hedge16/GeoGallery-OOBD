@@ -9,10 +9,11 @@ new FormModel {
 		} ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space ::51:x, par l {comp scrollPanel:::p:323:p, comp benvenutoLabel:::p:313:p}, space :p:75:p, par t {comp caricaFoto:::p::p, comp searchBar:::p:169:p}, space ::70:x}}"
-				"$verticalGroup": "par l {seq {space ::13:x, par t {par l:t {comp searchBar:::p::p, seq l {space :p:416:p, comp caricaFoto:::p::p}}, seq t {comp benvenutoLabel:::p::p, space :::p, comp scrollPanel:::p:409:p}}, space ::23:x}}"
+				"$horizontalGroup": "par l {seq {space ::32:x, par l {comp scrollPanel:::p:323:p, comp benvenutoLabel:::p:313:p}, space :p:75:p, par t:::p {comp searchBar:::p:169:p, comp caricaFoto::l:::x, comp creaGallCButton::l:::x}, space ::51:x}}"
+				"$verticalGroup": "par l {seq {space ::14:x, par t:::p {seq t {comp searchBar:::p::p, space :::x, comp creaGallCButton:::p::p, space s:::p, comp caricaFoto:::p::p}, seq t {comp benvenutoLabel:::p::p, space :::p, comp scrollPanel:::p:409:p}}, space ::23:x}}"
 			} ) {
 				name: "panel"
+				"background": new java.awt.Color( 42, 60, 76, 255 )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "caricaFoto"
 					"text": "CARICA FOTO"
@@ -35,6 +36,10 @@ new FormModel {
 					"foreground": new java.awt.Color( 204, 204, 204, 255 )
 					"caretColor": new java.awt.Color( 204, 204, 204, 255 )
 					"background": new java.awt.Color( 102, 102, 102, 255 )
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "creaGallCButton"
+					"text": "CREA GALLERIA CONDIVISA"
 				} )
 			} )
 			menuBar: new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {

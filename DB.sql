@@ -1,4 +1,4 @@
-/* DROP SCHEMA galleria_schema CASCADE; */
+DROP SCHEMA galleria_schema CASCADE; 
 CREATE SCHEMA galleria_schema;
 CREATE TYPE galleria_schema.categoria_soggetto AS ENUM ('Paesaggi', 'Eventi sportivi', 'Gruppi di persone', 'Ritratti', 'Selfie', 'Animali', 'Cibo', 'Matrimoni', 'Viaggi', 'Natura');
 CREATE SCHEMA IF NOT EXISTS galleria_schema;
@@ -83,10 +83,11 @@ CREATE TABLE IF NOT EXISTS galleria_schema.foto(
 CREATE TABLE IF NOT EXISTS galleria_schema.partecipazione(
 
 	codUtente VARCHAR(20),
-	codFoto INTEGER,
-	CONSTRAINT pk_part PRIMARY KEY (codUtente, codFoto),
+	codGalleriaC INTEGER,
+	CONSTRAINT pk_part PRIMARY KEY (codUtente, codGalleriaC),
 	CONSTRAINT fk_partutente FOREIGN KEY (codUtente) REFERENCES galleria_schema.utente(username) ON DELETE CASCADE,
-	CONSTRAINT fk_partfoto FOREIGN KEY (codFoto) REFERENCES galleria_schema.foto(codFoto) ON DELETE CASCADE
+	CONSTRAINT fk_partfoto FOREIGN KEY (codGalleriaC) REFERENCES galleria_schema.galleria_condivisa(codGalleria) ON DELETE CASCADE
+
 
 
 );
@@ -141,9 +142,6 @@ CREATE VIEW galleria_schema.TOP3 AS (
 		)
 	
 	);
-
-
-
 
 
 

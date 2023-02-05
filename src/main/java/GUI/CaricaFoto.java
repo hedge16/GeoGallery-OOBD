@@ -210,7 +210,7 @@ public class CaricaFoto extends JFrame {
         confermaButton = new JButton();
         fotoPanel = new JPanel();
         fotoAnteprima = new JLabel();
-        tags = new TagTextField();
+        tags = new TagTextField(controller);
         dispLabel = new JLabel();
         tagsLabel = new JLabel();
         categoriaSoggList = new JComboBox();

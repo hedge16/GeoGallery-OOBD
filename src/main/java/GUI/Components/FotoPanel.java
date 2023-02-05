@@ -33,6 +33,8 @@ public class FotoPanel extends JPanel {
 
         }
 
+        setBackground(new Color(0x2a3c4c));
+
         for (int i = 0; i < numFoto; i++) {
 
             Image image = foto.get(i).getFoto().getImage();

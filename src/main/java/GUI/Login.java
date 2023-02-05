@@ -13,8 +13,6 @@ import java.util.ArrayList;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
-import com.intellij.uiDesigner.core.*;
-import com.jgoodies.forms.factories.*;
 
 
 public class Login extends JFrame {
@@ -33,7 +31,7 @@ public class Login extends JFrame {
     public Login() {
 
         try{
-            UIManager.setLookAndFeel(new FlatDarkLaf());
+            UIManager.setLookAndFeel(new FlatDarculaLaf());
         }catch(Exception e){
             System.out.println("Tema non trovato");
         }
@@ -42,7 +40,7 @@ public class Login extends JFrame {
 
 
 
-        ImageIcon icon = new ImageIcon("D:\\Desktop\\GalleriaGeolocalizzata\\src\\icons\\download.png");
+        ImageIcon icon = new ImageIcon("src\\icons\\download.png");
         logoLabel.setIcon(icon);
 
 
@@ -145,6 +143,7 @@ public class Login extends JFrame {
         //======== rootPanel ========
         {
             rootPanel.setBorder(null);
+            rootPanel.setBackground(new Color(0x2a3c4c));
 
             //---- registerButton ----
             registerButton.setText("REGISTRATI");
