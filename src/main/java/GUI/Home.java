@@ -1,6 +1,7 @@
 package GUI;
 
 import java.awt.*;
+import javax.swing.border.*;
 import Controller.Controller;
 
 import javax.swing.*;
@@ -9,14 +10,16 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import GUI.Components.FotoPanel;
+import Model.Foto;
 import com.intellij.ide.ui.laf.*;
 import com.jgoodies.forms.factories.*;
 import org.jdesktop.swingx.border.*;
 
 
 
-public class Home extends JFrame {
+public class Home extends JFrame  {
     protected JFrame mainFrame;
+    private ArrayList<Foto> photos;
 
 
 
@@ -24,15 +27,15 @@ public class Home extends JFrame {
 
     public Home (Controller controller, JFrame frameChiamante, String username){
 
+        photos = controller.recuperaGallUtente(username);
 
         initComponents(controller, username);
 
-        benvenutoLabel.setText("Benvenuto, "+username+" !");
 
-
-
+        benvenutoLabel.setText("Benvenuto "+username+" !");
 
         mainFrame = new JFrame("Home");
+
         mainFrame.setContentPane(panel);
         mainFrame.setJMenuBar(menuBar);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -72,9 +75,9 @@ public class Home extends JFrame {
 
 
     /*
-    *    ArrayList<ImageIcon> miniature = controller.recuperaGallUtente(username);
+    *
 
-        scrollPanel = new JScrollPane(new FotoPanel(miniature));
+        scrollPanel = new JScrollPane(new FotoPanel(photos));
         scrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
@@ -95,20 +98,23 @@ public class Home extends JFrame {
         logoutItem = new JMenuItem();
         panel = new JPanel();
         caricaFoto = new JButton();
-        scrollPanel = new JScrollPane();
+        scrollPanel = new JScrollPane(new FotoPanel(photos));
+        scrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         benvenutoLabel = new JLabel();
         searchBar = new JTextField();
 
         //======== this ========
-        setIconImage(new ImageIcon("D:\\Desktop\\GalleriaGeolocalizzata\\src\\icons\\download.png").getImage());
         var contentPane = getContentPane();
 
         //======== menuBar ========
         {
+            menuBar.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 
             //======== azioniMenu ========
             {
                 azioniMenu.setText("Azioni");
+                azioniMenu.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 
                 //---- logoutItem ----
                 logoutItem.setText("Logout");
@@ -124,12 +130,11 @@ public class Home extends JFrame {
             //---- caricaFoto ----
             caricaFoto.setText("CARICA FOTO");
             caricaFoto.setFont(new Font("Futura Bk BT", Font.PLAIN, 12));
+            caricaFoto.setBackground(new Color(0x006699));
 
             //======== scrollPanel ========
             {
-                scrollPanel.setViewportBorder(null);
-                scrollPanel.setBorder(null);
-                scrollPanel.setBackground(new Color(0x333333));
+                scrollPanel.setBackground(new Color(0xff9900));
             }
 
             //---- benvenutoLabel ----
@@ -148,31 +153,31 @@ public class Home extends JFrame {
             panelLayout.setHorizontalGroup(
                 panelLayout.createParallelGroup()
                     .addGroup(panelLayout.createSequentialGroup()
-                        .addGap(51, 51, 51)
+                        .addContainerGap(51, Short.MAX_VALUE)
                         .addGroup(panelLayout.createParallelGroup()
-                            .addComponent(benvenutoLabel, GroupLayout.PREFERRED_SIZE, 313, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(scrollPanel, GroupLayout.PREFERRED_SIZE, 323, GroupLayout.PREFERRED_SIZE))
-                        .addGap(16, 16, 16)
-                        .addGroup(panelLayout.createParallelGroup()
-                            .addGroup(panelLayout.createSequentialGroup()
-                                .addGap(116, 116, 116)
-                                .addComponent(caricaFoto))
+                            .addComponent(scrollPanel, GroupLayout.PREFERRED_SIZE, 323, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(benvenutoLabel, GroupLayout.PREFERRED_SIZE, 313, GroupLayout.PREFERRED_SIZE))
+                        .addGap(75, 75, 75)
+                        .addGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                            .addComponent(caricaFoto)
                             .addComponent(searchBar, GroupLayout.PREFERRED_SIZE, 169, GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(70, Short.MAX_VALUE))
             );
             panelLayout.setVerticalGroup(
                 panelLayout.createParallelGroup()
                     .addGroup(panelLayout.createSequentialGroup()
-                        .addContainerGap(12, Short.MAX_VALUE)
-                        .addGroup(panelLayout.createParallelGroup()
-                            .addGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(benvenutoLabel)
-                                .addComponent(searchBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(13, Short.MAX_VALUE)
+                        .addGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                            .addGroup(panelLayout.createParallelGroup()
+                                .addComponent(searchBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addGroup(panelLayout.createSequentialGroup()
+                                    .addGap(416, 416, 416)
+                                    .addComponent(caricaFoto)))
                             .addGroup(panelLayout.createSequentialGroup()
-                                .addGap(416, 416, 416)
-                                .addComponent(caricaFoto))
-                            .addComponent(scrollPanel, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 409, GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(24, Short.MAX_VALUE))
+                                .addComponent(benvenutoLabel)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(scrollPanel, GroupLayout.PREFERRED_SIZE, 409, GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(23, Short.MAX_VALUE))
             );
         }
 

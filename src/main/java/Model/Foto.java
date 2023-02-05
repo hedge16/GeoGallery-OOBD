@@ -1,25 +1,32 @@
 package Model;
 
+import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Foto {
     private int codFoto;
     private boolean privata;
     private boolean rimossa;
-    private String codAlbum;//chiave esterna
-    private String codGalleriap;//chiave esterna
-    private String dispositivo;//chiave esterna
+    private Date dataScatto;
+    private int codGalleriap;//chiave esterna
+    private String autore;
+    private int codDispositivo;//chiave esterna
     private ArrayList<SoggettoFoto> soggetti;
+    private ImageIcon foto;
+    int codLuogo;
 
 
-    public Foto(int codFoto, boolean privata, boolean rimossa, String codAlbum, String codGalleria, String dispositivo) {
+    public Foto(int codFoto, boolean privata, boolean rimossa, Date d, int codGalleria, String autore, int codDispositivo, ImageIcon foto, int codLuogo) {
         this.codFoto = codFoto;
         this.privata = privata;
         this.rimossa = rimossa;
-        this.codAlbum = codAlbum;
+        this.dataScatto = d;
         this.codGalleriap = codGalleria;
-        this.dispositivo = dispositivo;
-        this.soggetti = new ArrayList<>();
+        this.autore = autore;
+        this.codDispositivo = codDispositivo;
+        this.foto = foto;
+        this.codLuogo = codLuogo;
     }
 
     public boolean isPrivata() {
@@ -34,32 +41,76 @@ public class Foto {
         this.rimossa = rimossa;
     }
 
-    public String getCodAlbum() {
-        return codAlbum;
-    }
-
-    public void setCodAlbum(String codAlbum) {
-        this.codAlbum = codAlbum;
-    }
-
-    public String getCodGalleria() {
+    public int getCodGalleria() {
         return codGalleriap;
     }
 
-    public void setCodGalleria(String codGalleria) {
+    public void setCodGalleria(int codGalleria) {
         this.codGalleriap = codGalleria;
     }
 
-    public String getDispositivo() {
-        return dispositivo;
+    public int getDispositivo() {
+        return codDispositivo;
     }
 
-    public void setDispositivo(String dispositivo) {
-        this.dispositivo = dispositivo;
+    public void setDispositivo(int dispositivo) {
+        this.codDispositivo = dispositivo;
     }
     public void aggiungiSoggetto (int idSogg, String nome, CategoriaSoggetto categoria) {
         soggetti.add(new SoggettoFoto(idSogg, nome, categoria));
     };
+
+    public ImageIcon getFoto (){
+        return foto;
+    }
+
+    public void setFoto (ImageIcon foto) {
+        this.foto = foto;
+    }
+    public int getCodFoto() {
+        return codFoto;
+    }
+
+    public void setCodFoto(int codFoto) {
+        this.codFoto = codFoto;
+    }
+
+    public void setPrivata(boolean privata) {
+        this.privata = privata;
+    }
+
+    public Date getDataScatto() {
+        return dataScatto;
+    }
+
+    public void setDataScatto(Date dataScatto) {
+        this.dataScatto = dataScatto;
+    }
+
+    public String getAutore() {
+        return autore;
+    }
+
+    public void setAutore(String autore) {
+        this.autore = autore;
+    }
+
+    public ArrayList<SoggettoFoto> getSoggetti() {
+        return soggetti;
+    }
+
+    public void setSoggetti(ArrayList<SoggettoFoto> soggetti) {
+        this.soggetti = soggetti;
+    }
+
+    public int getCodLuogo() {
+        return codLuogo;
+    }
+
+    public void setCodLuogo(int codLuogo) {
+        this.codLuogo = codLuogo;
+    }
+
 
 
 }

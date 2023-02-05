@@ -2,13 +2,12 @@ package Controller;
 
 import DAO.*;
 import ImplementazionePostgresDAO.*;
-import Model.CategoriaSoggetto;
+import Model.Foto;
 import Model.Utente;
 import org.postgresql.util.PSQLException;
 import org.postgresql.util.ServerErrorMessage;
 
 
-import javax.swing.*;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -52,15 +51,15 @@ public class Controller {
 
     }
 
-    public ArrayList<ImageIcon> recuperaGallUtente (String username){
-        ArrayList<ImageIcon> miniature = null;
+    public ArrayList<Foto> recuperaGallUtente (String username){
+        ArrayList<Foto> photos = null;
         FotoDAO f = new FotoImplementazionePostgresDAO();
         try{
-            miniature = f.recuperaFotoDB(username);
+            photos = f.recuperaFotoDB(username);
         }catch(SQLException p){
 
         }
-        return miniature;
+        return photos;
     }
 
     public int aggiungiFoto (boolean privata, boolean rimossa, Date dataScatto, int codgalleriap, String autore, int codDispositivo, String percorsoFoto, int codLuogo) throws SQLException, FileNotFoundException {
@@ -175,13 +174,14 @@ public class Controller {
 
     }
 
-    public int aggiungiLuogoDB (double latitudine, double longitudine, String nomeLuogo) {
+    public int aggiungiLuogoDB (double latitudine, double longitudine, String nomeLuogo) throws SQLException {
         int codLuogo = -1;
         LuogoDAO l = new LuogoImplementazionePostgresDAO();
         try{
             codLuogo = l.aggiungiLuogoDB(latitudine, longitudine, nomeLuogo);
         } catch (SQLException s) {
             s.printStackTrace();
+            throw new SQLException();
         }
         return codLuogo;
     }

@@ -9,10 +9,11 @@ new FormModel {
 		} ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq t {space ::169:x, comp registerButton:::p:146:p, space :p:32:p, par l:::p {comp userPassField::t::186:x, comp userIDField::t::186:x, comp loginButton::l::186:x}, space :p:150:p}, seq l {space :p:132:p, comp logoLabel:::p:128:p, space ::423:x}}"
-				"$verticalGroup": "par l {seq l {space :p:86:p, comp logoLabel:::p:118:p, space s:::p, comp userIDField:::p::p, space u:::p, comp userPassField:::p::p, space :p:30:p, par b {comp loginButton::b:p:36:p, comp registerButton::b:p:36:p}, space :p:59:p}}"
+				"$horizontalGroup": "par l {seq t {space ::169:x, par l {seq t {comp registerButton:::p:146:p, space :p:32:p}, seq t {par t {comp passwordLabel:::p::p, comp usernameLabel:::p::p}, space s:::p}}, par l:::p {comp userPassField::t::186:x, comp userIDField::t::186:x, comp loginButton::l::186:x}, space :p:150:p}, seq l {space :p:132:p, comp logoLabel:::p:128:p, space ::423:x}}"
+				"$verticalGroup": "par l {seq l {space :p:86:p, comp logoLabel:::p:118:p, space s:::p, par b {comp userIDField::b:p::p, comp usernameLabel::b:p::p}, space u:::p, par b {comp userPassField::b:p::p, comp passwordLabel::b:p::p}, space :p:30:p, par b {comp loginButton::b:p:36:p, comp registerButton::b:p:36:p}, space :p:59:p}}"
 			} ) {
 				name: "rootPanel"
+				"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "registerButton"
 					"text": "REGISTRATI"
@@ -20,6 +21,7 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "loginButton"
 					"text": "ACCEDI"
+					"background": new java.awt.Color( 0, 102, 153, 255 )
 				} )
 				add( new FormComponent( "javax.swing.JPasswordField" ) {
 					name: "userPassField"
@@ -29,6 +31,14 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "logoLabel"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "usernameLabel"
+					"text": "Username :"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "passwordLabel"
+					"text": "Password :"
 				} )
 			} )
 		}, new FormLayoutConstraints( null ) {

@@ -1,5 +1,6 @@
 package GUI;
 import java.awt.*;
+import javax.swing.border.*;
 import Controller.Controller;
 import Model.Utente;
 
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.intellij.uiDesigner.core.*;
+import com.jgoodies.forms.factories.*;
 
 
 public class Login extends JFrame {
@@ -37,6 +39,8 @@ public class Login extends JFrame {
         }
 
         initComponents();
+
+
 
         ImageIcon icon = new ImageIcon("D:\\Desktop\\GalleriaGeolocalizzata\\src\\icons\\download.png");
         logoLabel.setIcon(icon);
@@ -120,6 +124,8 @@ public class Login extends JFrame {
     private JPasswordField userPassField;
     private JTextField userIDField;
     private JLabel logoLabel;
+    private JLabel usernameLabel;
+    private JLabel passwordLabel;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 
     private void initComponents() {
@@ -130,18 +136,28 @@ public class Login extends JFrame {
         userPassField = new JPasswordField();
         userIDField = new JTextField();
         logoLabel = new JLabel();
+        usernameLabel = new JLabel();
+        passwordLabel = new JLabel();
 
         //======== this ========
         var contentPane = getContentPane();
 
         //======== rootPanel ========
         {
+            rootPanel.setBorder(null);
 
             //---- registerButton ----
             registerButton.setText("REGISTRATI");
 
             //---- loginButton ----
             loginButton.setText("ACCEDI");
+            loginButton.setBackground(new Color(0x006699));
+
+            //---- usernameLabel ----
+            usernameLabel.setText("Username :");
+
+            //---- passwordLabel ----
+            passwordLabel.setText("Password :");
 
             GroupLayout rootPanelLayout = new GroupLayout(rootPanel);
             rootPanel.setLayout(rootPanelLayout);
@@ -149,8 +165,15 @@ public class Login extends JFrame {
                 rootPanelLayout.createParallelGroup()
                     .addGroup(GroupLayout.Alignment.TRAILING, rootPanelLayout.createSequentialGroup()
                         .addContainerGap(169, Short.MAX_VALUE)
-                        .addComponent(registerButton, GroupLayout.PREFERRED_SIZE, 146, GroupLayout.PREFERRED_SIZE)
-                        .addGap(32, 32, 32)
+                        .addGroup(rootPanelLayout.createParallelGroup()
+                            .addGroup(GroupLayout.Alignment.TRAILING, rootPanelLayout.createSequentialGroup()
+                                .addComponent(registerButton, GroupLayout.PREFERRED_SIZE, 146, GroupLayout.PREFERRED_SIZE)
+                                .addGap(32, 32, 32))
+                            .addGroup(GroupLayout.Alignment.TRAILING, rootPanelLayout.createSequentialGroup()
+                                .addGroup(rootPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                    .addComponent(passwordLabel)
+                                    .addComponent(usernameLabel))
+                                .addGap(18, 18, 18)))
                         .addGroup(rootPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                             .addComponent(userPassField, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
                             .addComponent(userIDField, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
@@ -167,9 +190,13 @@ public class Login extends JFrame {
                         .addGap(86, 86, 86)
                         .addComponent(logoLabel, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(userIDField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addGroup(rootPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(userIDField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(usernameLabel))
                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(userPassField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addGroup(rootPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(userPassField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(passwordLabel))
                         .addGap(30, 30, 30)
                         .addGroup(rootPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                             .addComponent(loginButton, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)

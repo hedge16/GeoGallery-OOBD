@@ -1,22 +1,28 @@
 package GUI.Components;
 
+import Model.Foto;
 import org.imgscalr.Scalr;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 public class FotoPanel extends JPanel {
-    private ArrayList<ImageIcon> foto;
+    private ArrayList<Foto> photos;
     private JLabel[] labelFoto;
     private int numFoto;
+    private JFrame frame;
 
 
 
-    public FotoPanel(ArrayList<ImageIcon> foto) {
-        this.foto = foto;
+    public FotoPanel(ArrayList<Foto> foto) {
+        this.photos = foto;
         numFoto = foto.size();
         labelFoto = new JLabel[numFoto];
 
@@ -29,7 +35,7 @@ public class FotoPanel extends JPanel {
 
         for (int i = 0; i < numFoto; i++) {
 
-            Image image = foto.get(i).getImage();
+            Image image = foto.get(i).getFoto().getImage();
             ImageIcon icona = new ImageIcon(image);
             // Dimensioni dell'immagine originale
             int originalWidth = icona.getIconWidth();
@@ -70,6 +76,33 @@ public class FotoPanel extends JPanel {
             labelFoto[i].setPreferredSize(new Dimension(newWidth, newHeight));
             labelFoto[i].setBorder(new EmptyBorder(5, 5, 5, 5));
             add(labelFoto[i]);
+        }
+
+
+        for (JLabel label : labelFoto){
+            label.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    if (e.getClickCount() == 2) {
+
+
+                        JPanel preview = new JPanel();
+                        JLabel previewLabel = new JLabel(label.getIcon());
+                        preview.setLayout(new BorderLayout());
+                        preview.add(previewLabel, BorderLayout.CENTER);
+                        frame = new JFrame();
+                        frame.setContentPane(preview);
+                        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        frame.setSize(label.getWidth(), label.getHeight());
+                        frame.setTitle("Preview");
+                        frame.setLocationRelativeTo(null); //per far si che il frame si apra al centro dello schermo
+                        frame.setVisible(true);
+
+
+                    }
+                }
+            });
         }
     }
 }

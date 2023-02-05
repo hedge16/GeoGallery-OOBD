@@ -2,6 +2,7 @@ package ImplementazionePostgresDAO;
 
 import DAO.FotoDAO;
 import Database.ConnessioneDatabase;
+import Model.Foto;
 import org.postgresql.util.PSQLException;
 
 import javax.imageio.ImageIO;
@@ -27,29 +28,39 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
      * @throws SQLException se si verifica un errore durante l'esecuzione della query o durante la lettura delle foto
      */
     @Override
-    public ArrayList<ImageIcon> recuperaFotoDB(String username) throws SQLException {
+    public ArrayList<Foto> recuperaFotoDB(String username) throws SQLException {
 
         // Crea una lista vuota di oggetti ImageIcon
-        ArrayList<ImageIcon> miniature = new ArrayList<>();
+        ArrayList<Foto> photos = new ArrayList<>();
 
         try {
             // Prepara la query per selezionare le foto con l'autore specificato
-            PreparedStatement ps = connection.prepareStatement("SELECT img FROM galleria_schema.foto WHERE autorescatto = ?;");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM galleria_schema.foto WHERE autorescatto = ?;");
             ps.setString(1, username);
             // Esegue la query
             ResultSet rs = ps.executeQuery();
             // Itera sui risultati della query
             while (rs.next()) {
 
-                // Recupera la foto dal risultato della query come array di byte
-                byte[] barr = rs.getBytes(1);
+                // Recupera i dati dal risultato della query
+                int codFoto = rs.getInt(1);
+                boolean privata = rs.getBoolean(2);
+                boolean rimossa = rs.getBoolean(3);
+                Date dataScatto = rs.getDate(4);
+                int codGalleria = rs.getInt(5);
+                String autore = rs.getString(6);
+                int codDispositivo = rs.getInt(7);
+                byte[] barr = rs.getBytes(8);
+                int codLuogo = rs.getInt(9);
                 // Crea un oggetto InputStream a partire dall'array di byte
                 ByteArrayInputStream bis = new ByteArrayInputStream(barr);
                 // Crea un oggetto ImageIcon a partire dallo stream di byte
                 ImageIcon immagine = new ImageIcon(ImageIO.read(bis));
                 bis.close();
-                // Aggiunge l'immagine alla lista
-                miniature.add(immagine);
+                // Crea un oggetto Foto con i dati recuperati
+                Foto foto = new Foto(codFoto, privata, rimossa, dataScatto, codGalleria, autore, codDispositivo, immagine,codLuogo);
+                // Aggiunge l'oggetto Foto alla lista
+                photos.add(foto);
             }
             rs.close();
             connection.close();
@@ -59,7 +70,7 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
         }
 
         // Restituisce la lista di oggetti ImageIcon
-        return miniature;
+        return photos;
     }
 
     /**
