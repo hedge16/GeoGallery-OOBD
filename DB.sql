@@ -83,10 +83,11 @@ CREATE TABLE IF NOT EXISTS galleria_schema.foto(
 CREATE TABLE IF NOT EXISTS galleria_schema.partecipazione(
 
 	codUtente VARCHAR(20),
-	codFoto INTEGER,
+	codGalleriaC INTEGER,
 	CONSTRAINT pk_part PRIMARY KEY (codUtente, codFoto),
 	CONSTRAINT fk_partutente FOREIGN KEY (codUtente) REFERENCES galleria_schema.utente(username) ON DELETE CASCADE,
-	CONSTRAINT fk_partfoto FOREIGN KEY (codFoto) REFERENCES galleria_schema.foto(codFoto) ON DELETE CASCADE
+	CONSTRAINT fk_partfoto FOREIGN KEY (codGalleriaC) REFERENCES galleria_schema.galleria_condivisa(codGalleria) ON DELETE CASCADE
+
 
 
 );
@@ -133,7 +134,7 @@ CREATE VIEW galleria_schema.TOP3 AS (
 	SELECT nomeLuogo, codLuogo
 	FROM galleria_schema.luogo 
 	WHERE codLuogo IN (
-		SELECT codLuogo 
+		SELECT codLuog o 
 		FROM galleria_schema.foto 
 		GROUP BY codLuogo
 		ORDER BY COUNT(codLuogo)
