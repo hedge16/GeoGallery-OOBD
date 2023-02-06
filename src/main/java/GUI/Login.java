@@ -18,12 +18,8 @@ import com.formdev.flatlaf.FlatDarkLaf;
 public class Login extends JFrame {
 
     protected static JFrame frame1;
-
-
-
     private JLabel userIDLabel;
     private JLabel userPassLabel;
-
     private JLabel loginLabel;
     private Controller controller;
 

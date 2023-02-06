@@ -9,8 +9,8 @@ new FormModel {
 		} ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space ::32:x, par l {comp scrollPanel:::p:323:p, comp benvenutoLabel:::p:313:p}, space :p:75:p, par t:::p {comp searchBar:::p:169:p, comp caricaFoto::l:::x, comp creaGallCButton::l:::x}, space ::51:x}}"
-				"$verticalGroup": "par l {seq {space ::14:x, par t:::p {seq t {comp searchBar:::p::p, space :::x, comp creaGallCButton:::p::p, space s:::p, comp caricaFoto:::p::p}, seq t {comp benvenutoLabel:::p::p, space :::p, comp scrollPanel:::p:409:p}}, space ::23:x}}"
+				"$horizontalGroup": "par l {seq {space ::32:x, par l:::p {comp scrollPanel::::323:x, comp benvenutoLabel::::323:x}, space :p:75:p, par t:::p {comp searchBar:::p:169:p, comp caricaFoto::l:::x, comp creaGallCButton::l:::x}, space ::51:x}}"
+				"$verticalGroup": "par l {seq {space ::14:x, par t {seq t {comp searchBar:::p::p, space :p:338:p, comp creaGallCButton:::p::p, space s:::p, comp caricaFoto:::p::p}, seq t {comp benvenutoLabel:::p::p, space :::p, comp scrollPanel:::p:409:p}}, space ::23:x}}"
 			} ) {
 				name: "panel"
 				"background": new java.awt.Color( 42, 60, 76, 255 )

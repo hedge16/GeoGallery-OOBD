@@ -109,7 +109,9 @@ public class Home extends JFrame  {
         logoutItem = new JMenuItem();
         panel = new JPanel();
         caricaFoto = new JButton();
-        scrollPanel = new JScrollPane();
+        scrollPanel = new JScrollPane(new FotoPanel(photos));
+        scrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         benvenutoLabel = new JLabel();
         searchBar = new JTextField();
         creaGallCButton = new JButton();
@@ -168,9 +170,9 @@ public class Home extends JFrame  {
                 panelLayout.createParallelGroup()
                     .addGroup(panelLayout.createSequentialGroup()
                         .addContainerGap(32, Short.MAX_VALUE)
-                        .addGroup(panelLayout.createParallelGroup()
-                            .addComponent(scrollPanel, GroupLayout.PREFERRED_SIZE, 323, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(benvenutoLabel, GroupLayout.PREFERRED_SIZE, 313, GroupLayout.PREFERRED_SIZE))
+                        .addGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                            .addComponent(scrollPanel, GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
+                            .addComponent(benvenutoLabel, GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE))
                         .addGap(75, 75, 75)
                         .addGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
                             .addComponent(searchBar, GroupLayout.PREFERRED_SIZE, 169, GroupLayout.PREFERRED_SIZE)
@@ -182,10 +184,10 @@ public class Home extends JFrame  {
                 panelLayout.createParallelGroup()
                     .addGroup(panelLayout.createSequentialGroup()
                         .addContainerGap(14, Short.MAX_VALUE)
-                        .addGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                             .addGroup(panelLayout.createSequentialGroup()
                                 .addComponent(searchBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(338, 338, 338)
                                 .addComponent(creaGallCButton)
                                 .addGap(18, 18, 18)
                                 .addComponent(caricaFoto))

@@ -152,7 +152,29 @@ public class CaricaFoto extends JFrame {
 
 
                 }else{
+                    Toolkit.getDefaultToolkit().beep();
                     JOptionPane.showMessageDialog(mainFrame, "Non è stato selezionato alcun file o non sono stati compilati tutti i campi obbligatori.", "Errore", JOptionPane.ERROR_MESSAGE);
+                    Border border = BorderFactory.createLineBorder(Color.RED, 1);
+                    if (latitudineText.getText().isEmpty()){
+                        latitudineText.setBorder(border);
+                    } else {
+                        latitudineText.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
+                    }
+                    if (longitudineText.getText().isEmpty()){
+                        longitudineText.setBorder(border);
+                    } else {
+                        longitudineText.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
+                    }
+                    if (nomeLuogoText.getText().isEmpty()){
+                        nomeLuogoText.setBorder(border);
+                    } else {
+                        nomeLuogoText.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
+                    }
+                    if (nomeSoggTextField.getText().isEmpty()){
+                        nomeSoggTextField.setBorder(border);
+                    } else {
+                        nomeSoggTextField.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
+                    }
                 }
 
             }
@@ -180,7 +202,7 @@ public class CaricaFoto extends JFrame {
 
     private boolean checkDisp () {
         String selezione = (String)selDisp.getSelectedItem();
-        if( selezione.equals("<Aggiungi dispositivo>")){
+        if(selezione.equals("<Aggiungi dispositivo>")){
             return false;
         }else{
             return true;
@@ -205,7 +227,14 @@ public class CaricaFoto extends JFrame {
         panel1 = new JPanel();
         apriFoto = new JButton();
         privataSwitch = new JRadioButton();
-        selDisp = new JComboBox();
+        String[] dispositivi = new String[0];
+        try {
+            dispositivi = controller.getDisp(username).toArray(new String[0]);
+        } catch (SQLException s) {
+            s.printStackTrace();
+        }
+
+        selDisp = new JComboBox(dispositivi);
         goBackButton = new JButton();
         confermaButton = new JButton();
         fotoPanel = new JPanel();

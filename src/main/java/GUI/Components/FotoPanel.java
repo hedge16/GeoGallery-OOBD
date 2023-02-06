@@ -27,9 +27,10 @@ public class FotoPanel extends JPanel {
         labelFoto = new JLabel[numFoto];
 
         if (numFoto % 3 == 0 ) {
-            setLayout(new GridLayout(numFoto / 3, 3));
+            setLayout(new GridLayout(numFoto/ 3, 3, 5, 5));
+
         } else {
-            setLayout(new GridLayout((numFoto / 3) + 1, 3));
+            setLayout(new GridLayout((numFoto / 3) + 1, 3, 5, 5));
 
         }
 
@@ -76,7 +77,6 @@ public class FotoPanel extends JPanel {
 
             // Imposta le dimensioni preferenziali per la label
             labelFoto[i].setPreferredSize(new Dimension(newWidth, newHeight));
-            labelFoto[i].setBorder(new EmptyBorder(5, 5, 5, 5));
             add(labelFoto[i]);
         }
 

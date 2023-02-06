@@ -4,20 +4,24 @@ import javax.swing.*;
 import javax.swing.GroupLayout;
 import Controller.Controller;
 import GUI.Components.*;
+import Model.Foto;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class CreaGalleriaCondivisa extends JFrame {
 
     protected JFrame mainFrame;
     private Controller controller;
+    ArrayList<Foto> photos;
 
     public CreaGalleriaCondivisa (String username, Controller controller, JFrame frameChiamante) {
 
         this.controller = controller;
 
+        photos = controller.recuperaGallUtente(username);
         initComponents();
 
         mainFrame = new JFrame("Crea galleria condivisa");
@@ -51,6 +55,11 @@ public class CreaGalleriaCondivisa extends JFrame {
 
     }
 
+    /*
+    galleriaScrollPanel = new JScrollPane(new FotoPanel(photos));
+
+     */
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         rootPanel = new JPanel();
@@ -59,6 +68,8 @@ public class CreaGalleriaCondivisa extends JFrame {
         collabText = new TagTextField(controller);
         confermaButton = new JButton();
         annullaButton = new JButton();
+        label1 = new JLabel();
+        label2 = new JLabel();
 
         //======== this ========
         var contentPane = getContentPane();
@@ -72,6 +83,12 @@ public class CreaGalleriaCondivisa extends JFrame {
             //---- annullaButton ----
             annullaButton.setText("ANNULLA");
 
+            //---- label1 ----
+            label1.setText("Nome Galleria :");
+
+            //---- label2 ----
+            label2.setText("Cofondatori: ");
+
             GroupLayout rootPanelLayout = new GroupLayout(rootPanel);
             rootPanel.setLayout(rootPanelLayout);
             rootPanelLayout.setHorizontalGroup(
@@ -80,30 +97,37 @@ public class CreaGalleriaCondivisa extends JFrame {
                         .addGap(26, 26, 26)
                         .addComponent(galleriaScrollPanel, GroupLayout.PREFERRED_SIZE, 314, GroupLayout.PREFERRED_SIZE)
                         .addGap(32, 32, 32)
-                        .addGroup(rootPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(rootPanelLayout.createSequentialGroup()
-                                .addComponent(annullaButton)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(confermaButton))
-                            .addComponent(nomeGalleriaText)
-                            .addComponent(collabText, GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE))
+                        .addGroup(rootPanelLayout.createParallelGroup()
+                            .addGroup(rootPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(rootPanelLayout.createSequentialGroup()
+                                    .addComponent(annullaButton)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(confermaButton))
+                                .addComponent(nomeGalleriaText))
+                            .addComponent(label1)
+                            .addComponent(collabText, GroupLayout.PREFERRED_SIZE, 213, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(label2))
                         .addContainerGap(13, Short.MAX_VALUE))
             );
             rootPanelLayout.setVerticalGroup(
                 rootPanelLayout.createParallelGroup()
                     .addGroup(rootPanelLayout.createSequentialGroup()
-                        .addGap(41, 41, 41)
+                        .addGap(15, 15, 15)
+                        .addComponent(label1)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(rootPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                             .addComponent(galleriaScrollPanel, GroupLayout.PREFERRED_SIZE, 278, GroupLayout.PREFERRED_SIZE)
                             .addGroup(rootPanelLayout.createSequentialGroup()
                                 .addComponent(nomeGalleriaText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(label2)
+                                .addGap(8, 8, 8)
                                 .addComponent(collabText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(rootPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(confermaButton)
                                     .addComponent(annullaButton))))
-                        .addContainerGap(60, Short.MAX_VALUE))
+                        .addContainerGap(64, Short.MAX_VALUE))
             );
         }
 
@@ -129,5 +153,7 @@ public class CreaGalleriaCondivisa extends JFrame {
     private TagTextField collabText;
     private JButton confermaButton;
     private JButton annullaButton;
+    private JLabel label1;
+    private JLabel label2;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }
