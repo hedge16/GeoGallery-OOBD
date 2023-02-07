@@ -9,8 +9,8 @@ new FormModel {
 		} ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space ::32:x, par l:::p {comp scrollPanel::::323:x, comp benvenutoLabel::::323:x}, space :p:75:p, par l {seq t {space :0:0:x, comp searchBar:::p:169:p}, comp caricaFoto::l:::x, seq {par l {comp label1:::p::p, comp creaGallCButton::l:p::p}, space :0:0:x}}, space ::51:x}}"
-				"$verticalGroup": "par l {seq {space ::14:x, par t {seq {comp searchBar:::p::p, space :p:63:p, comp label1:::p::p, space :p:255:p, comp creaGallCButton:::p::p, space u:::p, comp caricaFoto:::p:36:p}, seq {comp benvenutoLabel:::p::p, space :::p, comp scrollPanel:::p:409:p}}, space ::23:x}}"
+				"$horizontalGroup": "par l {seq {space ::32:x, par l:::p {comp scrollPanel::::323:x, comp benvenutoLabel::::323:x}, par t {seq t {space :p:75:p, par l {comp caricaFoto::l:::x, seq {par l {comp label1:::p::p, comp creaGallCButton::l:p::p}, space :0:0:x}}}, seq t {space :0:0:x, comp label2:::p::p, space :::p, comp searchBar:::p:169:p}}, space ::51:x}}"
+				"$verticalGroup": "par l {seq {space ::14:x, par t {seq {par b {comp searchBar::b:p::p, comp label2::b:p::p}, space :p:63:p, comp label1:::p::p, space :p:255:p, comp creaGallCButton:::p::p, space u:::p, comp caricaFoto:::p:36:p}, seq {comp benvenutoLabel:::p::p, space :::p, comp scrollPanel:::p:409:p}}, space ::23:x}}"
 			} ) {
 				name: "panel"
 				"background": new java.awt.Color( 42, 60, 76, 255 )
@@ -44,6 +44,11 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "label1"
 					"text": "Le tue galleria condivise :"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label2"
+					"maximumSize": new java.awt.Dimension( 30, 30 )
+					"preferredSize": new java.awt.Dimension( 30, 30 )
 				} )
 			} )
 			menuBar: new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {

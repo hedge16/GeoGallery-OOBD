@@ -99,7 +99,7 @@ public class Controller {
     }
 
     public ArrayList<String> getDisp (String username) throws SQLException{
-        ArrayList<String> dispositivi = null;
+        ArrayList<String> dispositivi;
         DispositivoDAO d = new DispositivoImplementazionePostgresDAO();
         try{
             dispositivi = d.getNomeDispDB(username);

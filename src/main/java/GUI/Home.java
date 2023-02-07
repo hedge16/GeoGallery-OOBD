@@ -29,6 +29,11 @@ public class Home extends JFrame  {
 
         initComponents();
 
+        String userDir = System.getProperty("user.dir");
+        ImageIcon icon = new ImageIcon(userDir + "/src/icons/icona.png");
+
+        label2.setIcon(icon);
+
 
         benvenutoLabel.setText("Benvenuto "+username+" !");
 
@@ -105,13 +110,12 @@ public class Home extends JFrame  {
         logoutItem = new JMenuItem();
         panel = new JPanel();
         caricaFoto = new JButton();
-        scrollPanel = new JScrollPane(new FotoPanel(photos, true));
-        scrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPanel = new JScrollPane();
         benvenutoLabel = new JLabel();
         searchBar = new JTextField();
         creaGallCButton = new JButton();
         label1 = new JLabel();
+        label2 = new JLabel();
 
         //======== this ========
         var contentPane = getContentPane();
@@ -164,6 +168,10 @@ public class Home extends JFrame  {
             //---- label1 ----
             label1.setText("Le tue galleria condivise :");
 
+            //---- label2 ----
+            label2.setMaximumSize(new Dimension(30, 30));
+            label2.setPreferredSize(new Dimension(30, 30));
+
             GroupLayout panelLayout = new GroupLayout(panel);
             panel.setLayout(panelLayout);
             panelLayout.setHorizontalGroup(
@@ -173,17 +181,21 @@ public class Home extends JFrame  {
                         .addGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                             .addComponent(scrollPanel, GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
                             .addComponent(benvenutoLabel, GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE))
-                        .addGap(75, 75, 75)
-                        .addGroup(panelLayout.createParallelGroup()
-                            .addGroup(GroupLayout.Alignment.TRAILING, panelLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(searchBar, GroupLayout.PREFERRED_SIZE, 169, GroupLayout.PREFERRED_SIZE))
-                            .addComponent(caricaFoto, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                             .addGroup(panelLayout.createSequentialGroup()
+                                .addGap(75, 75, 75)
                                 .addGroup(panelLayout.createParallelGroup()
-                                    .addComponent(label1)
-                                    .addComponent(creaGallCButton))
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                                    .addComponent(caricaFoto, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(panelLayout.createSequentialGroup()
+                                        .addGroup(panelLayout.createParallelGroup()
+                                            .addComponent(label1)
+                                            .addComponent(creaGallCButton))
+                                        .addGap(0, 0, Short.MAX_VALUE))))
+                            .addGroup(panelLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(label2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(searchBar, GroupLayout.PREFERRED_SIZE, 169, GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap(51, Short.MAX_VALUE))
             );
             panelLayout.setVerticalGroup(
@@ -192,7 +204,9 @@ public class Home extends JFrame  {
                         .addContainerGap(14, Short.MAX_VALUE)
                         .addGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                             .addGroup(panelLayout.createSequentialGroup()
-                                .addComponent(searchBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(searchBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(label2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addGap(63, 63, 63)
                                 .addComponent(label1)
                                 .addGap(255, 255, 255)
@@ -233,5 +247,6 @@ public class Home extends JFrame  {
     private JTextField searchBar;
     private JButton creaGallCButton;
     private JLabel label1;
+    private JLabel label2;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

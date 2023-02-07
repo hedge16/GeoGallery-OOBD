@@ -1,0 +1,58 @@
+JFDML JFormDesigner: "8.0.1.0.199" Java: "17.0.5" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {comp panel1::l:::x}"
+			"$verticalGroup": "par l {seq l {comp panel1:::p:290:p, space :0:0:x}}"
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq {par t {seq {space :::x, comp changePrivacyButton:::p::p, space u:::p, comp deleteButton:::p::p}, seq {space :p:47:p, comp miniatura:::p:184:p, space :p:109:p, par l {seq {comp statoLabel:::p::p, space :p:103:p}, seq {par l {comp dataLabel::l:::x, comp dispLabel::l:p:114:p}, space :::p}}, par l {comp dataINLabel:::p::p, comp dispINLabel:::p::p, comp statoINLabel:::p::p}}}, space ::53:x}}"
+				"$verticalGroup": "par l {seq {par l {seq {space :p:63:p, par t {seq {comp dataINLabel:::p::p, space s:::p, comp dispINLabel:::p::p}, seq {comp dataLabel:::p::p, space s:::p, comp dispLabel:::p::p}}, space s:::p, par b {comp statoLabel::b:p::p, comp statoINLabel::b:p::p}}, seq l {space :p:39:p, comp miniatura:::p:172:p}}, space :::x, par b {comp deleteButton::b:p::p, comp changePrivacyButton::b:p::p}, space :p:74:p}}"
+			} ) {
+				name: "panel1"
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "miniatura"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "dataLabel"
+					"text": "Data caricamento :"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "dispLabel"
+					"text": "Dispositivo :"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "dataINLabel"
+					"text": "text"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "dispINLabel"
+					"text": "text"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "statoLabel"
+					"text": "Stato :"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "statoINLabel"
+					"text": "text"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "changePrivacyButton"
+					"text": "CAMBIA PRIVACY"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "deleteButton"
+					"text": "ELIMINA"
+					"background": new java.awt.Color( 204, 0, 0, 255 )
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 560, 320 )
+		} )
+	}
+}

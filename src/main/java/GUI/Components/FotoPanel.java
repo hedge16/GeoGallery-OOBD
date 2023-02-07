@@ -1,5 +1,6 @@
 package GUI.Components;
 
+import GUI.Preview;
 import Model.Foto;
 import org.imgscalr.Scalr;
 
@@ -102,27 +103,15 @@ public class FotoPanel extends JPanel {
         }
 
 
-        for (JLabel label : labelFoto){
-            label.addMouseListener(new MouseAdapter() {
+        for (int i = 0; i < numFoto; i++){
+            ImageIcon foto1 = foto.get(i).getFoto();
+            labelFoto[i].addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     super.mouseClicked(e);
                     if (e.getClickCount() == 2) {
-
-
-                        JPanel preview = new JPanel();
-                        JLabel previewLabel = new JLabel(label.getIcon());
-                        preview.setLayout(new BorderLayout());
-                        preview.add(previewLabel, BorderLayout.CENTER);
-                        frame = new JFrame();
-                        frame.setContentPane(preview);
-                        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                        frame.setSize(label.getWidth(), label.getHeight());
-                        frame.setTitle("Preview");
-                        frame.setLocationRelativeTo(null); //per far si che il frame si apra al centro dello schermo
-                        frame.setVisible(true);
-
-
+                        Preview preview = new Preview(foto1);
+                        preview.frame.setVisible(true);
                     }
                 }
             });
