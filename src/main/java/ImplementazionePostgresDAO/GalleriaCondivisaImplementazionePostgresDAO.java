@@ -22,14 +22,18 @@ public class GalleriaCondivisaImplementazionePostgresDAO implements Galleria_con
     }
 
     @Override
-    public void creaGalleriaCondivisaDB(String fondatore, String[] cofondatori, String nomeGalleria) throws SQLException {
+    public int creaGalleriaCondivisaDB(String fondatore, String[] cofondatori, String nomeGalleria) throws SQLException {
         PreparedStatement ps = connection.prepareStatement("INSERT INTO galleria_schema.galleria_condivisa VALUES (DEFAULT, ?);");
         ps.setString(1, nomeGalleria);
         ps.executeUpdate();
 
         ps = connection.prepareStatement("SELECT codGalleria FROM galleria_schema.galleria_condivisa ORDER BY codGalleria DESC LIMIT 1;");
         ResultSet rs = ps.executeQuery();
-        int codGalleria = rs.getInt(1);
+        int codGalleria = -1;
+        while (rs.next()) {
+            codGalleria = rs.getInt(1);
+            System.out.println(codGalleria);
+        }
         rs.close();
 
         ps = connection.prepareStatement("INSERT INTO galleria_schema.partecipazione VALUES (?,?);");
@@ -44,6 +48,6 @@ public class GalleriaCondivisaImplementazionePostgresDAO implements Galleria_con
             ps.executeUpdate();
         }
         connection.close();
-
+        return codGalleria;
     }
 }

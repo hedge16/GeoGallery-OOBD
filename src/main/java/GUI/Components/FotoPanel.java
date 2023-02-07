@@ -11,6 +11,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 public class FotoPanel extends JPanel {
@@ -18,23 +19,24 @@ public class FotoPanel extends JPanel {
     private JLabel[] labelFoto;
     private int numFoto;
     private JFrame frame;
+    boolean[] isSelected;
+
+    Border border = BorderFactory.createLineBorder(Color.CYAN, 1);
 
 
 
-    public FotoPanel(ArrayList<Foto> foto) {
+    public FotoPanel(ArrayList<Foto> foto, boolean isHome) {
         this.photos = foto;
         numFoto = foto.size();
         labelFoto = new JLabel[numFoto];
+        setLayout(new FlowLayout(FlowLayout.LEFT));
+        setPreferredSize(new Dimension(339, 800));
 
-        if (numFoto % 3 == 0 ) {
-            setLayout(new GridLayout(numFoto/ 3, 3, 5, 5));
+        isSelected = new boolean[foto.size()];
 
-        } else {
-            setLayout(new GridLayout((numFoto / 3) + 1, 3, 5, 5));
 
-        }
 
-        setBackground(new Color(0x2a3c4c));
+        setBackground(new Color(0x333333));
 
         for (int i = 0; i < numFoto; i++) {
 
@@ -78,6 +80,25 @@ public class FotoPanel extends JPanel {
             // Imposta le dimensioni preferenziali per la label
             labelFoto[i].setPreferredSize(new Dimension(newWidth, newHeight));
             add(labelFoto[i]);
+
+            if (!isHome){
+                JLabel label = labelFoto[i];
+                int j = i;
+                labelFoto[i].addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        super.mouseClicked(e);
+                        if (label.getBorder() == null) {
+                            label.setBorder(border);
+                            isSelected[j] = true;
+                        } else {
+                            label.setBorder(null);
+                            isSelected[j] = false;
+                        }
+                    }
+                });
+            }
+
         }
 
 
@@ -106,5 +127,9 @@ public class FotoPanel extends JPanel {
                 }
             });
         }
+    }
+
+    public boolean[] getSelectedPhotos () {
+        return isSelected;
     }
 }

@@ -186,12 +186,24 @@ public class Controller {
         return codLuogo;
     }
 
-    public void aggiungiGalleriaCondivisa (String fondatore, String cofondatori, String nomeGalleria) throws SQLException {
+    public int aggiungiGalleriaCondivisa (String fondatore, String cofondatori, String nomeGalleria) throws SQLException {
         String[] cofondatoriArray = cofondatori.split(",");
         Galleria_condivisaDAO gc = new GalleriaCondivisaImplementazionePostgresDAO();
+        int codg;
         try {
-            gc.creaGalleriaCondivisaDB(fondatore, cofondatoriArray, nomeGalleria);
+            codg = gc.creaGalleriaCondivisaDB(fondatore, cofondatoriArray, nomeGalleria);
+            return codg;
         } catch(SQLException s) {
+            s.printStackTrace();
+            throw new SQLException();
+        }
+    }
+
+    public void aggiungiPresenzaFoto (int codfoto, int codg) throws SQLException {
+        PresenzaFotoDAO pf = new PresenzaFotoImplementazionePostgresDAO();
+        try {
+            pf.aggiungiPresenzaFotoDB(codfoto, codg);
+        } catch (SQLException s){
             s.printStackTrace();
             throw new SQLException();
         }

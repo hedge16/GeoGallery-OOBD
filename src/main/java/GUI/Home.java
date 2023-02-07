@@ -27,7 +27,7 @@ public class Home extends JFrame  {
 
         photos = controller.recuperaGallUtente(username);
 
-        initComponents(controller, username);
+        initComponents();
 
 
         benvenutoLabel.setText("Benvenuto "+username+" !");
@@ -39,9 +39,6 @@ public class Home extends JFrame  {
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(frameChiamante);
-
-
-
 
         caricaFoto.addActionListener (new ActionListener() {
             @Override
@@ -70,9 +67,8 @@ public class Home extends JFrame  {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                CreaGalleriaCondivisa cgc = new CreaGalleriaCondivisa(username, controller, mainFrame);
+                CreaGalleriaCondivisa cgc = new CreaGalleriaCondivisa(username, controller, mainFrame, photos);
                 mainFrame.setVisible(false);
-                mainFrame.dispose();
                 cgc.mainFrame.setVisible(true);
 
 
@@ -88,7 +84,7 @@ public class Home extends JFrame  {
     /*
     *
 
-        scrollPanel = new JScrollPane(new FotoPanel(photos));
+        scrollPanel = new JScrollPane(new FotoPanel(photos, true));
         scrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
@@ -102,19 +98,20 @@ public class Home extends JFrame  {
 
 
 
-    private void initComponents(Controller controller, String username) {
+    private void initComponents () {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         menuBar = new JMenuBar();
         azioniMenu = new JMenu();
         logoutItem = new JMenuItem();
         panel = new JPanel();
         caricaFoto = new JButton();
-        scrollPanel = new JScrollPane(new FotoPanel(photos));
+        scrollPanel = new JScrollPane(new FotoPanel(photos, true));
         scrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         benvenutoLabel = new JLabel();
         searchBar = new JTextField();
         creaGallCButton = new JButton();
+        label1 = new JLabel();
 
         //======== this ========
         var contentPane = getContentPane();
@@ -164,6 +161,9 @@ public class Home extends JFrame  {
             //---- creaGallCButton ----
             creaGallCButton.setText("CREA GALLERIA CONDIVISA");
 
+            //---- label1 ----
+            label1.setText("Le tue galleria condivise :");
+
             GroupLayout panelLayout = new GroupLayout(panel);
             panel.setLayout(panelLayout);
             panelLayout.setHorizontalGroup(
@@ -174,10 +174,16 @@ public class Home extends JFrame  {
                             .addComponent(scrollPanel, GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
                             .addComponent(benvenutoLabel, GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE))
                         .addGap(75, 75, 75)
-                        .addGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(searchBar, GroupLayout.PREFERRED_SIZE, 169, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(caricaFoto, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(creaGallCButton, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(panelLayout.createParallelGroup()
+                            .addGroup(GroupLayout.Alignment.TRAILING, panelLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(searchBar, GroupLayout.PREFERRED_SIZE, 169, GroupLayout.PREFERRED_SIZE))
+                            .addComponent(caricaFoto, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(panelLayout.createSequentialGroup()
+                                .addGroup(panelLayout.createParallelGroup()
+                                    .addComponent(label1)
+                                    .addComponent(creaGallCButton))
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addContainerGap(51, Short.MAX_VALUE))
             );
             panelLayout.setVerticalGroup(
@@ -187,10 +193,12 @@ public class Home extends JFrame  {
                         .addGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                             .addGroup(panelLayout.createSequentialGroup()
                                 .addComponent(searchBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addGap(338, 338, 338)
+                                .addGap(63, 63, 63)
+                                .addComponent(label1)
+                                .addGap(255, 255, 255)
                                 .addComponent(creaGallCButton)
-                                .addGap(18, 18, 18)
-                                .addComponent(caricaFoto))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(caricaFoto, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE))
                             .addGroup(panelLayout.createSequentialGroup()
                                 .addComponent(benvenutoLabel)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -224,5 +232,6 @@ public class Home extends JFrame  {
     private JLabel benvenutoLabel;
     private JTextField searchBar;
     private JButton creaGallCButton;
+    private JLabel label1;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

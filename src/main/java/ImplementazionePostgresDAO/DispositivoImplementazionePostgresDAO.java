@@ -17,7 +17,6 @@ public class DispositivoImplementazionePostgresDAO implements DispositivoDAO {
 
         try{
             connection = ConnessioneDatabase.getInstance().connection;
-
         }catch(SQLException s){
             s.printStackTrace();
         }
@@ -28,7 +27,7 @@ public class DispositivoImplementazionePostgresDAO implements DispositivoDAO {
     @Override
     public ArrayList<String> getNomeDispDB(String username) throws SQLException {
         ArrayList<String> dispositivi = new ArrayList<>();
-        PreparedStatement ps = connection.prepareStatement("SELECT nomeDisp FROM galleria_schema.dispositivo where proprietario = ?;");
+        PreparedStatement ps = connection.prepareStatement("SELECT nomeDisp FROM galleria_schema.dispositivo WHERE proprietario = ?;");
         ps.setString(1, username);
         ResultSet rs = ps.executeQuery();
 

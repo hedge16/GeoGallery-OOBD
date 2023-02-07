@@ -14,15 +14,14 @@ import java.util.ArrayList;
 public class CreaGalleriaCondivisa extends JFrame {
 
     protected JFrame mainFrame;
-    private Controller controller;
-    ArrayList<Foto> photos;
+    private ArrayList<Foto> photos;
+    FotoPanel fotoPanel;
 
-    public CreaGalleriaCondivisa (String username, Controller controller, JFrame frameChiamante) {
+    public CreaGalleriaCondivisa (String username, Controller controller, JFrame frameChiamante, ArrayList<Foto> photos) {
 
-        this.controller = controller;
-
-        photos = controller.recuperaGallUtente(username);
-        initComponents();
+        this.photos = photos;
+        fotoPanel = new FotoPanel(photos, false);
+        initComponents(controller);
 
         mainFrame = new JFrame("Crea galleria condivisa");
         mainFrame.setContentPane(rootPane);
@@ -34,7 +33,16 @@ public class CreaGalleriaCondivisa extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    controller.aggiungiGalleriaCondivisa(username, collabText.getText(), nomeGalleriaText.getText());
+                    int codg = controller.aggiungiGalleriaCondivisa(username, collabText.getText(), nomeGalleriaText.getText());
+                    boolean[] selectedPhotos = fotoPanel.getSelectedPhotos();
+                    for (int i = 0; i < photos.size(); i++){
+                        if (selectedPhotos[i]) {
+                            controller.aggiungiPresenzaFoto(photos.get(i).getCodFoto(), codg);
+                        }
+                    }
+                    mainFrame.setVisible(false);
+                    mainFrame.dispose();
+                    frameChiamante.setVisible(true);
                 } catch (SQLException s) {
                     s.printStackTrace();
                     JOptionPane.showMessageDialog(mainFrame, "Errore di connessione col database.", "Errore", JOptionPane.ERROR_MESSAGE);
@@ -56,14 +64,17 @@ public class CreaGalleriaCondivisa extends JFrame {
     }
 
     /*
-    galleriaScrollPanel = new JScrollPane(new FotoPanel(photos));
+        galleriaScrollPanel = new JScrollPane(fotoPanel);
+        galleriaScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        Galleria.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
 
      */
 
-    private void initComponents() {
+    private void initComponents (Controller controller) {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         rootPanel = new JPanel();
-        galleriaScrollPanel = new JScrollPane();
+        galleriaScrollPanel = new JScrollPane(fotoPanel);
         nomeGalleriaText = new JTextField();
         collabText = new TagTextField(controller);
         confermaButton = new JButton();

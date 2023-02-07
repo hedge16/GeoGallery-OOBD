@@ -1,4 +1,4 @@
-DROP SCHEMA if exists galleria_schema CASCADE;
+DROP SCHEMA galleria_schema CASCADE; 
 CREATE SCHEMA galleria_schema;
 CREATE TYPE galleria_schema.categoria_soggetto AS ENUM ('Paesaggi', 'Eventi sportivi', 'Gruppi di persone', 'Ritratti', 'Selfie', 'Animali', 'Cibo', 'Matrimoni', 'Viaggi', 'Natura');
 CREATE SCHEMA IF NOT EXISTS galleria_schema;
@@ -121,10 +121,6 @@ CREATE TABLE IF NOT EXISTS galleria_schema.contenuto (
 	CONSTRAINT pk_contenuto PRIMARY KEY (soggetto, codFoto),
 	CONSTRAINT fk_contsog FOREIGN KEY (soggetto) REFERENCES galleria_schema.soggettofoto(codSogg) ON DELETE CASCADE,
 	CONSTRAINT fk_contfoto FOREIGN KEY (codFoto) REFERENCES galleria_schema.foto(codFoto) ON DELETE CASCADE
-	
-
-
-
 
 );
 
@@ -137,10 +133,12 @@ CREATE VIEW galleria_schema.TOP3 AS (
 		SELECT codLuogo 
 		FROM galleria_schema.foto 
 		GROUP BY codLuogo
-		ORDER BY COUNT(codLuogo) DESC
+		ORDER BY COUNT(codLuogo)
 		LIMIT 3
 		)
+	
 	);
+
 
 
 
