@@ -23,7 +23,7 @@ public class CaricaFoto extends JFrame {
     String filePath;
     private int codFoto;
 
-    public CaricaFoto (Controller controller, JFrame frameChiamante, String username) {
+    public CaricaFoto (Controller controller, JFrame frameChiamante, String username, Home home) {
 
 
         initComponents(controller, username);
@@ -137,7 +137,7 @@ public class CaricaFoto extends JFrame {
                         JOptionPane.showMessageDialog(mainFrame, "Foto caricata con successo.");
                         mainFrame.setVisible(false);
                         mainFrame.dispose();
-                        Home home = new Home(controller, frameChiamante, username);
+                        home.aggiornaGalleria(controller.getLastFotoDB(username));
                         home.mainFrame.setVisible(true);
                     } catch (SQLException s) {
                         JOptionPane.showMessageDialog(mainFrame, "Errore nel caricamento del file.", "Errore col DB", JOptionPane.ERROR_MESSAGE);
@@ -287,7 +287,14 @@ public class CaricaFoto extends JFrame {
         panel1 = new JPanel();
         apriFoto = new JButton();
         privataSwitch = new JRadioButton();
-        selDisp = new JComboBox();
+        String[] dispositivi = new String[0];
+        try {
+            dispositivi = controller.getDisp(username).toArray(new String[0]);
+        } catch (SQLException s) {
+            s.printStackTrace();
+        }
+
+        selDisp = new JComboBox(dispositivi);
         goBackButton = new JButton();
         confermaButton = new JButton();
         fotoPanel = new JPanel();

@@ -8,17 +8,21 @@ import Model.Foto;
 import org.imgscalr.Scalr;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.sql.SQLException;
 import javax.swing.*;
 import javax.swing.GroupLayout;
+import Controller.Controller;
 
 public class Preview extends JFrame {
 
     public JFrame frame;
-    public Preview (ImageIcon foto) {
+    public Preview (Controller controller, Foto f) {
 
         initComponents();
-        Image newimg = foto.getImage().getScaledInstance(184, 172, Image.SCALE_SMOOTH);
+        Image newimg = f.getFoto().getImage().getScaledInstance(184, 172, Image.SCALE_SMOOTH);
         ImageIcon nuovaFoto = new ImageIcon(newimg);
         miniatura.setIcon(nuovaFoto);
 
@@ -28,6 +32,20 @@ public class Preview extends JFrame {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.pack();
         frame.setLocationRelativeTo(null);
+
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    controller.eliminaFotoDB(f);
+                    JOptionPane.showMessageDialog(frame, "Foto eliminata con successo.", "", JOptionPane.WARNING_MESSAGE);
+                    frame.setVisible(false);
+                    frame.dispose();
+                } catch (SQLException s) {
+                    s.printStackTrace();
+                }
+            }
+        });
 
 
 

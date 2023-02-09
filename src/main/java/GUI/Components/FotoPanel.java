@@ -3,6 +3,7 @@ package GUI.Components;
 import GUI.Preview;
 import Model.Foto;
 import org.imgscalr.Scalr;
+import Controller.Controller;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -17,19 +18,22 @@ import javax.swing.border.EmptyBorder;
 
 public class FotoPanel extends JPanel {
     private ArrayList<Foto> photos;
-    private JLabel[] labelFoto;
+    private ArrayList<JLabel> labelFoto;
     private int numFoto;
     private JFrame frame;
     boolean[] isSelected;
+    Controller controller;
 
     Border border = BorderFactory.createLineBorder(Color.CYAN, 1);
 
 
 
-    public FotoPanel(ArrayList<Foto> foto, boolean isHome) {
+    public FotoPanel(ArrayList<Foto> foto, boolean isHome, Controller controller) {
+
+        this.controller = controller;
         this.photos = foto;
         numFoto = foto.size();
-        labelFoto = new JLabel[numFoto];
+        labelFoto = new ArrayList<>();
         setLayout(new FlowLayout(FlowLayout.LEFT));
         setPreferredSize(new Dimension(339, 800));
 
@@ -76,16 +80,16 @@ public class FotoPanel extends JPanel {
             // Ridimensionamento
             newImage = Scalr.resize(newImage, Scalr.Method.ULTRA_QUALITY, newWidth, newHeight);
             ImageIcon icon = new ImageIcon(newImage);
-            labelFoto[i] = new JLabel(icon);
+            labelFoto.add(new JLabel(icon));
 
             // Imposta le dimensioni preferenziali per la label
-            labelFoto[i].setPreferredSize(new Dimension(newWidth, newHeight));
-            add(labelFoto[i]);
+            labelFoto.get(i).setPreferredSize(new Dimension(newWidth, newHeight));
+            add(labelFoto.get(i));
 
             if (!isHome){
-                JLabel label = labelFoto[i];
+                JLabel label = labelFoto.get(i);
                 int j = i;
-                labelFoto[i].addMouseListener(new MouseAdapter() {
+                labelFoto.get(i).addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         super.mouseClicked(e);
@@ -104,13 +108,13 @@ public class FotoPanel extends JPanel {
 
 
         for (int i = 0; i < numFoto; i++){
-            ImageIcon foto1 = foto.get(i).getFoto();
-            labelFoto[i].addMouseListener(new MouseAdapter() {
+            Foto foto1 = foto.get(i);
+            labelFoto.get(i).addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     super.mouseClicked(e);
                     if (e.getClickCount() == 2) {
-                        Preview preview = new Preview(foto1);
+                        Preview preview = new Preview(getController(), foto1);
                         preview.frame.setVisible(true);
                     }
                 }
@@ -121,4 +125,63 @@ public class FotoPanel extends JPanel {
     public boolean[] getSelectedPhotos () {
         return isSelected;
     }
+    private Controller getController() {
+        return this.controller;
+    }
+
+    public void aggiungiFoto (Foto foto) {
+        Image image = foto.getFoto().getImage();
+        ImageIcon icona = new ImageIcon(image);
+        // Dimensioni dell'immagine originale
+        int originalWidth = icona.getIconWidth();
+        int originalHeight = icona.getIconHeight();
+        // Dimensioni dell'immagine ridimensionata
+        int newWidth = 100;
+        int newHeight = 100;
+
+        // Calcola le proporzioni originali
+        float originalProportion = (float) originalWidth / originalHeight;
+
+        // Calcola le proporzioni della nuova immagine
+        float newProportion = (float) newWidth / newHeight;
+
+        int x, y, width, height;
+
+        if (originalProportion >= newProportion) {
+            // L'immagine originale è più larga delle nuove proporzioni
+            width = (int) (originalHeight * newProportion);
+            height = originalHeight;
+            x = (originalWidth - width) / 2;
+            y = 0;
+        } else {
+            // L'immagine originale è più alta delle nuove proporzioni
+            width = originalWidth;
+            height = (int) (originalWidth / newProportion);
+            x = 0;
+            y = (originalHeight - height) / 2;
+        }
+
+        BufferedImage newImage = ((BufferedImage) image).getSubimage(x, y, width, height);
+        // Ridimensionamento
+        newImage = Scalr.resize(newImage, Scalr.Method.ULTRA_QUALITY, newWidth, newHeight);
+        ImageIcon icon = new ImageIcon(newImage);
+        labelFoto.add(new JLabel(icon));
+
+        // Imposta le dimensioni preferenziali per la label
+        labelFoto.get(labelFoto.size()-1).setPreferredSize(new Dimension(newWidth, newHeight));
+        add(labelFoto.get(labelFoto.size()-1));
+
+        labelFoto.get(labelFoto.size()-1).addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if (e.getClickCount() == 2) {
+                    Preview preview = new Preview(getController(), foto);
+                    preview.frame.setVisible(true);
+                }
+            }
+        });
+
+    }
+
 }

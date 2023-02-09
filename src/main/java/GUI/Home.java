@@ -18,6 +18,8 @@ import Model.Foto;
 public class Home extends JFrame  {
     protected JFrame mainFrame;
     private ArrayList<Foto> photos;
+    Home home;
+    FotoPanel fotoPanel;
 
 
 
@@ -26,8 +28,10 @@ public class Home extends JFrame  {
     public Home (Controller controller, JFrame frameChiamante, String username){
 
         photos = controller.recuperaGallUtente(username);
+        home = this;
+        fotoPanel = new FotoPanel(photos, true, controller);
 
-        initComponents();
+        initComponents(controller);
 
         String userDir = System.getProperty("user.dir");
         ImageIcon icon = new ImageIcon(userDir + "/src/icons/icona.png");
@@ -49,7 +53,7 @@ public class Home extends JFrame  {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                CaricaFoto caricaFoto = new CaricaFoto(controller, mainFrame, username);
+                CaricaFoto caricaFoto = new CaricaFoto(controller, mainFrame, username, home);
                 mainFrame.setVisible(false);
                 caricaFoto.mainFrame.setVisible(true);
 
@@ -84,6 +88,10 @@ public class Home extends JFrame  {
 
     }
 
+    void aggiornaGalleria (Foto foto) {
+        fotoPanel.aggiungiFoto(foto);
+    }
+
 
 
     /*
@@ -103,14 +111,16 @@ public class Home extends JFrame  {
 
 
 
-    private void initComponents () {
+    private void initComponents (Controller controller) {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         menuBar = new JMenuBar();
         azioniMenu = new JMenu();
         logoutItem = new JMenuItem();
         panel = new JPanel();
         caricaFoto = new JButton();
-        scrollPanel = new JScrollPane();
+        scrollPanel = new JScrollPane(fotoPanel);
+        scrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         benvenutoLabel = new JLabel();
         searchBar = new JTextField();
         creaGallCButton = new JButton();

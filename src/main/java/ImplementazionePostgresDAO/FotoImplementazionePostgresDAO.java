@@ -139,6 +139,47 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
 
     }
 
+    @Override
+    public void eliminaFotoDB(int codFoto) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("DELETE FROM galleria_schema.foto WHERE codFoto = ?;");
+        ps.setInt(1, codFoto);
+        ps.executeUpdate();
+        connection.close();
+    }
+
+    @Override
+    public Foto getLastFoto(String username) throws SQLException {
+        Foto foto = null;
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM galleria_schema.foto ORDER BY codFoto DESC LIMIT 1;");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                // Recupera i dati dal risultato della query
+                int codFoto = rs.getInt(1);
+                boolean privata = rs.getBoolean(2);
+                boolean rimossa = rs.getBoolean(3);
+                Date dataScatto = rs.getDate(4);
+                int codGalleria = rs.getInt(5);
+                String autore = rs.getString(6);
+                int codDispositivo = rs.getInt(7);
+                byte[] barr = rs.getBytes(8);
+                int codLuogo = rs.getInt(9);
+                // Crea un oggetto InputStream a partire dall'array di byte
+                ByteArrayInputStream bis = new ByteArrayInputStream(barr);
+                // Crea un oggetto ImageIcon a partire dallo stream di byte
+                ImageIcon immagine = new ImageIcon(ImageIO.read(bis));
+                bis.close();
+                // Crea un oggetto Foto con i dati recuperati
+                foto = new Foto(codFoto, privata, rimossa, dataScatto, codGalleria, autore, codDispositivo, immagine, codLuogo);
+            }
+            rs.close();
+            return foto;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     /**
      * Costruttore che inizializza la connessione al database.
      */

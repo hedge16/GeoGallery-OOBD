@@ -38,7 +38,7 @@ public class Login extends JFrame {
         logoLabel.setIcon(icon);
 
 
-        ImageIcon sfondo = new ImageIcon(userDir + "/src/icons/sfondo.png");
+        ImageIcon sfondo = new ImageIcon(userDir + "/src/icons/wallpaper.png");
         JLabel labelSfondo = new JLabel(sfondo);
         labelSfondo.setSize(rootPanel.getSize());
         rootPanel.add(labelSfondo);

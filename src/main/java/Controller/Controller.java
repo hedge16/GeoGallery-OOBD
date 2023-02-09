@@ -209,4 +209,28 @@ public class Controller {
         }
     }
 
+    public void eliminaFotoDB (Foto foto) throws SQLException {
+        int codf = foto.getCodFoto();
+        try {
+            FotoDAO f = new FotoImplementazionePostgresDAO();
+            f.eliminaFotoDB(codf);
+        } catch (SQLException s){
+            s.printStackTrace();
+            throw new SQLException();
+        }
+    }
+
+    public Foto getLastFotoDB (String username) {
+        Foto f;
+        try {
+            FotoDAO fd = new FotoImplementazionePostgresDAO();
+            f = fd.getLastFoto(username);
+            return f;
+        } catch (SQLException s) {
+            s.printStackTrace();
+        }
+        return null;
+
+    }
+
 }

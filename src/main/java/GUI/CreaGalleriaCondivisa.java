@@ -20,7 +20,7 @@ public class CreaGalleriaCondivisa extends JFrame {
     public CreaGalleriaCondivisa (String username, Controller controller, JFrame frameChiamante, ArrayList<Foto> photos) {
 
         this.photos = photos;
-        fotoPanel = new FotoPanel(photos, false);
+        fotoPanel = new FotoPanel(photos, false, controller);
         initComponents(controller);
 
         mainFrame = new JFrame("Crea galleria condivisa");
