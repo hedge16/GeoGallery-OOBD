@@ -7,6 +7,7 @@ import javax.swing.filechooser.FileFilter;
 
 import Controller.Controller;
 import GUI.Components.TagTextField;
+import Model.SoggettoFoto;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -14,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class CaricaFoto extends JFrame {
@@ -22,6 +24,7 @@ public class CaricaFoto extends JFrame {
     int result=-1;
     String filePath;
     private int codFoto;
+    ArrayList<SoggettoFoto> soggetti;
 
     public CaricaFoto (Controller controller, JFrame frameChiamante, String username, Home home) {
 
@@ -32,6 +35,7 @@ public class CaricaFoto extends JFrame {
             categoriaSoggList.addItem(categorie[i]);
         }
 
+        soggetti = new ArrayList<>();
 
         mainFrame = new JFrame("Carica la tua foto");
         mainFrame.setContentPane(panel1);
@@ -48,7 +52,7 @@ public class CaricaFoto extends JFrame {
                 fileChooser.setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(File f) {
-                        return f.getName().toLowerCase().endsWith(".png") || f.getName().toLowerCase().endsWith(".jpg");
+                        return f.getName().toLowerCase().endsWith(".png") || f.getName().toLowerCase().endsWith(".jpg") || f.isDirectory();
                     }
 
                     @Override
@@ -56,6 +60,7 @@ public class CaricaFoto extends JFrame {
                         return "File immagine (*.png, *.jpg)";
                     }
                 });
+
                 fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
                 result = fileChooser.showOpenDialog(apriFoto);
 
@@ -98,8 +103,7 @@ public class CaricaFoto extends JFrame {
                     }else {
                         JOptionPane.showMessageDialog(mainFrame, "Inserisci un nome dispositivo valido.","Errore input", JOptionPane.ERROR_MESSAGE);
                     }
-
-
+                    
                 }
 
             }
@@ -111,7 +115,6 @@ public class CaricaFoto extends JFrame {
                 mainFrame.setVisible(false);
                 mainFrame.dispose();
                 frameChiamante.setVisible(true);
-
             }
         });
 
@@ -123,7 +126,8 @@ public class CaricaFoto extends JFrame {
                     // Carica l'immagine nel DB
                     try {
                         int codLuogo = controller.aggiungiLuogoDB(Double.parseDouble(latitudineText.getText()), Double.parseDouble(longitudineText.getText()), nomeLuogoText.getText());
-                        codFoto = controller.aggiungiFoto(privataSwitch.isSelected(), false, new Date(), controller.getCodG(username), username, controller.getCodDisp((String)selDisp.getSelectedItem(), username), filePath, codLuogo);
+                        codFoto = controller.aggiungiFoto(privataSwitch.isSelected(), false, new Date(), controller.getCodG(username), username, controller.getCodDisp((String)selDisp.getSelectedItem(), username), filePath);
+                        controller.aggiungiPresenzaLuogo(codFoto, codLuogo);
                         int i = 0;
                         if (!tags.getText().equals("")) {
                             String[] tagArr = tags.getText().split(",");
@@ -133,11 +137,14 @@ public class CaricaFoto extends JFrame {
                                 i++;
                             }
                         }
-                        controller.aggiungiSoggettoFoto(categorie[categoriaSoggList.getSelectedIndex()], nomeSoggTextField.getText());
+                        for (SoggettoFoto s : soggetti) {
+                            int codSogg = controller.aggiungiSoggettoFoto(s.getCategoria(), s.getNome());
+                            controller.aggiungiPresenzaSoggetto(codFoto, codSogg);
+                        }
                         JOptionPane.showMessageDialog(mainFrame, "Foto caricata con successo.");
                         mainFrame.setVisible(false);
                         mainFrame.dispose();
-                        home.aggiornaGalleria(controller.getLastFotoDB(username));
+                        home.aggiungiFotoGalleria(controller.getLastFotoDB(username));
                         home.mainFrame.setVisible(true);
                     } catch (SQLException s) {
                         JOptionPane.showMessageDialog(mainFrame, "Errore nel caricamento del file.", "Errore col DB", JOptionPane.ERROR_MESSAGE);
@@ -152,7 +159,6 @@ public class CaricaFoto extends JFrame {
 
 
                 }else{
-                    Toolkit.getDefaultToolkit().beep();
                     JOptionPane.showMessageDialog(mainFrame, "Non è stato selezionato alcun file o non sono stati compilati tutti i campi obbligatori.", "Errore", JOptionPane.ERROR_MESSAGE);
                     Border border = BorderFactory.createLineBorder(Color.RED, 1);
 
@@ -233,6 +239,27 @@ public class CaricaFoto extends JFrame {
 
             }
         });
+        
+        addSoggettoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!nomeSoggTextField.getText().isEmpty()){
+                    SoggettoFoto s= new SoggettoFoto(0, nomeSoggTextField.getText(), (String)categoriaSoggList.getSelectedItem());
+                    soggetti.add(s);
+                    nomeSoggTextField.setText("");
+                }else{
+                    JOptionPane.showMessageDialog(mainFrame, "Inserisci un nome al Soggetto", "Errore", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        
+        vediSoggettiButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                VediSoggetti vs = new VediSoggetti(soggetti, mainFrame);
+                vs.mainFrame.setVisible(true);
+            }
+        });
 
 
     }
@@ -294,8 +321,7 @@ public class CaricaFoto extends JFrame {
             s.printStackTrace();
         }
 
-        selDisp = new JComboBox(dispositivi);
-        goBackButton = new JButton();
+        selDisp = new JComboBox(dispositivi);        goBackButton = new JButton();
         confermaButton = new JButton();
         fotoPanel = new JPanel();
         fotoAnteprima = new JLabel();
@@ -311,10 +337,11 @@ public class CaricaFoto extends JFrame {
         nomeLuogoText = new JTextField();
         nomeLuogoLabel = new JLabel();
         coordLabel = new JLabel();
-        hSpacer1 = new JPanel(null);
         luogoCheckBox = new JCheckBox();
         nomeLuogoCheckBox = new JCheckBox();
         coordinateCheckBox = new JCheckBox();
+        addSoggettoButton = new JButton();
+        vediSoggettiButton = new JButton();
 
         //======== this ========
         var contentPane = getContentPane();
@@ -391,11 +418,16 @@ public class CaricaFoto extends JFrame {
             //---- coordinateCheckBox ----
             coordinateCheckBox.setEnabled(false);
 
+            //---- addSoggettoButton ----
+            addSoggettoButton.setText("+");
+
+            //---- vediSoggettiButton ----
+            vediSoggettiButton.setText("VEDI SOGGETTI");
+
             GroupLayout panel1Layout = new GroupLayout(panel1);
             panel1.setLayout(panel1Layout);
             panel1Layout.setHorizontalGroup(
                 panel1Layout.createParallelGroup()
-                    .addComponent(hSpacer1, GroupLayout.DEFAULT_SIZE, 708, Short.MAX_VALUE)
                     .addGroup(panel1Layout.createSequentialGroup()
                         .addGap(36, 36, 36)
                         .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
@@ -440,9 +472,11 @@ public class CaricaFoto extends JFrame {
                             .addComponent(luogoCheckBox))
                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(panel1Layout.createParallelGroup()
+                            .addComponent(addSoggettoButton, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(nomeLuogoCheckBox, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
                             .addComponent(coordinateCheckBox)
-                            .addComponent(nomeLuogoCheckBox, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 77, Short.MAX_VALUE))
+                            .addComponent(vediSoggettiButton, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE))
+                        .addGap(66, 71, Short.MAX_VALUE))
             );
             panel1Layout.setVerticalGroup(
                 panel1Layout.createParallelGroup()
@@ -466,11 +500,13 @@ public class CaricaFoto extends JFrame {
                                 .addGap(18, 18, 18)
                                 .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(categoriaSoggList, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(label3))
+                                    .addComponent(label3)
+                                    .addComponent(addSoggettoButton))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(nomeSoggTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(nomeSoggLabel))
+                                    .addComponent(nomeSoggLabel)
+                                    .addComponent(vediSoggettiButton))
                                 .addGap(18, 18, 18)
                                 .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(selDisp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -488,8 +524,7 @@ public class CaricaFoto extends JFrame {
                         .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                             .addComponent(confermaButton)
                             .addComponent(goBackButton))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(hSpacer1, GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))
+                        .addContainerGap(27, Short.MAX_VALUE))
             );
         }
 
@@ -529,9 +564,10 @@ public class CaricaFoto extends JFrame {
     private JTextField nomeLuogoText;
     private JLabel nomeLuogoLabel;
     private JLabel coordLabel;
-    private JPanel hSpacer1;
     private JCheckBox luogoCheckBox;
     private JCheckBox nomeLuogoCheckBox;
     private JCheckBox coordinateCheckBox;
+    private JButton addSoggettoButton;
+    private JButton vediSoggettiButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

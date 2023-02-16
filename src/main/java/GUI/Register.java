@@ -73,8 +73,8 @@ public class Register {
            @Override
            public void actionPerformed(ActionEvent e) {
                frame.setVisible(false);
-               frameChiamante.setVisible(true);
                frame.dispose();
+               frameChiamante.setVisible(true);
            }
        });
 

@@ -9,8 +9,8 @@ new FormModel {
 		} ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {comp hSpacer1::l::708:x, seq l {space :p:36:p, par t {seq {comp goBackButton:::p::p, space :::p, comp confermaButton:::p::p}, seq t {comp fotoPanel:::p::p, space :p:34:p, par t {seq t {comp nomeSoggLabel:::p::p, space s:::p, comp nomeSoggTextField:::p:105:p}, seq t {comp coordLabel:::p:78:p, space :::p, comp latitudineText:::p:66:p, space :::p, comp longitudineText:::p:69:p}, seq t {comp nomeLuogoLabel:::p:92:p, space :::p, comp nomeLuogoText:::p:69:p}, seq t {comp label3:::p:74:p, space :::p, comp categoriaSoggList:::p::p}, seq t {comp privataSwitch:::p:86:p, space u:::p, comp apriFoto:::p::p}, seq t {comp tagsLabel:::p::p, space s:::p, comp tags:::p:140:p}, seq {comp dispLabel:::p::p, space :::p, comp selDisp:::p:157:p}}}, comp luogoCheckBox::t:p::p}, space u:::p, par l {comp coordinateCheckBox:::p::p, comp nomeLuogoCheckBox:::p:29:p}, space :0:77:x}}"
-				"$verticalGroup": "par l {seq t {space :p:21:p, comp luogoCheckBox:::p::p, space :::p, par l {seq {par b {comp nomeLuogoText::b:p::p, comp nomeLuogoLabel::b:p::p, comp nomeLuogoCheckBox::b:p::p}, par b {comp longitudineText::b:p::p, comp latitudineText::b:p::p, comp coordLabel::b:p::p, seq l {space :p:7:p, comp coordinateCheckBox:::p::p}}, space s:::p, par b {comp categoriaSoggList::b:p::p, comp label3::b:p::p}, space u:::p, par b {comp nomeSoggTextField::b:p::p, comp nomeSoggLabel::b:p::p}, space s:::p, par b {comp selDisp::b:p::p, comp dispLabel::b:p::p}, space :p:12:p, par b {comp tags::b:p::p, comp tagsLabel::b:p::p}, space s:::p, par b {comp apriFoto::b:p::p, comp privataSwitch::b:p::p}}, comp fotoPanel:::p::p}, space s:::p, par b {comp confermaButton::b:p::p, comp goBackButton::b:p::p}, space u:::p, comp hSpacer1::::85:x}}"
+				"$horizontalGroup": "par l {seq l {space :p:36:p, par t {seq {comp goBackButton:::p::p, space :::p, comp confermaButton:::p::p}, seq t {comp fotoPanel:::p::p, space :p:34:p, par t {seq t {comp nomeSoggLabel:::p::p, space s:::p, comp nomeSoggTextField:::p:105:p}, seq t {comp coordLabel:::p:78:p, space :::p, comp latitudineText:::p:66:p, space :::p, comp longitudineText:::p:69:p}, seq t {comp nomeLuogoLabel:::p:92:p, space :::p, comp nomeLuogoText:::p:69:p}, seq t {comp label3:::p:74:p, space :::p, comp categoriaSoggList:::p::p}, seq t {comp privataSwitch:::p:86:p, space u:::p, comp apriFoto:::p::p}, seq t {comp tagsLabel:::p::p, space s:::p, comp tags:::p:140:p}, seq {comp dispLabel:::p::p, space :::p, comp selDisp:::p:157:p}}}, comp luogoCheckBox::t:p::p}, space u:::p, par l {comp addSoggettoButton:::p:29:p, comp nomeLuogoCheckBox:::p:29:p, comp coordinateCheckBox::l:p::p, comp vediSoggettiButton::l:p:105:p}, space :66:71:x}}"
+				"$verticalGroup": "par l {seq t {space :p:21:p, comp luogoCheckBox:::p::p, space :::p, par l {seq {par b {comp nomeLuogoText::b:p::p, comp nomeLuogoLabel::b:p::p, comp nomeLuogoCheckBox::b:p::p}, par b {comp longitudineText::b:p::p, comp latitudineText::b:p::p, comp coordLabel::b:p::p, seq l {space :p:7:p, comp coordinateCheckBox:::p::p}}, space s:::p, par b {comp categoriaSoggList::b:p::p, comp label3::b:p::p, comp addSoggettoButton::b:p::p}, space u:::p, par b {comp nomeSoggTextField::b:p::p, comp nomeSoggLabel::b:p::p, comp vediSoggettiButton::b:p::p}, space s:::p, par b {comp selDisp::b:p::p, comp dispLabel::b:p::p}, space :p:12:p, par b {comp tags::b:p::p, comp tagsLabel::b:p::p}, space s:::p, par b {comp apriFoto::b:p::p, comp privataSwitch::b:p::p}}, comp fotoPanel:::p::p}, space s:::p, par b {comp confermaButton::b:p::p, comp goBackButton::b:p::p}, space ::27:x}}"
 			} ) {
 				name: "panel1"
 				add( new FormComponent( "javax.swing.JButton" ) {
@@ -87,9 +87,6 @@ new FormModel {
 					name: "coordLabel"
 					"text": "Coordinate :"
 				} )
-				add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
-					name: "hSpacer1"
-				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "luogoCheckBox"
 					"text": "Inserisci luogo?"
@@ -102,10 +99,18 @@ new FormModel {
 					name: "coordinateCheckBox"
 					"enabled": false
 				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "addSoggettoButton"
+					"text": "+"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "vediSoggettiButton"
+					"text": "VEDI SOGGETTI"
+				} )
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 710, 500 )
+			"size": new java.awt.Dimension( 780, 430 )
 		} )
 	}
 }

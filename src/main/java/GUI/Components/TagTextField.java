@@ -55,7 +55,6 @@ public class TagTextField extends JTextField {
             s.printStackTrace();
         }
         suggestions = controller.getUsernameFromUtente(utenti);
-        System.out.println(suggestions);
         suggestionList = new JList(suggestions.toArray());
         // inizializza l'oggetto JPopupMenu e lo rende visibile quando si clicca con il mouse sulla JList
         suggestionPopup = new JPopupMenu();

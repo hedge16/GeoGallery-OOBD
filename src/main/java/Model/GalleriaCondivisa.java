@@ -2,12 +2,12 @@ package Model;
 
 import java.util.ArrayList;
 
-public class Galleria_Condivisa {
+public class GalleriaCondivisa {
     private int codGalleria;
     private String nomeGalleria;
     private ArrayList<String> utenti; // chiavi esterne
 
-    public Galleria_Condivisa(int codGalleria, String nomeGalleria) {
+    public GalleriaCondivisa(int codGalleria, String nomeGalleria) {
         this.codGalleria = codGalleria;
         this.nomeGalleria = nomeGalleria;
         this.utenti = new ArrayList<String>();

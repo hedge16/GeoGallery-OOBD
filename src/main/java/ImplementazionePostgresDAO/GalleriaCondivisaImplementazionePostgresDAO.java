@@ -50,4 +50,6 @@ public class GalleriaCondivisaImplementazionePostgresDAO implements Galleria_con
         connection.close();
         return codGalleria;
     }
+
+
 }

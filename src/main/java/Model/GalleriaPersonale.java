@@ -2,12 +2,12 @@ package Model;
 
 import java.util.ArrayList;
 
-public class Galleria_personale {
+public class GalleriaPersonale {
     private int codGalleria;
     private String proprietario;
     private ArrayList<Foto> foto; // chiavi esterne
 
-    public Galleria_personale(int codGalleria, String proprietario) {
+    public GalleriaPersonale(int codGalleria, String proprietario) {
         this.codGalleria = codGalleria;
         this.proprietario = proprietario;
         this.foto = new ArrayList<>();

@@ -35,7 +35,7 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
 
         try {
             // Prepara la query per selezionare le foto con l'autore specificato
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM galleria_schema.foto WHERE autorescatto = ?;");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM galleria_schema.foto WHERE autorescatto = ? AND rimossa = false;");
             ps.setString(1, username);
             // Esegue la query
             ResultSet rs = ps.executeQuery();
@@ -51,14 +51,13 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
                 String autore = rs.getString(6);
                 int codDispositivo = rs.getInt(7);
                 byte[] barr = rs.getBytes(8);
-                int codLuogo = rs.getInt(9);
                 // Crea un oggetto InputStream a partire dall'array di byte
                 ByteArrayInputStream bis = new ByteArrayInputStream(barr);
                 // Crea un oggetto ImageIcon a partire dallo stream di byte
                 ImageIcon immagine = new ImageIcon(ImageIO.read(bis));
                 bis.close();
                 // Crea un oggetto Foto con i dati recuperati
-                Foto foto = new Foto(codFoto, privata, rimossa, dataScatto, codGalleria, autore, codDispositivo, immagine,codLuogo);
+                Foto foto = new Foto(codFoto, privata, rimossa, dataScatto, codGalleria, autore, codDispositivo, immagine);
                 // Aggiunge l'oggetto Foto alla lista
                 photos.add(foto);
             }
@@ -87,7 +86,7 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
      * @throws FileNotFoundException se il file specificato dal percorso non esiste o non può essere aperto
      */
     @Override
-    public int inserisciFotoDB(boolean privata, boolean rimossa, Date dataScatto, int codgalleriap, String autore, int codDispositivo, String percorsoFoto, int codLuogo) throws SQLException, FileNotFoundException {
+    public int inserisciFotoDB(boolean privata, boolean rimossa, Date dataScatto, int codgalleriap, String autore, int codDispositivo, String percorsoFoto) throws SQLException, FileNotFoundException {
         int codFoto = -1;
         try {
 
@@ -96,7 +95,7 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
             // Crea un oggetto InputStream a partire dal file
             FileInputStream fis = new FileInputStream(file);
             // Prepara la query di inserimento
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO galleria_schema.foto VALUES (DEFAULT,?, ?, ?, ?, ?, ?, ?, ?);");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO galleria_schema.foto VALUES (DEFAULT,?, ?, ?, ?, ?, ?, ?);");
             // Imposta i valori dei parametri della query
             ps.setBoolean(1, privata);
             ps.setBoolean(2, rimossa);
@@ -106,7 +105,6 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
             ps.setString(5, autore);
             ps.setInt(6, codDispositivo);
             ps.setBinaryStream(7, fis, (int) file.length());
-            ps.setInt(8, codLuogo);
             // Esegue la query di inserimento
             ps.executeUpdate();
 
@@ -124,6 +122,7 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
 
             // Chiude lo stream e la connessione al database
             fis.close();
+            rs.close();
             connection.close();
             return codFoto;
 
@@ -141,7 +140,7 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
 
     @Override
     public void eliminaFotoDB(int codFoto) throws SQLException {
-        PreparedStatement ps = connection.prepareStatement("DELETE FROM galleria_schema.foto WHERE codFoto = ?;");
+        PreparedStatement ps = connection.prepareStatement("UPDATE galleria_schema.foto SET rimossa = true WHERE codFoto = ?;");
         ps.setInt(1, codFoto);
         ps.executeUpdate();
         connection.close();
@@ -163,20 +162,101 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
                 String autore = rs.getString(6);
                 int codDispositivo = rs.getInt(7);
                 byte[] barr = rs.getBytes(8);
-                int codLuogo = rs.getInt(9);
                 // Crea un oggetto InputStream a partire dall'array di byte
                 ByteArrayInputStream bis = new ByteArrayInputStream(barr);
                 // Crea un oggetto ImageIcon a partire dallo stream di byte
                 ImageIcon immagine = new ImageIcon(ImageIO.read(bis));
                 bis.close();
                 // Crea un oggetto Foto con i dati recuperati
-                foto = new Foto(codFoto, privata, rimossa, dataScatto, codGalleria, autore, codDispositivo, immagine, codLuogo);
+                foto = new Foto(codFoto, privata, rimossa, dataScatto, codGalleria, autore, codDispositivo, immagine);
             }
             rs.close();
+            connection.close();
             return foto;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    @Override
+    public void setPrivacyDB(int codfoto, boolean state) throws SQLException {
+        try {
+            PreparedStatement ps = connection.prepareStatement("UPDATE galleria_schema.foto SET privata = ? WHERE codFoto = ?;");
+            ps.setBoolean(1, state);
+            ps.setInt(2, codfoto);
+            ps.executeUpdate();
+            connection.close();
+        } catch (SQLException s) {
+            s.printStackTrace();
+        }
+    }
+
+    @Override
+    public ArrayList<Foto> ricercaFotoPerLuogo (String nomeLuogo) throws SQLException {
+        ArrayList<Foto> photos = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM galleria_schema.foto WHERE codFoto IN (SELECT codFoto FROM galleria_schema.presenzaLuogo WHERE codLuogo = (SELECT codLuogo FROM galleria_schema.luogo WHERE nomeLuogo = ?)) AND privata = false AND rimossa = false;");
+            ps.setString(1, nomeLuogo);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int codFoto = rs.getInt(1);
+                boolean privata = rs.getBoolean(2);
+                boolean rimossa = rs.getBoolean(3);
+                Date dataScatto = rs.getDate(4);
+                int codGalleria = rs.getInt(5);
+                String autore = rs.getString(6);
+                int codDispositivo = rs.getInt(7);
+                byte[] barr = rs.getBytes(8);
+
+                ImageIcon img = new ImageIcon(barr);
+                Foto f = new Foto(codFoto, privata, rimossa, dataScatto, codGalleria, autore, codDispositivo, img);
+                photos.add(f);
+
+            }
+            rs.close();
+            connection.close();
+            return photos;
+
+        } catch (SQLException s) {
+            s.printStackTrace();
+            throw new SQLException();
+        }
+
+    }
+
+    @Override
+    public ArrayList<Foto> ricercaFotoPerSoggetto(String categoria, String nome) throws SQLException {
+        ArrayList<Foto> photos = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM galleria_schema.foto WHERE codFoto IN (SELECT codFoto FROM galleria_schema.presenzaSoggetto WHERE codSogg = (SELECT codSogg FROM galleria_schema.soggettofoto WHERE categoria = ? AND nome = ?)) AND privata = false AND rimossa = false;");
+            ps.setString(1, categoria);
+            ps.setString(2, nome);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int codFoto = rs.getInt(1);
+                boolean privata = rs.getBoolean(2);
+                boolean rimossa = rs.getBoolean(3);
+                Date dataScatto = rs.getDate(4);
+                int codGalleria = rs.getInt(5);
+                String autore = rs.getString(6);
+                int codDispositivo = rs.getInt(7);
+                byte[] barr = rs.getBytes(8);
+
+                ImageIcon img = new ImageIcon(barr);
+                Foto f = new Foto(codFoto, privata, rimossa, dataScatto, codGalleria, autore, codDispositivo, img);
+                photos.add(f);
+
+            }
+            rs.close();
+            connection.close();
+            return photos;
+
+        } catch (SQLException s) {
+            s.printStackTrace();
+            throw new SQLException();
         }
     }
 

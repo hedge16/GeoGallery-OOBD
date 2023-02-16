@@ -5,6 +5,7 @@ import Database.ConnessioneDatabase;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class SoggettoFotoImplementazionePostgresDAO implements SoggettoFotoDAO {
@@ -19,12 +20,21 @@ public class SoggettoFotoImplementazionePostgresDAO implements SoggettoFotoDAO {
 
 
     @Override
-    public void aggiungiSoggettoFotoDB(String categoria, String nomeSogg) throws SQLException {
+    public int aggiungiSoggettoFotoDB(String categoria, String nomeSogg) throws SQLException {
         try{
             PreparedStatement ps = connection.prepareStatement("INSERT INTO galleria_schema.soggettofoto VALUES (DEFAULT,?,'"+categoria+"');");
             ps.setString(1, nomeSogg);
             ps.executeUpdate();
+
+            ps = connection.prepareStatement("SELECT codSogg FROM galleria_schema.soggettofoto ORDER BY codSogg DESC LIMIT 1;");
+            ResultSet rs = ps.executeQuery();
+            int codSogg = -1;
+            while (rs.next()){
+                codSogg = rs.getInt(1);
+            }
+            rs.close();
             connection.close();
+            return codSogg;
         } catch (SQLException s){
             s.printStackTrace();
             throw new SQLException();

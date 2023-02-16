@@ -62,11 +62,11 @@ public class Controller {
         return photos;
     }
 
-    public int aggiungiFoto (boolean privata, boolean rimossa, Date dataScatto, int codgalleriap, String autore, int codDispositivo, String percorsoFoto, int codLuogo) throws SQLException, FileNotFoundException {
+    public int aggiungiFoto (boolean privata, boolean rimossa, Date dataScatto, int codgalleriap, String autore, int codDispositivo, String percorsoFoto) throws SQLException, FileNotFoundException {
         int codFoto = -1;
         FotoDAO u = new FotoImplementazionePostgresDAO();
         try{
-            codFoto = u.inserisciFotoDB(privata, rimossa, dataScatto, codgalleriap, autore, codDispositivo, percorsoFoto, codLuogo);
+            codFoto = u.inserisciFotoDB(privata, rimossa, dataScatto, codgalleriap, autore, codDispositivo, percorsoFoto);
             if (codFoto == -1){
                 throw new SQLException();
             }
@@ -163,10 +163,12 @@ public class Controller {
         return categorie;
     }
 
-    public void aggiungiSoggettoFoto (String categoria, String nomeSogg) throws SQLException{
+    public int aggiungiSoggettoFoto (String categoria, String nomeSogg) throws SQLException{
         SoggettoFotoDAO s = new SoggettoFotoImplementazionePostgresDAO();
+        int codSogg;
         try{
-            s.aggiungiSoggettoFotoDB(categoria, nomeSogg);
+            codSogg = s.aggiungiSoggettoFotoDB(categoria, nomeSogg);
+            return codSogg;
         }catch (SQLException s1){
             s1.printStackTrace();
             throw new SQLException();
@@ -231,6 +233,62 @@ public class Controller {
         }
         return null;
 
+    }
+
+    public void setPrivacyDB (int codfoto, boolean state) throws SQLException {
+        try{
+            FotoDAO f = new FotoImplementazionePostgresDAO();
+            f.setPrivacyDB(codfoto, state);
+        } catch (SQLException s){
+            s.printStackTrace();
+            throw new SQLException();
+        }
+
+    }
+
+    public ArrayList<Foto> ricercaFotoPerLuogo (String input) throws SQLException{
+        ArrayList<Foto> photos;
+        try {
+            FotoDAO f = new FotoImplementazionePostgresDAO();
+            photos = f.ricercaFotoPerLuogo(input);
+            return photos;
+        } catch (SQLException s) {
+            s.printStackTrace();
+            throw new SQLException();
+        }
+
+    }
+
+    public ArrayList<Foto> ricercaFotoPerSoggetto (String categoria, String nome) throws SQLException{
+        ArrayList<Foto> photos;
+        try {
+            FotoDAO f = new FotoImplementazionePostgresDAO();
+            photos = f.ricercaFotoPerSoggetto(categoria, nome);
+            return photos;
+        } catch (SQLException s) {
+            s.printStackTrace();
+            throw new SQLException();
+        }
+
+    }
+
+    public void aggiungiPresenzaSoggetto (int codFoto, int codSogg) throws SQLException{
+        PresenzaSoggettoDAO ps = new PresenzaSoggettoImplementazionePostgresDAO();
+        try {
+            ps.aggiungiPresenzaSoggetto(codFoto, codSogg);
+        } catch (SQLException s) {
+            s.printStackTrace();
+            throw new SQLException();
+        }
+    }
+
+    public void aggiungiPresenzaLuogo (int codFoto, int codLuogo) {
+        PresenzaLuogoDAO pl = new PresenzaLuogoImplementazionePostgresDAO();
+        try {
+            pl.aggiungiPresenzaLuogo(codFoto, codLuogo);
+        } catch (SQLException s) {
+            s.printStackTrace();
+        }
     }
 
 }

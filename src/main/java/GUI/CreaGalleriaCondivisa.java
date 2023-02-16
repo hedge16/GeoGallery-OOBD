@@ -17,17 +17,17 @@ public class CreaGalleriaCondivisa extends JFrame {
     private ArrayList<Foto> photos;
     FotoPanel fotoPanel;
 
-    public CreaGalleriaCondivisa (String username, Controller controller, JFrame frameChiamante, ArrayList<Foto> photos) {
+    public CreaGalleriaCondivisa (String username, Controller controller, Home home, ArrayList<Foto> photos) {
 
         this.photos = photos;
-        fotoPanel = new FotoPanel(photos, false, controller);
+        fotoPanel = new FotoPanel(photos, false, controller, username, home);
         initComponents(controller);
 
         mainFrame = new JFrame("Crea galleria condivisa");
         mainFrame.setContentPane(rootPane);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.pack();
-        mainFrame.setLocationRelativeTo(frameChiamante);
+        mainFrame.setLocationRelativeTo(home.mainFrame);
 
         confermaButton.addActionListener(new ActionListener() {
             @Override
@@ -42,7 +42,7 @@ public class CreaGalleriaCondivisa extends JFrame {
                     }
                     mainFrame.setVisible(false);
                     mainFrame.dispose();
-                    frameChiamante.setVisible(true);
+                    home.mainFrame.setVisible(true);
                 } catch (SQLException s) {
                     s.printStackTrace();
                     JOptionPane.showMessageDialog(mainFrame, "Errore di connessione col database.", "Errore", JOptionPane.ERROR_MESSAGE);
@@ -56,7 +56,7 @@ public class CreaGalleriaCondivisa extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 mainFrame.setVisible(false);
                 mainFrame.dispose();
-                frameChiamante.setVisible(true);
+                home.mainFrame.setVisible(true);
             }
         });
 

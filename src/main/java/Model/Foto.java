@@ -14,10 +14,9 @@ public class Foto {
     private int codDispositivo;//chiave esterna
     private ArrayList<SoggettoFoto> soggetti;
     private ImageIcon foto;
-    int codLuogo;
 
 
-    public Foto(int codFoto, boolean privata, boolean rimossa, Date d, int codGalleria, String autore, int codDispositivo, ImageIcon foto, int codLuogo) {
+    public Foto(int codFoto, boolean privata, boolean rimossa, Date d, int codGalleria, String autore, int codDispositivo, ImageIcon foto) {
         this.codFoto = codFoto;
         this.privata = privata;
         this.rimossa = rimossa;
@@ -26,7 +25,6 @@ public class Foto {
         this.autore = autore;
         this.codDispositivo = codDispositivo;
         this.foto = foto;
-        this.codLuogo = codLuogo;
     }
 
     public boolean isPrivata() {
@@ -56,7 +54,7 @@ public class Foto {
     public void setDispositivo(int dispositivo) {
         this.codDispositivo = dispositivo;
     }
-    public void aggiungiSoggetto (int idSogg, String nome, CategoriaSoggetto categoria) {
+    public void aggiungiSoggetto (int idSogg, String nome, String categoria) {
         soggetti.add(new SoggettoFoto(idSogg, nome, categoria));
     };
 
@@ -103,13 +101,6 @@ public class Foto {
         this.soggetti = soggetti;
     }
 
-    public int getCodLuogo() {
-        return codLuogo;
-    }
-
-    public void setCodLuogo(int codLuogo) {
-        this.codLuogo = codLuogo;
-    }
 
 
 

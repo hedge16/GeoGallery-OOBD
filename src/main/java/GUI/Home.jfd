@@ -4,13 +4,13 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {comp panel::l:::x}"
+			"$horizontalGroup": "par l {seq t {space :0:0:x, comp panel:::p::p}}"
 			"$verticalGroup": "par l {comp panel::t:::x}"
 		} ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space ::32:x, par l:::p {comp scrollPanel::::323:x, comp benvenutoLabel::::323:x}, par t {seq t {space :p:75:p, par l {comp caricaFoto::l:::x, seq {par l {comp label1:::p::p, comp creaGallCButton::l:p::p}, space :0:0:x}}}, seq t {space :0:0:x, comp label2:::p::p, space :::p, comp searchBar:::p:169:p}}, space ::51:x}}"
-				"$verticalGroup": "par l {seq {space ::14:x, par t {seq {par b {comp searchBar::b:p::p, comp label2::b:p::p}, space :p:63:p, comp label1:::p::p, space :p:255:p, comp creaGallCButton:::p::p, space u:::p, comp caricaFoto:::p:36:p}, seq {comp benvenutoLabel:::p::p, space :::p, comp scrollPanel:::p:409:p}}, space ::23:x}}"
+				"$horizontalGroup": "par l {seq {space :p:28:p, par l:::p {comp scrollPanel:::::x, comp benvenutoLabel:::p:323:p}, space ::37:x, par l {seq t {comp ricercaComboBox:::p::p, space :::p, comp searchText:::p:169:p}, comp cercaButton::t:p::p, par l:t {comp gallerieCondiviseBox:::p:153:p, par l:::p {comp creaGallCButton::t::0:x, comp caricaFoto::t:::x, comp label1::t:::x}}}, space ::92:x}}"
+				"$verticalGroup": "par l {seq {space :::x, par l {seq {comp benvenutoLabel:::p::p, space :::p, comp scrollPanel:::p:409:p}, seq {par b {comp searchText::b:p::p, comp ricercaComboBox::b:p::p}, space u:::p, comp cercaButton:::p::p, space :p:197:p, comp label1:::p::p, space u:::p, comp gallerieCondiviseBox:::p::p, space :p:45:p, comp creaGallCButton:::p::p, space u:::p, comp caricaFoto:::p:36:p}}, space ::27:x}}"
 			} ) {
 				name: "panel"
 				"background": new java.awt.Color( 42, 60, 76, 255 )
@@ -23,6 +23,7 @@ new FormModel {
 				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 					name: "scrollPanel"
 					"background": new java.awt.Color( 255, 153, 0, 255 )
+					"toolTipText": "Fai doppio-click per aprire una foto"
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "benvenutoLabel"
@@ -31,11 +32,11 @@ new FormModel {
 					"font": new java.awt.Font( "Futura Bk BT", 0, 25 )
 				} )
 				add( new FormComponent( "javax.swing.JTextField" ) {
-					name: "searchBar"
-					"text": "@username o #luogo"
+					name: "searchText"
 					"foreground": new java.awt.Color( 204, 204, 204, 255 )
 					"caretColor": new java.awt.Color( 204, 204, 204, 255 )
-					"background": new java.awt.Color( 102, 102, 102, 255 )
+					"background": new java.awt.Color( 51, 51, 51, 255 )
+					"toolTipText": "Inserisci un testo"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "creaGallCButton"
@@ -45,10 +46,15 @@ new FormModel {
 					name: "label1"
 					"text": "Le tue galleria condivise :"
 				} )
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "label2"
-					"maximumSize": new java.awt.Dimension( 30, 30 )
-					"preferredSize": new java.awt.Dimension( 30, 30 )
+				add( new FormComponent( "javax.swing.JComboBox" ) {
+					name: "ricercaComboBox"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "cercaButton"
+					"text": "CERCA"
+				} )
+				add( new FormComponent( "javax.swing.JComboBox" ) {
+					name: "gallerieCondiviseBox"
 				} )
 			} )
 			menuBar: new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {
@@ -65,8 +71,8 @@ new FormModel {
 				} )
 			}
 		}, new FormLayoutConstraints( null ) {
-			"location": new java.awt.Point( 105, 80 )
-			"size": new java.awt.Dimension( 690, 535 )
+			"location": new java.awt.Point( 80, 80 )
+			"size": new java.awt.Dimension( 715, 535 )
 		} )
 	}
 }

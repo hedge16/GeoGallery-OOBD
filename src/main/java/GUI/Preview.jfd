@@ -4,13 +4,13 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {comp panel1::l:::x}"
-			"$verticalGroup": "par l {seq l {comp panel1:::p:290:p, space :0:0:x}}"
+			"$horizontalGroup": "par l {seq l {comp panel1:::p::p, space :0:0:x}}"
+			"$verticalGroup": "par l {seq l {comp panel1:::p::p, space :0:0:x}}"
 		} ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {par t {seq {space :::x, comp changePrivacyButton:::p::p, space u:::p, comp deleteButton:::p::p}, seq {space :p:47:p, comp miniatura:::p:184:p, space :p:109:p, par l {seq {comp statoLabel:::p::p, space :p:103:p}, seq {par l {comp dataLabel::l:::x, comp dispLabel::l:p:114:p}, space :::p}}, par l {comp dataINLabel:::p::p, comp dispINLabel:::p::p, comp statoINLabel:::p::p}}}, space ::53:x}}"
-				"$verticalGroup": "par l {seq {par l {seq {space :p:63:p, par t {seq {comp dataINLabel:::p::p, space s:::p, comp dispINLabel:::p::p}, seq {comp dataLabel:::p::p, space s:::p, comp dispLabel:::p::p}}, space s:::p, par b {comp statoLabel::b:p::p, comp statoINLabel::b:p::p}}, seq l {space :p:39:p, comp miniatura:::p:172:p}}, space :::x, par b {comp deleteButton::b:p::p, comp changePrivacyButton::b:p::p}, space :p:74:p}}"
+				"$horizontalGroup": "par l {seq {space :p:47:p, comp miniatura:::p:275:p, space :p:41:p, par l {seq t {par l {seq l {comp statoLabel:::p::p, space :p:103:p}, seq l {par l {comp dataLabel::l:::x, comp dispLabel::l:p:114:p}, space :::p}}, par l {comp dataINLabel:::p::p, comp dispINLabel:::p::p, comp statoINLabel:::p::p}}, seq t {space :0:0:x, par l:::p {comp deleteButton:::::x, comp changePrivacyButton:::::x}}}, space :p:59:p}}"
+				"$verticalGroup": "par l {seq {space :p:39:p, par l:::p {comp miniatura:::p:275:p, seq {par t {seq t {comp dataINLabel:::p::p, space s:::p, comp dispINLabel:::p::p}, seq t {comp dataLabel:::p::p, space s:::p, comp dispLabel:::p::p}}, space s:::p, par b {comp statoLabel::b:p::p, comp statoINLabel::b:p::p}, space :::x, comp changePrivacyButton:::p::p, space :::p, comp deleteButton:::p::p}}, space ::74:x}}"
 			} ) {
 				name: "panel1"
 				add( new FormComponent( "javax.swing.JLabel" ) {
@@ -52,7 +52,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 560, 320 )
+			"size": new java.awt.Dimension( 590, 420 )
 		} )
 	}
 }

@@ -4,6 +4,7 @@
 
 package GUI;
 
+import GUI.Components.FotoPanel;
 import Model.Foto;
 import org.imgscalr.Scalr;
 
@@ -19,12 +20,21 @@ import Controller.Controller;
 public class Preview extends JFrame {
 
     public JFrame frame;
-    public Preview (Controller controller, Foto f) {
+    public Preview (Controller controller, Foto f, Home home) {
 
         initComponents();
-        Image newimg = f.getFoto().getImage().getScaledInstance(184, 172, Image.SCALE_SMOOTH);
+        Image newimg = f.getFoto().getImage().getScaledInstance(275, 275, Image.SCALE_SMOOTH);
         ImageIcon nuovaFoto = new ImageIcon(newimg);
         miniatura.setIcon(nuovaFoto);
+
+        if (!f.isPrivata()){
+            statoINLabel.setText("Pubblica");
+        } else {
+            statoINLabel.setText("Privata");
+        }
+
+        dispINLabel.setText(String.valueOf(f.getDispositivo()));
+        dataINLabel.setText(String.valueOf(f.getDataScatto()));
 
 
         frame = new JFrame();
@@ -37,15 +47,43 @@ public class Preview extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    controller.eliminaFotoDB(f);
-                    JOptionPane.showMessageDialog(frame, "Foto eliminata con successo.", "", JOptionPane.WARNING_MESSAGE);
+                    if (JOptionPane.showConfirmDialog(frame, "Sei sicuro?") == JOptionPane.OK_OPTION) {
+                        controller.eliminaFotoDB(f);
+                        home.mainFrame.setVisible(false);
+                        home.mainFrame.dispose();
+                        Home newHome = new Home(controller, home, f.getAutore());
+                        JOptionPane.showMessageDialog(frame, "Foto eliminata con successo.", "", JOptionPane.WARNING_MESSAGE);
+                        frame.setVisible(false);
+                        frame.dispose();
+                        newHome.mainFrame.setVisible(true);
+                    }
+                } catch (SQLException s) {
+                    s.printStackTrace();
+                    frame.setVisible(false);
+                    frame.dispose();
+                }
+            }
+        });
+
+        changePrivacyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    controller.setPrivacyDB(f.getCodFoto(), !f.isPrivata());
+                    JOptionPane.showMessageDialog(panel1, "Privacy cambiata correttamente", "OK", JOptionPane.OK_OPTION);
                     frame.setVisible(false);
                     frame.dispose();
                 } catch (SQLException s) {
                     s.printStackTrace();
+                    JOptionPane.showMessageDialog(panel1, "Errore nella connessione col DB", "ERRORE", JOptionPane.ERROR_MESSAGE);
+                    frame.setVisible(false);
+                    frame.dispose();
                 }
+
             }
         });
+
+
 
 
 
@@ -100,16 +138,11 @@ public class Preview extends JFrame {
             panel1Layout.setHorizontalGroup(
                 panel1Layout.createParallelGroup()
                     .addGroup(panel1Layout.createSequentialGroup()
-                        .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                            .addGroup(panel1Layout.createSequentialGroup()
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(changePrivacyButton)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(deleteButton))
-                            .addGroup(panel1Layout.createSequentialGroup()
-                                .addGap(47, 47, 47)
-                                .addComponent(miniatura, GroupLayout.PREFERRED_SIZE, 184, GroupLayout.PREFERRED_SIZE)
-                                .addGap(109, 109, 109)
+                        .addGap(47, 47, 47)
+                        .addComponent(miniatura, GroupLayout.PREFERRED_SIZE, 275, GroupLayout.PREFERRED_SIZE)
+                        .addGap(41, 41, 41)
+                        .addGroup(panel1Layout.createParallelGroup()
+                            .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
                                 .addGroup(panel1Layout.createParallelGroup()
                                     .addGroup(panel1Layout.createSequentialGroup()
                                         .addComponent(statoLabel)
@@ -122,15 +155,21 @@ public class Preview extends JFrame {
                                 .addGroup(panel1Layout.createParallelGroup()
                                     .addComponent(dataINLabel)
                                     .addComponent(dispINLabel)
-                                    .addComponent(statoINLabel))))
-                        .addContainerGap(53, Short.MAX_VALUE))
+                                    .addComponent(statoINLabel)))
+                            .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(deleteButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(changePrivacyButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(59, 59, 59))
             );
             panel1Layout.setVerticalGroup(
                 panel1Layout.createParallelGroup()
                     .addGroup(panel1Layout.createSequentialGroup()
-                        .addGroup(panel1Layout.createParallelGroup()
+                        .addGap(39, 39, 39)
+                        .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                            .addComponent(miniatura, GroupLayout.PREFERRED_SIZE, 275, GroupLayout.PREFERRED_SIZE)
                             .addGroup(panel1Layout.createSequentialGroup()
-                                .addGap(63, 63, 63)
                                 .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                                     .addGroup(panel1Layout.createSequentialGroup()
                                         .addComponent(dataINLabel)
@@ -143,15 +182,12 @@ public class Preview extends JFrame {
                                 .addGap(18, 18, 18)
                                 .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(statoLabel)
-                                    .addComponent(statoINLabel)))
-                            .addGroup(panel1Layout.createSequentialGroup()
-                                .addGap(39, 39, 39)
-                                .addComponent(miniatura, GroupLayout.PREFERRED_SIZE, 172, GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(deleteButton)
-                            .addComponent(changePrivacyButton))
-                        .addGap(74, 74, 74))
+                                    .addComponent(statoINLabel))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(changePrivacyButton)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(deleteButton)))
+                        .addContainerGap(74, Short.MAX_VALUE))
             );
         }
 
@@ -159,12 +195,14 @@ public class Preview extends JFrame {
         contentPane.setLayout(contentPaneLayout);
         contentPaneLayout.setHorizontalGroup(
             contentPaneLayout.createParallelGroup()
-                .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                    .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE))
         );
         contentPaneLayout.setVerticalGroup(
             contentPaneLayout.createParallelGroup()
                 .addGroup(contentPaneLayout.createSequentialGroup()
-                    .addComponent(panel1, GroupLayout.PREFERRED_SIZE, 290, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addGap(0, 0, Short.MAX_VALUE))
         );
         pack();

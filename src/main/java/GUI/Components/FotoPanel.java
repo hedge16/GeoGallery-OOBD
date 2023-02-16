@@ -1,5 +1,6 @@
 package GUI.Components;
 
+import GUI.Home;
 import GUI.Preview;
 import Model.Foto;
 import org.imgscalr.Scalr;
@@ -23,13 +24,21 @@ public class FotoPanel extends JPanel {
     private JFrame frame;
     boolean[] isSelected;
     Controller controller;
+    private FotoPanel self;
+    private boolean isHome;
+    String username;
+    Home home;
 
     Border border = BorderFactory.createLineBorder(Color.CYAN, 1);
 
 
 
-    public FotoPanel(ArrayList<Foto> foto, boolean isHome, Controller controller) {
+    public FotoPanel(ArrayList<Foto> foto, boolean isHome, Controller controller, String username, Home home) {
 
+        this.username = username;
+        this.isHome = isHome;
+        self = this;
+        this.home = home;
         this.controller = controller;
         this.photos = foto;
         numFoto = foto.size();
@@ -114,7 +123,7 @@ public class FotoPanel extends JPanel {
                 public void mouseClicked(MouseEvent e) {
                     super.mouseClicked(e);
                     if (e.getClickCount() == 2) {
-                        Preview preview = new Preview(getController(), foto1);
+                        Preview preview = new Preview(getController(), foto1, home);
                         preview.frame.setVisible(true);
                     }
                 }
@@ -130,6 +139,9 @@ public class FotoPanel extends JPanel {
     }
 
     public void aggiungiFoto (Foto foto) {
+
+        photos.add(foto);
+
         Image image = foto.getFoto().getImage();
         ImageIcon icona = new ImageIcon(image);
         // Dimensioni dell'immagine originale
@@ -176,12 +188,13 @@ public class FotoPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 if (e.getClickCount() == 2) {
-                    Preview preview = new Preview(getController(), foto);
+                    Preview preview = new Preview(getController(), foto, home);
                     preview.frame.setVisible(true);
                 }
             }
         });
 
     }
+
 
 }

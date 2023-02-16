@@ -5,10 +5,10 @@ import java.util.ArrayList;
 public class SoggettoFoto {
     private int id;
     private String nome;
-    private CategoriaSoggetto categoria;
+    private String categoria;
 
 
-    public SoggettoFoto(int id, String nome, CategoriaSoggetto categoria) {
+    public SoggettoFoto(int id, String nome, String categoria) {
         this.id = id;
         this.nome = nome;
         this.categoria = categoria;
@@ -30,11 +30,11 @@ public class SoggettoFoto {
         this.nome = nome;
     }
 
-    public CategoriaSoggetto getCategoria() {
+    public String getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(CategoriaSoggetto categoria) {
+    public void setCategoria(String categoria) {
         this.categoria = categoria;
     }
 
