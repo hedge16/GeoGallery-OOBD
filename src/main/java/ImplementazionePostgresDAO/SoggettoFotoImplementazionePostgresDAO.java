@@ -2,11 +2,13 @@ package ImplementazionePostgresDAO;
 
 import DAO.SoggettoFotoDAO;
 import Database.ConnessioneDatabase;
+import Model.SoggettoFoto;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class SoggettoFotoImplementazionePostgresDAO implements SoggettoFotoDAO {
     private Connection connection;
@@ -39,5 +41,23 @@ public class SoggettoFotoImplementazionePostgresDAO implements SoggettoFotoDAO {
             s.printStackTrace();
             throw new SQLException();
         }
+    }
+
+    @Override
+    public ArrayList<SoggettoFoto> recuperaTuttiSoggettiDB() throws SQLException {
+        ArrayList<SoggettoFoto> soggetti = new ArrayList<>();
+        PreparedStatement ps = connection.prepareStatement("SELECT * FROM galleria_schema.soggettofoto;");
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()){
+            int codSogg = rs.getInt(1);
+            String nomeSogg = rs.getString(2);
+            String categoria = rs.getString(3);
+            SoggettoFoto sf = new SoggettoFoto(codSogg, nomeSogg, categoria);
+            soggetti.add(sf);
+        }
+        rs.close();
+        connection.close();
+        return soggetti;
     }
 }

@@ -28,8 +28,8 @@ public class VediSoggetti extends JFrame {
         mainFrame = new JFrame();
         mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         mainFrame.setContentPane(scrollPane1);
-        mainFrame.setLocationRelativeTo(frameChiamante);
         mainFrame.pack();
+        mainFrame.setLocationRelativeTo(frameChiamante);
         mainFrame.setVisible(true);
 
 

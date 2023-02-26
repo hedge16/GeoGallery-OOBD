@@ -23,10 +23,6 @@ public class Home extends JFrame  {
     Home home;
     FotoPanel fotoPanel;
 
-
-
-
-
     public Home (Controller controller, JFrame frameChiamante, String username){
 
         photos = controller.recuperaGallUtente(username);
@@ -35,7 +31,14 @@ public class Home extends JFrame  {
 
         initComponents(controller);
 
-        //ArrayList<GalleriaCondivisa> gallerieCondivise = controller.recuperaGallCondivise(username);
+        try {
+            ArrayList<GalleriaCondivisa> gallerieCondivise = controller.recuperaGallerieCondivise(username);
+            for (GalleriaCondivisa gc : gallerieCondivise) {
+                gallerieCondiviseBox.addItem(gc.getNomeGalleria());
+            }
+        } catch (SQLException s){
+            s.printStackTrace();
+        }
         searchText.setText("");
         searchText.setForeground(Color.GRAY);
 
@@ -146,11 +149,20 @@ public class Home extends JFrame  {
             }
         });
 
+        ricercaComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (ricercaComboBox.getSelectedItem().equals("Soggetto")){
+                    searchText.setForeground(Color.GRAY);
+                    searchText.setText("categoria:nome");
+                } else {
+                    searchText.setForeground(Color.GRAY);
+                    searchText.setText("nome luogo");
+                }
+            }
+        });
 
-    }
 
-    void aggiungiFotoGalleria (Foto foto) {
-        fotoPanel.aggiungiFoto(foto);
     }
 
 
@@ -179,7 +191,9 @@ public class Home extends JFrame  {
         logoutItem = new JMenuItem();
         panel = new JPanel();
         caricaFoto = new JButton();
-        scrollPanel = new JScrollPane();
+        scrollPanel = new JScrollPane(fotoPanel);
+        scrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         benvenutoLabel = new JLabel();
         searchText = new JTextField();
         creaGallCButton = new JButton();

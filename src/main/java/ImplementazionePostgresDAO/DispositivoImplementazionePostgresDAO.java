@@ -2,6 +2,7 @@ package ImplementazionePostgresDAO;
 
 import DAO.DispositivoDAO;
 import Database.ConnessioneDatabase;
+import Model.Dispositivo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,14 +26,21 @@ public class DispositivoImplementazionePostgresDAO implements DispositivoDAO {
 
 
     @Override
-    public ArrayList<String> getNomeDispDB(String username) throws SQLException {
-        ArrayList<String> dispositivi = new ArrayList<>();
-        PreparedStatement ps = connection.prepareStatement("SELECT nomeDisp FROM galleria_schema.dispositivo WHERE proprietario = ?;");
+    public ArrayList<Dispositivo> getAllDispDB(String username) throws SQLException {
+        ArrayList<Dispositivo> dispositivi = new ArrayList<>();
+        PreparedStatement ps = connection.prepareStatement("SELECT * FROM galleria_schema.dispositivo WHERE proprietario = ?;");
         ps.setString(1, username);
         ResultSet rs = ps.executeQuery();
-
+        int codDisp;
+        String nomeDisp;
+        String proprietario;
+        Dispositivo disp;
         while(rs.next()){
-            dispositivi.add(rs.getString(1));
+            codDisp = rs.getInt("coddisp");
+            nomeDisp = rs.getString("nomedisp");
+            proprietario = rs.getString("proprietario");
+            disp = new Dispositivo(codDisp, nomeDisp, proprietario);
+            dispositivi.add(disp);
         }
         rs.close();
         connection.close();
@@ -65,6 +73,25 @@ public class DispositivoImplementazionePostgresDAO implements DispositivoDAO {
             s.printStackTrace();
         }
         return codDisp;
+    }
+
+    @Override
+    public Dispositivo getDispositivo(int codDisp) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT nomedisp, proprietario FROM galleria_schema.dispositivo WHERE codDisp = ?;");
+        ps.setInt(1, codDisp);
+        ResultSet rs = ps.executeQuery();
+        String nomeDisp;
+        String proprietario;
+        Dispositivo disp = null;
+        while (rs.next()){
+            nomeDisp = rs.getString("nomedisp");
+            proprietario = rs.getString("proprietario");
+            disp = new Dispositivo(codDisp, nomeDisp, proprietario);
+        }
+        rs.close();
+        connection.close();
+        return disp;
+
     }
 
 

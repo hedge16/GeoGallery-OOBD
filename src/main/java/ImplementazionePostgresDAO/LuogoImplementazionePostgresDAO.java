@@ -2,12 +2,14 @@ package ImplementazionePostgresDAO;
 
 import DAO.LuogoDAO;
 import Database.ConnessioneDatabase;
+import Model.Luogo;
 
 import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class LuogoImplementazionePostgresDAO implements LuogoDAO {
     private Connection connection;
@@ -35,11 +37,66 @@ public class LuogoImplementazionePostgresDAO implements LuogoDAO {
             while (rs.next()){
                 codLuogo = rs.getInt(1);
             }
+            rs.close();
             connection.close();
             return codLuogo;
         } catch (SQLException s) {
             s.printStackTrace();
             throw new SQLException();
         }
+    }
+
+    @Override
+    public ArrayList<Luogo> recuperaTuttiLuoghiDB() throws SQLException {
+        ArrayList<Luogo> luoghi = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM galleria_schema.luogo");
+            ResultSet rs = ps.executeQuery();
+            Luogo luogo;
+            while (rs.next()) {
+                int codLuogo = rs.getInt(1);
+                double latitudine = rs.getDouble(2);
+                double longitudine = rs.getDouble(3);
+                String nomeLuogo = rs.getString(4);
+                luogo = new Luogo(codLuogo, nomeLuogo, latitudine, longitudine);
+                luoghi.add(luogo);
+            }
+            rs.close();
+            connection.close();
+            return luoghi;
+        } catch (SQLException s){
+            s.printStackTrace();
+        }
+        return luoghi;
+    }
+
+    @Override
+    public Luogo getLuogoFromFoto(int codfoto) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("SELECT codluogo FROM galleria_schema.presenzaluogo WHERE codfoto = ?;");
+        ps.setInt(1, codfoto);
+        ResultSet rs = ps.executeQuery();
+        int codLuogo = -1;
+        while (rs.next()){
+            codLuogo = rs.getInt(1);
+        }
+        rs.close();
+
+        ps = connection.prepareStatement("SELECT * FROM galleria_schema.luogo WHERE codLuogo = ?;");
+        ps.setInt(1, codLuogo);
+        rs = ps.executeQuery();
+        Luogo luogo = null;
+        double latitudine;
+        double longitudine;
+        String nomeLuogo;
+        while (rs.next()){
+            codLuogo = rs.getInt(1);
+            latitudine = rs.getDouble(2);
+            longitudine = rs.getDouble(3);
+            nomeLuogo = rs.getString(4);
+            luogo = new Luogo(codLuogo, nomeLuogo, latitudine, longitudine);
+        }
+        rs.close();
+        connection.close();
+        return luogo;
     }
 }

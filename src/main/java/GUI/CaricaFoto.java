@@ -7,13 +7,15 @@ import javax.swing.filechooser.FileFilter;
 
 import Controller.Controller;
 import GUI.Components.TagTextField;
+import Model.Dispositivo;
+import Model.Luogo;
 import Model.SoggettoFoto;
+import Model.Utente;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,18 +26,83 @@ public class CaricaFoto extends JFrame {
     int result=-1;
     String filePath;
     private int codFoto;
-    ArrayList<SoggettoFoto> soggetti;
-
+    ArrayList<SoggettoFoto> soggettiDB;
+    ArrayList<SoggettoFoto> nuoviSoggetti;
+    ArrayList<SoggettoFoto> soggettiSelezionatiDB;
+    private JPanel inserisciLuogoPanel;
+    private JPanel inserisciSoggettoPanel;
+    private String[] tags;
+    private Dispositivo dispositivo;
+    private ArrayList<Dispositivo> dispositivi;
+    String[] nomeDisp;
+    private Luogo luogo;
+    private Luogo nuovoLuogo;
+    private ArrayList<Luogo> luoghi;
+    Controller controller;
     public CaricaFoto (Controller controller, JFrame frameChiamante, String username, Home home) {
 
+        this.controller = controller;
+        dispositivi = null;
+        try {
+            dispositivi = controller.getAllDisp(username);
+        } catch (SQLException s) {
+            s.printStackTrace();
+        }
+        if (dispositivi != null) {
+            nomeDisp = new String[dispositivi.size() + 1];
 
-        initComponents(controller, username);
-        String[] categorie = controller.getCategorie();
-        for (int i = 0; i < categorie.length; i++){
-            categoriaSoggList.addItem(categorie[i]);
+            for (int i = 0; i < dispositivi.size(); i++) {
+                nomeDisp[i] = dispositivi.get(i).getNome();
+            }
+            nomeDisp[nomeDisp.length-1] = "<Aggiungi Dispositivo>";
+        } else {
+            nomeDisp = new String[1];
+            nomeDisp[0] = "<Aggiungi Dispositivo>";
+        }
+        initMainComponents(controller, username);
+        initLuogoComponents();
+        initSoggettoComponents();
+
+        SpinnerNumberModel latModel = new SpinnerNumberModel(0.0, -90.0, 90.0, 0.1);
+        SpinnerNumberModel lonModel = new SpinnerNumberModel(0.0, -180.0, 180.0, 0.1);
+        latitudineSpinner.setModel(latModel);
+        longitudineSpinner.setModel(lonModel);
+        luoghi = new ArrayList<>();
+        try {
+            luoghi = controller.recuperaTuttiLuoghiDB();
+        } catch (SQLException s) {
+            s.printStackTrace();
         }
 
-        soggetti = new ArrayList<>();
+        if (luoghi.isEmpty()) {
+            exLuogoComboBox.setEnabled(false);
+        } else {
+            for (Luogo l : luoghi) {
+                exLuogoComboBox.addItem("Nome: " + l.getNomeMnemonico() + " Lat: " + l.getLatitudine() + " Lon: " + l.getLatitudine());
+            }
+        }
+        String[] categorie = controller.getCategorie();
+        for (int i = 0; i < categorie.length; i++){
+            categoriaComboBox.addItem(categorie[i]);
+        }
+
+        soggettiDB = new ArrayList<>();
+        nuoviSoggetti = new ArrayList<>();
+        soggettiSelezionatiDB = new ArrayList<>();
+
+        try {
+            soggettiDB = controller.recuperaTuttiSoggettiDB();
+        } catch (SQLException s) {
+            s.printStackTrace();
+        }
+
+        for (SoggettoFoto sf : soggettiDB) {
+            dbSoggettoComboBox.addItem("Nome: " + sf.getNome() + ", Categoria: " + sf.getCategoria());
+        }
+
+
+
+
 
         mainFrame = new JFrame("Carica la tua foto");
         mainFrame.setContentPane(panel1);
@@ -118,14 +185,176 @@ public class CaricaFoto extends JFrame {
             }
         });
 
-        confermaButton.addActionListener(new ActionListener() {
+        nomeLuogoCheckBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (result == JFileChooser.APPROVE_OPTION && checkLuogo() && checkDisp() && checkSogg()) {
+                if(!nomeLuogoCheckBox.isSelected()){
+                    nomeLuogoText.setEnabled(false);
+                }else {
+                    nomeLuogoText.setEnabled(true);
+                }
+            }
+        });
+
+        coordinateCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!coordinateCheckBox.isSelected()){
+                    latitudineSpinner.setEnabled(false);
+                    longitudineSpinner.setEnabled(false);
+                }else {
+                    latitudineSpinner.setEnabled(true);
+                    longitudineSpinner.setEnabled(true);
+                }
+            }
+        });
+
+        vediSoggettiButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ArrayList<SoggettoFoto> allSoggetti = (ArrayList<SoggettoFoto>) soggettiSelezionatiDB.clone();
+                allSoggetti.addAll(nuoviSoggetti);
+                VediSoggetti vs = new VediSoggetti(allSoggetti, mainFrame);
+                vs.mainFrame.setVisible(true);
+            }
+        });
+        
+        avantiButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!tagsText.getText().equals("")) {
+                    tags = tagsText.getText().split(",");
+                } else {
+                    tags = null;
+                }
+                if (filePath != null && checkDisp() && checkTags(tags)) {
+                    mainFrame.setContentPane(luogoPanel);
+                } else if (filePath == null) {
+                    JOptionPane.showMessageDialog(mainFrame, "Inserisci un immagine", "Errore", JOptionPane.ERROR_MESSAGE);
+                } else if (!checkDisp()){
+                    JOptionPane.showMessageDialog(mainFrame, "Inserisci un dispositivo", "Errore", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(mainFrame, "Inserisci dei tag validi", "Errore", JOptionPane.ERROR_MESSAGE);
+
+                }
+
+            }
+        });
+
+        nuovoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(nuovoButton.isSelected()) {
+                    nomeLuogoCheckBox.setSelected(true);
+                    coordinateCheckBox.setSelected(true);
+                    if (esistenteButton.isSelected()) {
+                        esistenteButton.setSelected(false);
+                    }
+                    if (nessunoButton.isSelected()) {
+                        nessunoButton.setSelected(false);
+                    }
+                }
+            }
+        });
+
+        esistenteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(esistenteButton.isSelected()) {
+                    if (nessunoButton.isSelected()) {
+                        nessunoButton.setSelected(false);
+                    }
+                    if (nuovoButton.isSelected()) {
+                        nuovoButton.setSelected(false);
+                    }
+                }
+            }
+        });
+
+        nessunoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(nessunoButton.isSelected()) {
+                    if (nuovoButton.isSelected()) {
+                        nuovoButton.setSelected(false);
+                    }
+                    if (esistenteButton.isSelected()) {
+                        esistenteButton.setSelected(false);
+                    }
+                }
+            }
+        });
+
+        avantiLuogoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (nuovoButton.isSelected() || esistenteButton.isSelected() || nessunoButton.isSelected()) {
+                    if (nuovoButton.isSelected()){
+                        nuovoLuogo = new Luogo(-1, nomeLuogoText.getText(), (Double) latitudineSpinner.getValue(), (Double) longitudineSpinner.getValue());
+                    } else if (esistenteButton.isSelected()){
+                        luogo = luoghi.get(exLuogoComboBox.getSelectedIndex());
+                    }
+                    mainFrame.setContentPane(inserisciSoggettoPanel);
+                } else {
+                    JOptionPane.showMessageDialog(mainFrame, "Scegli un'opzione", "Errore", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        indietroLuogoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainFrame.setContentPane(panel1);
+            }
+        });
+
+        indietroSoggettoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainFrame.setContentPane(luogoPanel);
+            }
+        });
+
+        aggiungiSoggettoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (nomeSoggettoText.getText().isEmpty()){
+                    Border border = BorderFactory.createLineBorder(Color.RED, 1);
+                    nomeSoggettoText.setBorder(border);
+                    JOptionPane.showMessageDialog(mainFrame, "Inserisci un nome al soggetto", "Errore", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    nomeLuogoText.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
+                    SoggettoFoto newSoggetto = new SoggettoFoto(-1, nomeSoggettoText.getText(), (String)categoriaComboBox.getSelectedItem());
+                    nuoviSoggetti.add(newSoggetto);
+                }
+            }
+        });
+
+        aggiungiSoggettoDbButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean giaPresente = false;
+                for (SoggettoFoto sf : soggettiSelezionatiDB){
+                    if (soggettiDB.get(dbSoggettoComboBox.getSelectedIndex()).equals(sf)){
+                        giaPresente = true;
+                    }
+                }
+                if (!giaPresente) {
+                    soggettiSelezionatiDB.add(soggettiDB.get(dbSoggettoComboBox.getSelectedIndex()));
+                } else {
+                    JOptionPane.showMessageDialog(mainFrame, "Hai già inserito questo soggetto", "Errore", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        /* confermaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (result == JFileChooser.APPROVE_OPTION) {
 
                     // Carica l'immagine nel DB
                     try {
-                        int codLuogo = controller.aggiungiLuogoDB(Double.parseDouble(latitudineText.getText()), Double.parseDouble(longitudineText.getText()), nomeLuogoText.getText());
+                        int codLuogo = controller.aggiungiLuogoDB(Double.parseDouble((String) latitudineSpinner.getValue()), Double.parseDouble((String) latitudineSpinner.getValue()), nomeLuogoText.getText());
                         codFoto = controller.aggiungiFoto(privataSwitch.isSelected(), false, new Date(), controller.getCodG(username), username, controller.getCodDisp((String)selDisp.getSelectedItem(), username), filePath);
                         controller.aggiungiPresenzaLuogo(codFoto, codLuogo);
                         int i = 0;
@@ -191,157 +420,99 @@ public class CaricaFoto extends JFrame {
                 }
 
             }
-        });
+        }); */
 
-        luogoCheckBox.addActionListener(new ActionListener() {
+        confermaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (luogoCheckBox.isSelected()){
-                    nomeLuogoText.setEnabled(true);
-                    latitudineText.setEnabled(true);
-                    longitudineText.setEnabled(true);
-                    nomeLuogoCheckBox.setEnabled(true);
-                    coordinateCheckBox.setEnabled(true);
-                    nomeLuogoCheckBox.setSelected(true);
-                    coordinateCheckBox.setSelected(true);
-                }else {
-                    nomeLuogoText.setEnabled(false);
-                    latitudineText.setEnabled(false);
-                    longitudineText.setEnabled(false);
-                    nomeLuogoCheckBox.setEnabled(false);
-                    coordinateCheckBox.setEnabled(false);
-                    nomeLuogoCheckBox.setSelected(false);
-                    coordinateCheckBox.setSelected(false);
+                if (!soggettiSelezionatiDB.isEmpty() || !nuoviSoggetti.isEmpty()){
+                    try {
+                        if (nuovoButton.isSelected()) {
+                            controller.caricaFoto(privataSwitch.isSelected(), true, new Date(), username, dispositivi.get(selDisp.getSelectedIndex()).getId(), filePath, nuovoLuogo, nuoviSoggetti, soggettiSelezionatiDB, tags);
+                        } else {
+                            controller.caricaFoto(privataSwitch.isSelected(), false, new Date(), username, dispositivi.get(selDisp.getSelectedIndex()).getId(), filePath, luogo, nuoviSoggetti, soggettiSelezionatiDB, tags);
+                        }
+                        JOptionPane.showMessageDialog(mainFrame, "Foto caricata con successo", "", JOptionPane.INFORMATION_MESSAGE);
+                        Home home = new Home(controller, null, username);
+                        mainFrame.setVisible(true);
+                        mainFrame.dispose();
+                        home.mainFrame.setVisible(true);
+
+                    } catch (Exception s){
+                        JOptionPane.showMessageDialog(mainFrame, "Ops, qualcosa è andato storto", "Errore", JOptionPane.ERROR_MESSAGE);
+                        Home home = new Home(controller, null, username);
+                        mainFrame.setVisible(true);
+                        mainFrame.dispose();
+                        home.mainFrame.setVisible(true);
+                        s.printStackTrace();
+                    }
+
+                } else {
+                    JOptionPane.showMessageDialog(mainFrame, "Inserisci almeno un soggetto", "Errore", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
-        nomeLuogoCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (nomeLuogoCheckBox.isSelected()){
-                    nomeLuogoText.setEnabled(true);
-                }else{
-                    nomeLuogoText.setEnabled(false);
-                }
-            }
-        });
 
-        coordinateCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (coordinateCheckBox.isSelected()){
-                    latitudineText.setEnabled(true);
-                    longitudineText.setEnabled(true);
-                }else{
-                    latitudineText.setEnabled(false);
-                    longitudineText.setEnabled(false);                }
-
-            }
-        });
-        
-        addSoggettoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!nomeSoggTextField.getText().isEmpty()){
-                    SoggettoFoto s= new SoggettoFoto(0, nomeSoggTextField.getText(), (String)categoriaSoggList.getSelectedItem());
-                    soggetti.add(s);
-                    nomeSoggTextField.setText("");
-                }else{
-                    JOptionPane.showMessageDialog(mainFrame, "Inserisci un nome al Soggetto", "Errore", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-        
-        vediSoggettiButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                VediSoggetti vs = new VediSoggetti(soggetti, mainFrame);
-                vs.mainFrame.setVisible(true);
-            }
-        });
-
-
-    }
-
-    private boolean checkLuogo (){
-        if (luogoCheckBox.isSelected()) {
-            if ((latitudineText.getText().isEmpty() || longitudineText.getText().isEmpty()) && nomeLuogoCheckBox.isSelected()) {
-                return false;
-            } else if (nomeLuogoText.getText().isEmpty() && nomeLuogoCheckBox.isSelected()){
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            return true;
-        }
-
-    }
-
-    private boolean checkSogg () {
-        if(nomeSoggTextField.getText().isEmpty()){
-            return false;
-        }else {
-            return true;
-        }
     }
 
     private boolean checkDisp () {
-        String selezione = (String)selDisp.getSelectedItem();
-        if(selezione.equals("<Aggiungi dispositivo>")){
+        if(selDisp.getSelectedItem().equals("") || selDisp.getSelectedItem().equals("<Aggiungi Dispositivo>")){
             return false;
-        }else{
+        } else {
+            return true;
+        }
+    }
+
+    private boolean checkTags (String[] tags){
+        if (tags != null) {
+            boolean hasMatch;
+            int i = 0;
+            ArrayList<Utente> utenti = null;
+            try {
+                utenti = controller.leggiUtentiDB();
+            } catch (SQLException s) {
+                s.printStackTrace();
+            }
+            while (i < tags.length) {
+                hasMatch = false;
+                for (Utente utente : utenti) {
+                    if (utente.getUsername().equals(tags[i])) {
+                        hasMatch = true;
+                    }
+                }
+                if (!hasMatch) {
+                    return false;
+                }
+                i++;
+            }
+            return true;
+        } else {
             return true;
         }
     }
 
 
-    /*  QUALORA SI DOVESSE MODIFICARE IN AUTOMATICO INITCOMPONENTS
-    *   String[] dispositivi = new String[0];
-        try {
-            dispositivi = controller.getDisp(username).toArray(new String[0]);
-        } catch (SQLException s) {
-            s.printStackTrace();
-        }
 
-        selDisp = new JComboBox(dispositivi);
+    /*  QUALORA SI DOVESSE MODIFICARE IN AUTOMATICO INITCOMPONENTS
+    *   
+    selDisp = new JComboBox(nomeDisp);
 
     * */
 
-    private void initComponents(Controller controller, String username) {
+    private void initMainComponents(Controller controller, String username) {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         panel1 = new JPanel();
         apriFoto = new JButton();
         privataSwitch = new JRadioButton();
-        String[] dispositivi = new String[0];
-        try {
-            dispositivi = controller.getDisp(username).toArray(new String[0]);
-        } catch (SQLException s) {
-            s.printStackTrace();
-        }
-
-        selDisp = new JComboBox(dispositivi);        goBackButton = new JButton();
-        confermaButton = new JButton();
+        selDisp = new JComboBox(nomeDisp);
+        goBackButton = new JButton();
         fotoPanel = new JPanel();
         fotoAnteprima = new JLabel();
-        tags = new TagTextField(controller);
+        tagsText = new TagTextField(controller);
         dispLabel = new JLabel();
         tagsLabel = new JLabel();
-        categoriaSoggList = new JComboBox();
-        nomeSoggTextField = new JTextField();
-        label3 = new JLabel();
-        nomeSoggLabel = new JLabel();
-        longitudineText = new JTextField();
-        latitudineText = new JTextField();
-        nomeLuogoText = new JTextField();
-        nomeLuogoLabel = new JLabel();
-        coordLabel = new JLabel();
-        luogoCheckBox = new JCheckBox();
-        nomeLuogoCheckBox = new JCheckBox();
-        coordinateCheckBox = new JCheckBox();
-        addSoggettoButton = new JButton();
-        vediSoggettiButton = new JButton();
+        avantiButton = new JButton();
 
         //======== this ========
         var contentPane = getContentPane();
@@ -357,9 +528,6 @@ public class CaricaFoto extends JFrame {
 
             //---- goBackButton ----
             goBackButton.setText("TORNA INDIETRO");
-
-            //---- confermaButton ----
-            confermaButton.setText("CONFERMA");
 
             //======== fotoPanel ========
             {
@@ -388,41 +556,8 @@ public class CaricaFoto extends JFrame {
             //---- tagsLabel ----
             tagsLabel.setText("Tags :");
 
-            //---- label3 ----
-            label3.setText("Categoria :");
-
-            //---- nomeSoggLabel ----
-            nomeSoggLabel.setText("Nome soggetto :");
-
-            //---- longitudineText ----
-            longitudineText.setEnabled(false);
-
-            //---- latitudineText ----
-            latitudineText.setEnabled(false);
-
-            //---- nomeLuogoText ----
-            nomeLuogoText.setEnabled(false);
-
-            //---- nomeLuogoLabel ----
-            nomeLuogoLabel.setText("Nome luogo :");
-
-            //---- coordLabel ----
-            coordLabel.setText("Coordinate :");
-
-            //---- luogoCheckBox ----
-            luogoCheckBox.setText("Inserisci luogo?");
-
-            //---- nomeLuogoCheckBox ----
-            nomeLuogoCheckBox.setEnabled(false);
-
-            //---- coordinateCheckBox ----
-            coordinateCheckBox.setEnabled(false);
-
-            //---- addSoggettoButton ----
-            addSoggettoButton.setText("+");
-
-            //---- vediSoggettiButton ----
-            vediSoggettiButton.setText("VEDI SOGGETTI");
+            //---- avantiButton ----
+            avantiButton.setText("AVANTI");
 
             GroupLayout panel1Layout = new GroupLayout(panel1);
             panel1.setLayout(panel1Layout);
@@ -432,99 +567,50 @@ public class CaricaFoto extends JFrame {
                         .addGap(36, 36, 36)
                         .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                             .addGroup(panel1Layout.createSequentialGroup()
-                                .addComponent(goBackButton)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(confermaButton))
-                            .addGroup(panel1Layout.createSequentialGroup()
                                 .addComponent(fotoPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addGap(34, 34, 34)
                                 .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                                     .addGroup(panel1Layout.createSequentialGroup()
-                                        .addComponent(nomeSoggLabel)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(nomeSoggTextField, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panel1Layout.createSequentialGroup()
-                                        .addComponent(coordLabel, GroupLayout.PREFERRED_SIZE, 78, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(latitudineText, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(longitudineText, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panel1Layout.createSequentialGroup()
-                                        .addComponent(nomeLuogoLabel, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(nomeLuogoText, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panel1Layout.createSequentialGroup()
-                                        .addComponent(label3, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(categoriaSoggList, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panel1Layout.createSequentialGroup()
-                                        .addComponent(privataSwitch, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(apriFoto))
-                                    .addGroup(panel1Layout.createSequentialGroup()
                                         .addComponent(tagsLabel)
                                         .addGap(18, 18, 18)
-                                        .addComponent(tags, GroupLayout.PREFERRED_SIZE, 140, GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(tagsText, GroupLayout.PREFERRED_SIZE, 140, GroupLayout.PREFERRED_SIZE))
                                     .addGroup(panel1Layout.createSequentialGroup()
                                         .addComponent(dispLabel)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(selDisp, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE))))
-                            .addComponent(luogoCheckBox))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(panel1Layout.createParallelGroup()
-                            .addComponent(addSoggettoButton, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(nomeLuogoCheckBox, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(coordinateCheckBox)
-                            .addComponent(vediSoggettiButton, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE))
-                        .addGap(66, 71, Short.MAX_VALUE))
+                                        .addComponent(selDisp, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(apriFoto)
+                                    .addComponent(privataSwitch, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(188, Short.MAX_VALUE))
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(goBackButton)
+                                .addGap(30, 30, 30)
+                                .addComponent(avantiButton)
+                                .addGap(166, 166, 166))))
             );
             panel1Layout.setVerticalGroup(
                 panel1Layout.createParallelGroup()
                     .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(luogoCheckBox)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panel1Layout.createParallelGroup()
+                        .addGap(48, 48, 48)
+                        .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                             .addGroup(panel1Layout.createSequentialGroup()
-                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                    .addComponent(nomeLuogoText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(nomeLuogoLabel)
-                                    .addComponent(nomeLuogoCheckBox))
-                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                    .addComponent(longitudineText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(latitudineText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(coordLabel)
-                                    .addGroup(panel1Layout.createSequentialGroup()
-                                        .addGap(7, 7, 7)
-                                        .addComponent(coordinateCheckBox)))
-                                .addGap(18, 18, 18)
-                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                    .addComponent(categoriaSoggList, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(label3)
-                                    .addComponent(addSoggettoButton))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                    .addComponent(nomeSoggTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(nomeSoggLabel)
-                                    .addComponent(vediSoggettiButton))
-                                .addGap(18, 18, 18)
                                 .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(selDisp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(dispLabel))
-                                .addGap(12, 12, 12)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(apriFoto)
+                                .addGap(141, 141, 141)
                                 .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                    .addComponent(tags, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(tagsText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(tagsLabel))
-                                .addGap(18, 18, 18)
-                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                    .addComponent(apriFoto)
-                                    .addComponent(privataSwitch)))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(privataSwitch))
                             .addComponent(fotoPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(confermaButton)
+                            .addComponent(avantiButton)
                             .addComponent(goBackButton))
-                        .addContainerGap(27, Short.MAX_VALUE))
+                        .addContainerGap(42, Short.MAX_VALUE))
             );
         }
 
@@ -543,31 +629,289 @@ public class CaricaFoto extends JFrame {
         // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
     }
 
+    private void initLuogoComponents() {
+        luogoPanel = new JPanel();
+        label1 = new JLabel();
+        nuovoButton = new JRadioButton();
+        esistenteButton = new JRadioButton();
+        coordinateCheckBox = new JCheckBox();
+        nomeLuogoCheckBox = new JCheckBox();
+        nomeLuogoText = new JTextField();
+        latitudineSpinner = new JSpinner();
+        longitudineSpinner = new JSpinner();
+        exLuogoComboBox = new JComboBox();
+        avantiLuogoButton = new JButton();
+        indietroLuogoButton = new JButton();
+        nessunoButton = new JRadioButton();
+
+        //======== this ========
+        var contentPane = getContentPane();
+
+        //======== luogoPanel ========
+        {
+            luogoPanel.setPreferredSize(new Dimension(718, 399));
+
+            //---- label1 ----
+            label1.setText("INSERSCI UN NUOVO LUOGO O UTILIZZANE UNO ESISTENTE ?");
+
+            //---- nuovoButton ----
+            nuovoButton.setText("NUOVO");
+
+            //---- esistenteButton ----
+            esistenteButton.setText("ESISTENTE");
+
+            //---- avantiLuogoButton ----
+            avantiLuogoButton.setText("AVANTI");
+
+            //---- indietroLuogoButton ----
+            indietroLuogoButton.setText("INDIETRO");
+
+            //---- nessunoButton ----
+            nessunoButton.setText("NESSUNO");
+
+            GroupLayout luogoPanelLayout = new GroupLayout(luogoPanel);
+            luogoPanel.setLayout(luogoPanelLayout);
+            luogoPanelLayout.setHorizontalGroup(
+                    luogoPanelLayout.createParallelGroup()
+                            .addGroup(GroupLayout.Alignment.TRAILING, luogoPanelLayout.createSequentialGroup()
+                                    .addGap(64, 64, 64)
+                                    .addGroup(luogoPanelLayout.createParallelGroup()
+                                            .addGroup(luogoPanelLayout.createSequentialGroup()
+                                                    .addComponent(latitudineSpinner, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+                                                    .addGap(18, 18, 18)
+                                                    .addComponent(longitudineSpinner, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
+                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                    .addComponent(coordinateCheckBox))
+                                            .addGroup(luogoPanelLayout.createSequentialGroup()
+                                                    .addGap(6, 6, 6)
+                                                    .addComponent(nomeLuogoText, GroupLayout.PREFERRED_SIZE, 117, GroupLayout.PREFERRED_SIZE)
+                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                    .addComponent(nomeLuogoCheckBox)
+                                                    .addGap(105, 105, 105)
+                                                    .addComponent(exLuogoComboBox, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)))
+                                    .addContainerGap(240, Short.MAX_VALUE))
+                            .addGroup(GroupLayout.Alignment.TRAILING, luogoPanelLayout.createSequentialGroup()
+                                    .addGap(127, 127, 127)
+                                    .addComponent(nuovoButton)
+                                    .addGap(140, 140, 140)
+                                    .addComponent(esistenteButton)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
+                                    .addComponent(nessunoButton)
+                                    .addGap(58, 58, 58))
+                            .addGroup(GroupLayout.Alignment.TRAILING, luogoPanelLayout.createSequentialGroup()
+                                    .addContainerGap(178, Short.MAX_VALUE)
+                                    .addGroup(luogoPanelLayout.createParallelGroup()
+                                            .addGroup(GroupLayout.Alignment.TRAILING, luogoPanelLayout.createSequentialGroup()
+                                                    .addComponent(indietroLuogoButton)
+                                                    .addGap(18, 18, 18)
+                                                    .addComponent(avantiLuogoButton)
+                                                    .addGap(53, 53, 53))
+                                            .addGroup(GroupLayout.Alignment.TRAILING, luogoPanelLayout.createSequentialGroup()
+                                                    .addComponent(label1, GroupLayout.PREFERRED_SIZE, 406, GroupLayout.PREFERRED_SIZE)
+                                                    .addGap(133, 133, 133))))
+            );
+            luogoPanelLayout.setVerticalGroup(
+                    luogoPanelLayout.createParallelGroup()
+                            .addGroup(luogoPanelLayout.createSequentialGroup()
+                                    .addGap(21, 21, 21)
+                                    .addComponent(label1, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+                                    .addGap(27, 27, 27)
+                                    .addGroup(luogoPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                            .addComponent(nuovoButton)
+                                            .addComponent(nessunoButton)
+                                            .addComponent(esistenteButton))
+                                    .addGroup(luogoPanelLayout.createParallelGroup()
+                                            .addGroup(GroupLayout.Alignment.TRAILING, luogoPanelLayout.createSequentialGroup()
+                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 187, Short.MAX_VALUE)
+                                                    .addGroup(luogoPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                            .addComponent(indietroLuogoButton)
+                                                            .addComponent(avantiLuogoButton))
+                                                    .addGap(38, 38, 38))
+                                            .addGroup(luogoPanelLayout.createSequentialGroup()
+                                                    .addGroup(luogoPanelLayout.createParallelGroup()
+                                                            .addGroup(luogoPanelLayout.createSequentialGroup()
+                                                                    .addGap(24, 24, 24)
+                                                                    .addComponent(nomeLuogoText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                    .addGroup(luogoPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                                            .addComponent(latitudineSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                                            .addComponent(longitudineSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                                            .addGroup(luogoPanelLayout.createSequentialGroup()
+                                                                    .addGap(22, 22, 22)
+                                                                    .addGroup(luogoPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                                                            .addComponent(nomeLuogoCheckBox)
+                                                                            .addComponent(exLuogoComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                    .addComponent(coordinateCheckBox)))
+                                                    .addGap(65, 159, Short.MAX_VALUE))))
+            );
+        }
+
+        GroupLayout contentPaneLayout = new GroupLayout(contentPane);
+        contentPane.setLayout(contentPaneLayout);
+        contentPaneLayout.setHorizontalGroup(
+                contentPaneLayout.createParallelGroup()
+                        .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(luogoPanel, GroupLayout.DEFAULT_SIZE, 717, Short.MAX_VALUE))
+        );
+        contentPaneLayout.setVerticalGroup(
+                contentPaneLayout.createParallelGroup()
+                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(luogoPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pack();
+        setLocationRelativeTo(getOwner());
+    }
+
+    private void initSoggettoComponents() {
+        inserisciSoggettoPanel = new JPanel();
+        inserisciLabel = new JLabel();
+        vediSoggettiButton = new JButton();
+        categoriaComboBox = new JComboBox();
+        aggiungiSoggettoButton = new JButton();
+        dbSoggettoComboBox = new JComboBox();
+        nomeSoggettoText = new JTextField();
+        aggiungiSoggettoDbButton = new JButton();
+        confermaButton = new JButton();
+        indietroSoggettoButton = new JButton();
+
+        //======== this ========
+        var contentPane = getContentPane();
+
+        //======== inserisciSoggettoPanel ========
+        {
+            inserisciSoggettoPanel.setPreferredSize(new Dimension(718, 399));
+
+            //---- inserisciLabel ----
+            inserisciLabel.setText("INSERISCI UNO O PIU' SOGGETTI");
+
+            //---- vediSoggettiButton ----
+            vediSoggettiButton.setText("VEDI SOGGETTI");
+
+            //---- aggiungiSoggettoButton ----
+            aggiungiSoggettoButton.setText("+");
+
+            //---- aggiungiSoggettoDbButton ----
+            aggiungiSoggettoDbButton.setText("+");
+
+            //---- confermaButton ----
+            confermaButton.setText("CONFERMA");
+            confermaButton.setBackground(new Color(0x0099cc));
+
+            //---- indietroSoggettoButton ----
+            indietroSoggettoButton.setText("INDIETRO");
+
+            GroupLayout inserisciSoggettoPanelLayout = new GroupLayout(inserisciSoggettoPanel);
+            inserisciSoggettoPanel.setLayout(inserisciSoggettoPanelLayout);
+            inserisciSoggettoPanelLayout.setHorizontalGroup(
+                    inserisciSoggettoPanelLayout.createParallelGroup()
+                            .addGroup(inserisciSoggettoPanelLayout.createSequentialGroup()
+                                    .addGroup(inserisciSoggettoPanelLayout.createParallelGroup()
+                                            .addGroup(inserisciSoggettoPanelLayout.createSequentialGroup()
+                                                    .addGap(44, 44, 44)
+                                                    .addGroup(inserisciSoggettoPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                                            .addGroup(inserisciSoggettoPanelLayout.createSequentialGroup()
+                                                                    .addGroup(inserisciSoggettoPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                                                            .addComponent(aggiungiSoggettoButton, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
+                                                                            .addGroup(inserisciSoggettoPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                                                                    .addComponent(categoriaComboBox, GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
+                                                                                    .addComponent(nomeSoggettoText)))
+                                                                    .addGroup(inserisciSoggettoPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                                                            .addGroup(inserisciSoggettoPanelLayout.createSequentialGroup()
+                                                                                    .addGap(240, 240, 240)
+                                                                                    .addComponent(aggiungiSoggettoDbButton, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE))
+                                                                            .addGroup(inserisciSoggettoPanelLayout.createSequentialGroup()
+                                                                                    .addGap(87, 87, 87)
+                                                                                    .addComponent(dbSoggettoComboBox))))
+                                                            .addComponent(inserisciLabel, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 328, GroupLayout.PREFERRED_SIZE)))
+                                            .addGroup(inserisciSoggettoPanelLayout.createSequentialGroup()
+                                                    .addGap(16, 16, 16)
+                                                    .addComponent(vediSoggettiButton)
+                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 306, Short.MAX_VALUE)
+                                                    .addComponent(indietroSoggettoButton)))
+                                    .addGap(18, 18, 18)
+                                    .addComponent(confermaButton)
+                                    .addGap(56, 56, 56))
+            );
+            inserisciSoggettoPanelLayout.setVerticalGroup(
+                    inserisciSoggettoPanelLayout.createParallelGroup()
+                            .addGroup(inserisciSoggettoPanelLayout.createSequentialGroup()
+                                    .addGap(23, 23, 23)
+                                    .addComponent(inserisciLabel, GroupLayout.PREFERRED_SIZE, 87, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(inserisciSoggettoPanelLayout.createParallelGroup()
+                                            .addGroup(inserisciSoggettoPanelLayout.createSequentialGroup()
+                                                    .addComponent(categoriaComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                    .addGap(18, 18, 18)
+                                                    .addComponent(nomeSoggettoText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addComponent(aggiungiSoggettoButton)
+                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 130, Short.MAX_VALUE)
+                                                    .addGroup(inserisciSoggettoPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                            .addComponent(vediSoggettiButton)
+                                                            .addComponent(confermaButton)
+                                                            .addComponent(indietroSoggettoButton))
+                                                    .addGap(14, 14, 14))
+                                            .addGroup(inserisciSoggettoPanelLayout.createSequentialGroup()
+                                                    .addComponent(dbSoggettoComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                    .addGap(54, 54, 54)
+                                                    .addComponent(aggiungiSoggettoDbButton)
+                                                    .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            );
+        }
+
+        GroupLayout contentPaneLayout = new GroupLayout(contentPane);
+        contentPane.setLayout(contentPaneLayout);
+        contentPaneLayout.setHorizontalGroup(
+                contentPaneLayout.createParallelGroup()
+                        .addComponent(inserisciSoggettoPanel, GroupLayout.DEFAULT_SIZE, 728, Short.MAX_VALUE)
+        );
+        contentPaneLayout.setVerticalGroup(
+                contentPaneLayout.createParallelGroup()
+                        .addComponent(inserisciSoggettoPanel, GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE)
+        );
+        pack();
+        setLocationRelativeTo(getOwner());
+    }
+
+    private JLabel inserisciLabel;
+    private JButton vediSoggettiButton;
+    private JComboBox categoriaComboBox;
+    private JButton aggiungiSoggettoButton;
+    private JComboBox dbSoggettoComboBox;
+    private JTextField nomeLuogoText;
+    private JButton aggiungiSoggettoDbButton;
+    private JButton avantiSoggettoButton;
+    private JButton indietroSoggettoButton;
+    private JPanel luogoPanel;
+    private JLabel label1;
+    private JRadioButton nuovoButton;
+    private JRadioButton esistenteButton;
+    private JCheckBox coordinateCheckBox;
+    private JCheckBox nomeLuogoCheckBox;
+    private JSpinner latitudineSpinner;
+    private JSpinner longitudineSpinner;
+    private JComboBox exLuogoComboBox;
+    private JButton avantiLuogoButton;
+    private JButton indietroLuogoButton;
+    private JRadioButton nessunoButton;
+    private JButton confermaButton;
+    private JTextField nomeSoggettoText;
+
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
     private JPanel panel1;
     private JButton apriFoto;
     private JRadioButton privataSwitch;
     private JComboBox selDisp;
     private JButton goBackButton;
-    private JButton confermaButton;
     private JPanel fotoPanel;
     private JLabel fotoAnteprima;
-    private TagTextField tags;
+    private TagTextField tagsText;
     private JLabel dispLabel;
     private JLabel tagsLabel;
-    private JComboBox categoriaSoggList;
-    private JTextField nomeSoggTextField;
-    private JLabel label3;
-    private JLabel nomeSoggLabel;
-    private JTextField longitudineText;
-    private JTextField latitudineText;
-    private JTextField nomeLuogoText;
-    private JLabel nomeLuogoLabel;
-    private JLabel coordLabel;
-    private JCheckBox luogoCheckBox;
-    private JCheckBox nomeLuogoCheckBox;
-    private JCheckBox coordinateCheckBox;
-    private JButton addSoggettoButton;
-    private JButton vediSoggettiButton;
+    private JButton avantiButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

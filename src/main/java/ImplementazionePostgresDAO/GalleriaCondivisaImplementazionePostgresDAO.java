@@ -2,11 +2,13 @@ package ImplementazionePostgresDAO;
 
 import DAO.Galleria_condivisaDAO;
 import Database.ConnessioneDatabase;
+import Model.GalleriaCondivisa;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class GalleriaCondivisaImplementazionePostgresDAO implements Galleria_condivisaDAO {
 
@@ -49,6 +51,36 @@ public class GalleriaCondivisaImplementazionePostgresDAO implements Galleria_con
         }
         connection.close();
         return codGalleria;
+    }
+
+    @Override
+    public ArrayList<GalleriaCondivisa> recuperaGallerieCondivise(String username) throws SQLException {
+        ArrayList<GalleriaCondivisa> gallerie = new ArrayList<>();
+        PreparedStatement ps = connection.prepareStatement("SELECT codgalleriac FROM galleria_schema.partecipazione WHERE codutente = ?;");
+        ps.setString(1, username);
+        ResultSet rs = ps.executeQuery();
+        ArrayList<Integer> codiciGallerie = new ArrayList<Integer>();
+        while (rs.next()) {
+            codiciGallerie.add(rs.getInt(1));
+        }
+        rs.close();
+        for (Integer codice : codiciGallerie){
+            ps = connection.prepareStatement("SELECT * FROM galleria_schema.galleria_condivisa WHERE codgalleria = ?;");
+            ps.setInt(1, codice);
+            rs = ps.executeQuery();
+            int codGalleria;
+            String nomeGalleria;
+            GalleriaCondivisa gc = null;
+            while (rs.next()){
+                codGalleria = rs.getInt(1);
+                nomeGalleria = rs.getString(2);
+                gc = new GalleriaCondivisa(codGalleria, nomeGalleria);
+            }
+            rs.close();
+            gallerie.add(gc);
+        }
+        connection.close();
+        return gallerie;
     }
 
 

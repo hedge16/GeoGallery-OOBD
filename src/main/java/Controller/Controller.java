@@ -2,8 +2,7 @@ package Controller;
 
 import DAO.*;
 import ImplementazionePostgresDAO.*;
-import Model.Foto;
-import Model.Utente;
+import Model.*;
 import org.postgresql.util.PSQLException;
 import org.postgresql.util.ServerErrorMessage;
 
@@ -98,16 +97,15 @@ public class Controller {
        return codG;
     }
 
-    public ArrayList<String> getDisp (String username) throws SQLException{
-        ArrayList<String> dispositivi;
+    public ArrayList<Dispositivo> getAllDisp (String username) throws SQLException{
+        ArrayList<Dispositivo> dispositivi = new ArrayList<>();
         DispositivoDAO d = new DispositivoImplementazionePostgresDAO();
         try{
-            dispositivi = d.getNomeDispDB(username);
+            dispositivi = d.getAllDispDB(username);
         }catch(SQLException s){
             s.printStackTrace();
             throw new SQLException();
         }
-        dispositivi.add("<Aggiungi Dispositivo>");
         return dispositivi;
 
     }
@@ -291,4 +289,74 @@ public class Controller {
         }
     }
 
+    public ArrayList<Luogo> recuperaTuttiLuoghiDB () throws SQLException{
+        ArrayList<Luogo> luoghi;
+        LuogoDAO l = new LuogoImplementazionePostgresDAO();
+        try{
+            luoghi=l.recuperaTuttiLuoghiDB();
+            return luoghi;
+        } catch (SQLException s) {
+            s.printStackTrace();
+            throw new SQLException();
+        }
+    }
+
+    public ArrayList<SoggettoFoto> recuperaTuttiSoggettiDB () throws SQLException {
+        ArrayList<SoggettoFoto> soggetti;
+        SoggettoFotoDAO sf = new SoggettoFotoImplementazionePostgresDAO();
+        try{
+            soggetti = sf.recuperaTuttiSoggettiDB();
+            return soggetti;
+        } catch (SQLException s){
+            s.printStackTrace();
+            throw new SQLException();
+        }
+
+    }
+
+    public Luogo getLuogoFromFoto (int codfoto) throws SQLException {
+        LuogoDAO l = new LuogoImplementazionePostgresDAO();
+        Luogo luogo = null;
+        try {
+            luogo = l.getLuogoFromFoto(codfoto);
+            return luogo;
+        } catch (SQLException s){
+            s.printStackTrace();
+            throw new SQLException();
+        }
+    }
+
+    public ArrayList<GalleriaCondivisa> recuperaGallerieCondivise (String username) throws SQLException {
+        ArrayList<GalleriaCondivisa> gallerie = null;
+        Galleria_condivisaDAO gc = new GalleriaCondivisaImplementazionePostgresDAO();
+        try {
+            gallerie = gc.recuperaGallerieCondivise(username);
+            return gallerie;
+        } catch (SQLException s){
+            s.printStackTrace();
+            throw new SQLException();
+        }
+    }
+
+    public Dispositivo getDispositivo (int codDisp) throws SQLException {
+        DispositivoDAO d = new DispositivoImplementazionePostgresDAO();
+        Dispositivo disp;
+        try {
+            disp = d.getDispositivo(codDisp);
+            return disp;
+        } catch (SQLException s){
+            s.printStackTrace();
+            throw new SQLException();
+        }
+    }
+
+    public void caricaFoto(boolean privata, boolean nuovo, Date data, String username, int idDispositivo, String filePath, Luogo luogo, ArrayList<SoggettoFoto> soggettiNuovi, ArrayList<SoggettoFoto> soggettiEsistenti, String[] tags) throws SQLException {
+        FotoDAO f = new FotoImplementazionePostgresDAO();
+        try {
+            f.caricaFoto(privata, nuovo, data, username, idDispositivo, filePath, luogo, soggettiNuovi, soggettiEsistenti, tags);
+        } catch (SQLException s) {
+            s.printStackTrace();
+            throw new SQLException();
+        }
+    }
 }

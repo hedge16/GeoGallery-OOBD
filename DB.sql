@@ -146,14 +146,67 @@ CREATE VIEW galleria_schema.TOP3 AS (
 	
 	);
 
+CREATE OR REPLACE FUNCTION galleria_schema.nomeluogo_unique ()
+RETURNS trigger AS $$
+DECLARE 
+    scansiona_luogo CURSOR FOR SELECT nomeluogo FROM galleria_schema.luogo;
+    nomeLuogo galleria_schema.luogo.nomeluogo%TYPE;
+    isNotUnique BOOLEAN := FALSE;
+BEGIN
+	IF (NEW.nomeluogo IS NOT NULL) THEN
+	    OPEN scansiona_luogo;
+	    LOOP	    	
+	        FETCH scansiona_luogo INTO nomeLuogo;     
+	        EXIT WHEN NOT FOUND OR isNotUnique = TRUE;
+	        IF nomeLuogo = NEW.nomeluogo THEN
+	            isNotUnique := TRUE;
+	        END IF;
+	    END LOOP;
+	    CLOSE scansiona_luogo;
+	    IF isNotUnique THEN 
+	        RAISE EXCEPTION 'Un luogo con lo stesso nome è già presente nel sistema.';
+	    END IF;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION galleria_schema.coord_unique ()
+RETURNS trigger AS $$
+DECLARE 
+    scansiona_luogo CURSOR FOR SELECT latitudine, longitudine FROM galleria_schema.luogo;
+    lat DOUBLE PRECISION;
+    long DOUBLE PRECISION;
+    isNotUnique BOOLEAN := FALSE;
+BEGIN
+	IF (NEW.latitudine IS NOT NULL AND NEW.longitudine IS NOT NULL) THEN
+	    OPEN scansiona_luogo;
+	    LOOP
+	        FETCH scansiona_luogo INTO lat, long;        
+			EXIT WHEN NOT FOUND OR isNotUnique = TRUE;
+	        IF NEW.latitudine = lat AND NEW.longitudine = long THEN
+	            isNotUnique := TRUE;
+	        END IF;
+	    END LOOP;
+	    CLOSE scansiona_luogo;
+	    IF isNotUnique THEN 
+	        RAISE EXCEPTION 'Un luogo con le stesse coordinate è già presente nel sistema.';
+	    END IF;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
 
+CREATE OR REPLACE TRIGGER tr_coord_unique
+BEFORE INSERT ON galleria_schema.luogo
+FOR EACH ROW
+EXECUTE FUNCTION galleria_schema.coord_unique();
 
-
-
-
-
-
+CREATE OR REPLACE TRIGGER tr_nomeluogo_unique
+BEFORE INSERT ON galleria_schema.luogo
+FOR EACH ROW
+EXECUTE FUNCTION galleria_schema.nomeluogo_unique();
 
 
 

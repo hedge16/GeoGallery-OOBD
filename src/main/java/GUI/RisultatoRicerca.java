@@ -21,7 +21,7 @@ public class RisultatoRicerca extends JFrame {
 
     private void initComponents(FotoPanel panel) {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
-        scrollPanel = new JScrollPane();
+        scrollPanel = new JScrollPane(panel);
 
         //======== this ========
         var contentPane = getContentPane();

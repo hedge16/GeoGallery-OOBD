@@ -3,16 +3,11 @@ package Model;
 public class Dispositivo {
     private int id;
     private String nome;
-    private String descrizione;
-    private String marca;
-    private String modello;
-
-    public Dispositivo(int id, String nome, String descrizione, String marca, String modello) {
+    private String proprietario;
+    public Dispositivo(int id, String nome, String proprietario) {
         this.id = id;
         this.nome = nome;
-        this.descrizione = descrizione;
-        this.marca = marca;
-        this.modello = modello;
+        this.proprietario = proprietario;
     }
 
     public int getId() {
@@ -23,17 +18,12 @@ public class Dispositivo {
         return nome;
     }
 
-    public String getDescrizione() {
-        return descrizione;
+    public String getProprietario () {
+        return proprietario;
     }
 
-    public String getMarca() {
-        return marca;
+    public void setProprietario (String proprietario) {
+       this.proprietario = proprietario;
     }
-
-    public String getModello() {
-        return modello;
-    }
-
 
 }

@@ -1,0 +1,57 @@
+JFDML JFormDesigner: "8.0.2.0.220" Java: "17.0.5" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {comp inserisciSoggettoPanel::l::728:x}"
+			"$verticalGroup": "par l {comp inserisciSoggettoPanel::l::404:x}"
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq {par l {seq {space :p:44:p, par t {seq {par t {comp aggiungiSoggettoButton:::p:38:p, par l:::p {comp categoriaComboBox::::134:x, comp nomeSoggettoText:::::x}}, par l:::p {seq {space :p:240:p, comp aggiungiSoggettoDbButton:::p:38:p}, seq l {space :p:87:p, comp dbSoggettoComboBox:::::x}}}, comp inserisciLabel::l:p:328:p}}, seq l {space :p:16:p, comp vediSoggettiButton:::p::p, space ::306:x, comp indietroSoggettoButton:::p::p}}, space :p:18:p, comp confermaButton:::p::p, space :p:56:p}}"
+				"$verticalGroup": "par l {seq l {space :p:23:p, comp inserisciLabel:::p:87:p, space :::p, par l {seq {comp categoriaComboBox:::p::p, space s:::p, comp nomeSoggettoText:::p::p, space :::p, comp aggiungiSoggettoButton:::p::p, space ::130:x, par b {comp vediSoggettiButton::b:p::p, comp confermaButton::b:p::p, comp indietroSoggettoButton::b:p::p}, space :p:14:p}, seq {comp dbSoggettoComboBox:::p::p, space :p:54:p, comp aggiungiSoggettoDbButton:::p::p, space :::x}}}}"
+			} ) {
+				name: "inserisciSoggettoPanel"
+				"preferredSize": new java.awt.Dimension( 718, 399 )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "inserisciLabel"
+					"text": "INSERISCI UNO O PIU' SOGGETTI"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "vediSoggettiButton"
+					"text": "VEDI SOGGETTI"
+				} )
+				add( new FormComponent( "javax.swing.JComboBox" ) {
+					name: "categoriaComboBox"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "aggiungiSoggettoButton"
+					"text": "+"
+				} )
+				add( new FormComponent( "javax.swing.JComboBox" ) {
+					name: "dbSoggettoComboBox"
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "nomeSoggettoText"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "aggiungiSoggettoDbButton"
+					"text": "+"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "confermaButton"
+					"text": "CONFERMA"
+					"background": new java.awt.Color( 0, 153, 204, 255 )
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "indietroSoggettoButton"
+					"text": "INDIETRO"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 730, 435 )
+		} )
+	}
+}

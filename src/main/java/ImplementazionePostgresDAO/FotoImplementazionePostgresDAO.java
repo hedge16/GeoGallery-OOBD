@@ -3,6 +3,8 @@ package ImplementazionePostgresDAO;
 import DAO.FotoDAO;
 import Database.ConnessioneDatabase;
 import Model.Foto;
+import Model.Luogo;
+import Model.SoggettoFoto;
 import org.postgresql.util.PSQLException;
 
 import javax.imageio.ImageIO;
@@ -123,7 +125,6 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
             // Chiude lo stream e la connessione al database
             fis.close();
             rs.close();
-            connection.close();
             return codFoto;
 
         } catch(SQLException s) {
@@ -210,8 +211,12 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
                 int codDispositivo = rs.getInt(7);
                 byte[] barr = rs.getBytes(8);
 
-                ImageIcon img = new ImageIcon(barr);
-                Foto f = new Foto(codFoto, privata, rimossa, dataScatto, codGalleria, autore, codDispositivo, img);
+                // Crea un oggetto InputStream a partire dall'array di byte
+                ByteArrayInputStream bis = new ByteArrayInputStream(barr);
+                // Crea un oggetto ImageIcon a partire dallo stream di byte
+                ImageIcon immagine = new ImageIcon(ImageIO.read(bis));
+                bis.close();
+                Foto f = new Foto(codFoto, privata, rimossa, dataScatto, codGalleria, autore, codDispositivo, immagine);
                 photos.add(f);
 
             }
@@ -219,7 +224,7 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
             connection.close();
             return photos;
 
-        } catch (SQLException s) {
+        } catch (Exception s) {
             s.printStackTrace();
             throw new SQLException();
         }
@@ -245,8 +250,12 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
                 int codDispositivo = rs.getInt(7);
                 byte[] barr = rs.getBytes(8);
 
-                ImageIcon img = new ImageIcon(barr);
-                Foto f = new Foto(codFoto, privata, rimossa, dataScatto, codGalleria, autore, codDispositivo, img);
+                // Crea un oggetto InputStream a partire dall'array di byte
+                ByteArrayInputStream bis = new ByteArrayInputStream(barr);
+                // Crea un oggetto ImageIcon a partire dallo stream di byte
+                ImageIcon immagine = new ImageIcon(ImageIO.read(bis));
+                bis.close();
+                Foto f = new Foto(codFoto, privata, rimossa, dataScatto, codGalleria, autore, codDispositivo, immagine);
                 photos.add(f);
 
             }
@@ -254,9 +263,95 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
             connection.close();
             return photos;
 
-        } catch (SQLException s) {
+        } catch (Exception s) {
             s.printStackTrace();
             throw new SQLException();
+        }
+    }
+
+    @Override
+    public void caricaFoto(boolean privata, boolean nuovo, Date data, String username, int idDispositivo, String filePath, Luogo luogo, ArrayList<SoggettoFoto> soggettiNuovi, ArrayList<SoggettoFoto> soggettiEsistenti, String[] tags) throws SQLException {
+        try {
+            int codGallP = -1;
+            connection.setAutoCommit(false);
+            PreparedStatement ps = connection.prepareStatement("SELECT codGalleria FROM galleria_schema.galleria_personale WHERE proprietario = ?;");
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                codGallP = rs.getInt(1);
+            }
+            int codfoto = inserisciFotoDB(privata, false, data, codGallP, username, idDispositivo, filePath);
+            if (nuovo){
+                ps = connection.prepareStatement("INSERT INTO galleria_schema.luogo VALUES (DEFAULT,?,?,?);");
+                ps.setDouble(1, luogo.getLatitudine());
+                ps.setDouble(2, luogo.getLongitudine());
+                ps.setString(3, luogo.getNomeMnemonico());
+                ps.executeUpdate();
+
+                ps = connection.prepareStatement("SELECT codLuogo FROM galleria_schema.luogo ORDER BY codLuogo DESC LIMIT 1;");
+                int codLuogo = -1;
+                rs = ps.executeQuery();
+                while (rs.next()){
+                    codLuogo = rs.getInt(1);
+                }
+                rs.close();
+                ps = connection.prepareStatement("INSERT INTO galleria_schema.presenzaLuogo VALUES (?,?);");
+                ps.setInt(1, codfoto);
+                ps.setInt(2, codLuogo);
+                ps.executeUpdate();
+            } else {
+                ps = connection.prepareStatement("INSERT INTO galleria_schema.presenzaLuogo VALUES (?,?);");
+                ps.setInt(1, codfoto);
+                ps.setInt(2, luogo.getCodLuogo());
+                ps.executeUpdate();
+            }
+            if (tags != null) {
+                int i = 0;
+                int numTag = tags.length;
+                while (i < numTag) {
+                    ps = connection.prepareStatement("INSERT INTO galleria_schema.tag VALUES (?,?);");
+                    ps.setInt(1, codfoto);
+                    ps.setString(2, username);
+                    ps.executeUpdate();
+                    i++;
+                }
+            }
+            int codSogg;
+            if (!soggettiNuovi.isEmpty()){
+                for (SoggettoFoto sf : soggettiNuovi){
+                    ps = connection.prepareStatement("INSERT INTO galleria_schema.soggettofoto VALUES (DEFAULT,?,?);");
+                    ps.setString(1, sf.getNome());
+                    ps.setString(2, sf.getCategoria());
+                    ps.executeUpdate();
+
+                    ps = connection.prepareStatement("SELECT codSogg FROM galleria_schema.soggettofoto ORDER BY codSogg DESC LIMIT 1;");
+                    rs = ps.executeQuery();
+                    codSogg = -1;
+                    while (rs.next()){
+                        codSogg = rs.getInt(1);
+                    }
+                    rs.close();
+                    ps = connection.prepareStatement("INSERT INTO galleria_schema.presenzaSoggetto VALUES (?,?);");
+                    ps.setInt(1, codfoto);
+                    ps.setInt(2, codSogg);
+                    ps.executeUpdate();
+                }
+            }
+            if (!soggettiEsistenti.isEmpty()) {
+                for (SoggettoFoto sf : soggettiEsistenti) {
+                    ps = connection.prepareStatement("INSERT INTO galleria_schema.presenzaSoggetto VALUES (?,?);");
+                    ps.setInt(1, codfoto);
+                    ps.setInt(2, sf.getId());
+                    ps.executeUpdate();
+                }
+            }
+            connection.commit();
+        } catch (Exception s){
+            connection.rollback();
+            s.printStackTrace();
+            throw new SQLException();
+        } finally {
+            connection.close();
         }
     }
 
