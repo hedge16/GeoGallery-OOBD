@@ -5,12 +5,14 @@ import java.util.ArrayList;
 public class GalleriaCondivisa {
     private int codGalleria;
     private String nomeGalleria;
-    private ArrayList<String> utenti; // chiavi esterne
+    private ArrayList<Utente> proprietari; // chiavi esterne
+    private ArrayList<Foto> photos;
 
     public GalleriaCondivisa(int codGalleria, String nomeGalleria) {
         this.codGalleria = codGalleria;
         this.nomeGalleria = nomeGalleria;
-        this.utenti = new ArrayList<String>();
+        this.proprietari = new ArrayList<>();
+        this.photos = new ArrayList<>();
     }
 
     public int getCodGalleria() {
@@ -29,19 +31,19 @@ public class GalleriaCondivisa {
         this.nomeGalleria = nomeGalleria;
     }
 
-    public ArrayList<String> getUtenti() {
-        return utenti;
+    public ArrayList<Utente> getUtenti() {
+        return proprietari;
     }
 
-    public void setUtenti(ArrayList<String> utenti) {
-        this.utenti = utenti;
+    public void setUtenti(ArrayList<Utente> utenti) {
+        this.proprietari = utenti;
     }
 
-    public void addUtente(String utente) {
-        this.utenti.add(utente);
+    public void addUtente(Utente utente) {
+        this.proprietari.add(utente);
     }
 
-    public void removeUtente(String utente) {
-        this.utenti.remove(utente);
+    public void removeUtente(Utente utente) {
+        this.proprietari.remove(utente);
     }
 }

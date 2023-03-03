@@ -40,8 +40,6 @@ CREATE TABLE IF NOT EXISTS galleria_schema.galleria_personale(
 );
 
 
-
-
 CREATE TABLE IF NOT EXISTS galleria_schema.dispositivo (
 	codDisp SERIAL,
 	nomeDisp VARCHAR(30),
@@ -57,8 +55,8 @@ CREATE TABLE IF NOT EXISTS galleria_schema.soggettofoto(
 	codSogg SERIAL,
 	nome VARCHAR(50),
 	categoria VARCHAR(100),
-	CONSTRAINT pk_soggettofoto PRIMARY KEY (codSogg)
-
+	CONSTRAINT pk_soggettofoto PRIMARY KEY (codSogg),
+	CONSTRAINT unq_nomecategoria UNIQUE (nome, categoria)
 );
 
 CREATE TABLE IF NOT EXISTS galleria_schema.foto(
@@ -133,18 +131,14 @@ CREATE TABLE IF NOT EXISTS galleria_schema.presenzaSoggetto (
 
 
 
-CREATE VIEW galleria_schema.TOP3 AS (
-	SELECT nomeLuogo, codLuogo
-	FROM galleria_schema.luogo 
-	WHERE codLuogo IN (
-		SELECT codLuogo 
-		FROM galleria_schema.foto 
-		GROUP BY codLuogo
-		ORDER BY COUNT(codLuogo)
-		LIMIT 3
-		)
-	
-	);
+CREATE OR REPLACE VIEW galleria_schema.top3 AS (	
+	SELECT codluogo, COUNT(codluogo) AS numero 
+	FROM galleria_schema.presenzaluogo 
+	GROUP BY codluogo 
+	ORDER BY numero DESC 
+	LIMIT 3
+);
+
 
 CREATE OR REPLACE FUNCTION galleria_schema.nomeluogo_unique ()
 RETURNS trigger AS $$

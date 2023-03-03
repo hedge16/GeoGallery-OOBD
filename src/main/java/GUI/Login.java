@@ -60,13 +60,8 @@ public class Login extends JFrame {
                 Register register = new Register(controller, frame1);
                 frame1.setVisible(false);
                 register.frame.setVisible(true);
-
             }
-
         });
-
-
-
 
         loginButton.addActionListener(new ActionListener() {
             @Override
@@ -87,12 +82,14 @@ public class Login extends JFrame {
                     }
 
                     if (found) {
-
+                        JProgressBar progressBar = new JProgressBar();
+                        progressBar.setIndeterminate(true);
                         Home home = new Home(controller, frame1, userInput);
+                        progressBar.setIndeterminate(false);
+                        progressBar.setVisible(false);
                         frame1.setVisible(false);
                         frame1.dispose();
                         home.mainFrame.setVisible(true);
-
 
                     } else {
                         JOptionPane.showMessageDialog(frame1, "Username o password non corretti", "Errore inserimento dati", JOptionPane.ERROR_MESSAGE);
@@ -112,7 +109,15 @@ public class Login extends JFrame {
 
     public static void main(String[] args) {
 
+        try {
+            //set icon for mac
+            Taskbar.getTaskbar().setIconImage(Toolkit.getDefaultToolkit().getImage("src/icons/icona.png"));
+        } catch (Exception e) {
+            //set icon for windows
+            frame1.setIconImage(Toolkit.getDefaultToolkit().getImage("src/icons/icona.png"));
+        }
         frame1 = new JFrame("Login");
+        frame1.setIconImage(Toolkit.getDefaultToolkit().getImage("src/icons/icona.png"));
         frame1.setContentPane(new Login().rootPanel);
         frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame1.pack();
@@ -120,8 +125,6 @@ public class Login extends JFrame {
         frame1.setResizable(false);
         frame1.setVisible(true);
     }
-
-
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
     private JPanel rootPanel;

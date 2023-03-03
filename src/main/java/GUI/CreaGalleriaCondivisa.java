@@ -5,7 +5,9 @@ import javax.swing.GroupLayout;
 import Controller.Controller;
 import GUI.Components.*;
 import Model.Foto;
+import Model.Utente;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -16,10 +18,12 @@ public class CreaGalleriaCondivisa extends JFrame {
     protected JFrame mainFrame;
     private ArrayList<Foto> photos;
     FotoPanel fotoPanel;
+    Controller controller;
 
     public CreaGalleriaCondivisa (String username, Controller controller, Home home, ArrayList<Foto> photos) {
 
         this.photos = photos;
+        this.controller = controller;
         fotoPanel = new FotoPanel(photos, false, controller, username, home);
         initComponents(controller);
 
@@ -33,21 +37,41 @@ public class CreaGalleriaCondivisa extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int codg = controller.aggiungiGalleriaCondivisa(username, collabText.getText(), nomeGalleriaText.getText());
-                    boolean[] selectedPhotos = fotoPanel.getSelectedPhotos();
-                    for (int i = 0; i < photos.size(); i++){
-                        if (selectedPhotos[i]) {
-                            controller.aggiungiPresenzaFoto(photos.get(i).getCodFoto(), codg);
+                    boolean tagsCheck = checkTags(collabText.getText().split(","));
+                    if (!nomeGalleriaText.getText().equals("") && !collabText.getText().equals("") && tagsCheck) {
+                        int codg = controller.aggiungiGalleriaCondivisa(username, collabText.getText(), nomeGalleriaText.getText());
+                        boolean[] selectedPhotos = fotoPanel.getSelectedPhotos();
+                        for (int i = 0; i < photos.size(); i++) {
+                            if (selectedPhotos[i]) {
+                                controller.aggiungiPresenzaFoto(photos.get(i).getCodFoto(), codg);
+                            }
+                        }
+                        JOptionPane.showMessageDialog(mainFrame, "Galleria condivisa creata con successo.", "Successo", JOptionPane.INFORMATION_MESSAGE);
+                        mainFrame.setVisible(false);
+                        mainFrame.dispose();
+                        home.gallerieCondiviseBox.addItem(nomeGalleriaText.getText());
+                        home.mainFrame.setVisible(true);
+                    } else {
+                        if (!tagsCheck) {
+                            JOptionPane.showMessageDialog(mainFrame, "Uno o più tag non sono validi.", "Errore", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(mainFrame, "Inserire tutti i campi.", "Errore", JOptionPane.ERROR_MESSAGE);
+                        }
+                        if (nomeGalleriaText.getText().equals("")) {
+                            nomeGalleriaText.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
+                        } else {
+                            nomeGalleriaText.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
+                        }
+                        if (collabText.getText().equals("")) {
+                            collabText.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
+                        } else {
+                            collabText.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
                         }
                     }
-                    mainFrame.setVisible(false);
-                    mainFrame.dispose();
-                    home.mainFrame.setVisible(true);
                 } catch (SQLException s) {
                     s.printStackTrace();
                     JOptionPane.showMessageDialog(mainFrame, "Errore di connessione col database.", "Errore", JOptionPane.ERROR_MESSAGE);
                 }
-                //controller.aggiungiFotoGallC();
             }
         });
 
@@ -61,6 +85,35 @@ public class CreaGalleriaCondivisa extends JFrame {
         });
 
 
+    }
+
+    private boolean checkTags (String[] tags){
+        if (tags != null) {
+            boolean hasMatch;
+            int i = 0;
+            ArrayList<Utente> utenti;
+            try {
+                utenti = controller.leggiUtentiDB();
+                while (i < tags.length) {
+                    hasMatch = false;
+                    for (Utente utente : utenti) {
+                        if (utente.getUsername().equals(tags[i])) {
+                            hasMatch = true;
+                        }
+                    }
+                    if (!hasMatch) {
+                        return false;
+                    }
+                    i++;
+                }
+                return true;
+            } catch (SQLException s) {
+                s.printStackTrace();
+                return false;
+            }
+        } else {
+            return true;
+        }
     }
 
     /*

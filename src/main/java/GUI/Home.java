@@ -5,6 +5,7 @@ import javax.swing.border.*;
 import Controller.Controller;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import GUI.Components.FotoPanel;
 import Model.Foto;
 import Model.GalleriaCondivisa;
+import Model.Luogo;
 
 
 public class Home extends JFrame  {
@@ -27,6 +29,7 @@ public class Home extends JFrame  {
 
         photos = controller.recuperaGallUtente(username);
         home = this;
+
         fotoPanel = new FotoPanel(photos, true, controller, username, this);
 
         initComponents(controller);
@@ -78,7 +81,6 @@ public class Home extends JFrame  {
         creaGallCButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 CreaGalleriaCondivisa cgc = new CreaGalleriaCondivisa(username, controller, home, photos);
                 mainFrame.setVisible(false);
                 cgc.mainFrame.setVisible(true);
@@ -117,13 +119,37 @@ public class Home extends JFrame  {
                             if (foto.isEmpty()){
                                 JOptionPane.showMessageDialog(mainFrame, "La ricerca non ha prodotto risultati", "Nessun risultato", JOptionPane.INFORMATION_MESSAGE);
                             }else {
-                                RisultatoRicerca rr = new RisultatoRicerca(new FotoPanel(foto, true, controller, username, home), mainFrame, foto.size());
+                                RisultatoRicerca rr = new RisultatoRicerca(new FotoPanel(foto, false, controller, username, home), mainFrame, foto.size());
                                 rr.mainFrame.setVisible(true);
                             }
                         } catch (SQLException ex) {
                             ex.printStackTrace();
                         }
                     }
+                }
+            }
+        });
+
+        top3Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    ArrayList<Luogo> luoghi = controller.ricercaLuoghiTop3();
+                    if (luoghi.isEmpty()) {
+                        JOptionPane.showMessageDialog(mainFrame, "Non ci sono luoghi in TOP 3", "Nessun risultato", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        DefaultTableModel model = new DefaultTableModel();
+                        model.addColumn("Luogo");
+                        model.addColumn("Numero di foto");
+                        for (Luogo l : luoghi) {
+                            model.addRow(new Object[]{l.getNomeMnemonico(), l.getNumeroFoto()});
+                        }
+                        JTable table = new JTable(model);
+                        JScrollPane scrollPane = new JScrollPane(table);
+                        JOptionPane.showMessageDialog(mainFrame, scrollPane, "Luoghi in TOP 3", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
@@ -192,8 +218,6 @@ public class Home extends JFrame  {
         panel = new JPanel();
         caricaFoto = new JButton();
         scrollPanel = new JScrollPane(fotoPanel);
-        scrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         benvenutoLabel = new JLabel();
         searchText = new JTextField();
         creaGallCButton = new JButton();
@@ -201,6 +225,7 @@ public class Home extends JFrame  {
         ricercaComboBox = new JComboBox();
         cercaButton = new JButton();
         gallerieCondiviseBox = new JComboBox();
+        top3Button = new JButton();
 
         //======== this ========
         var contentPane = getContentPane();
@@ -224,7 +249,7 @@ public class Home extends JFrame  {
 
         //======== panel ========
         {
-            panel.setBackground(new Color(0x2a3c4c));
+            panel.setBackground(new Color(0x003366));
 
             //---- caricaFoto ----
             caricaFoto.setText("CARICA FOTO");
@@ -257,6 +282,9 @@ public class Home extends JFrame  {
             //---- cercaButton ----
             cercaButton.setText("CERCA");
 
+            //---- top3Button ----
+            top3Button.setText("TOP 3");
+
             GroupLayout panelLayout = new GroupLayout(panel);
             panel.setLayout(panelLayout);
             panelLayout.setHorizontalGroup(
@@ -272,13 +300,15 @@ public class Home extends JFrame  {
                                 .addComponent(ricercaComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(searchText, GroupLayout.PREFERRED_SIZE, 169, GroupLayout.PREFERRED_SIZE))
-                            .addComponent(cercaButton, GroupLayout.Alignment.TRAILING)
                             .addGroup(GroupLayout.Alignment.TRAILING, panelLayout.createParallelGroup()
                                 .addComponent(gallerieCondiviseBox, GroupLayout.PREFERRED_SIZE, 153, GroupLayout.PREFERRED_SIZE)
                                 .addGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                                     .addComponent(creaGallCButton, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
                                     .addComponent(caricaFoto, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(label1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                    .addComponent(label1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(GroupLayout.Alignment.TRAILING, panelLayout.createParallelGroup()
+                                .addComponent(top3Button)
+                                .addComponent(cercaButton)))
                         .addContainerGap(92, Short.MAX_VALUE))
             );
             panelLayout.setVerticalGroup(
@@ -296,7 +326,9 @@ public class Home extends JFrame  {
                                     .addComponent(ricercaComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(cercaButton)
-                                .addGap(197, 197, 197)
+                                .addGap(18, 18, 18)
+                                .addComponent(top3Button)
+                                .addGap(159, 159, 159)
                                 .addComponent(label1)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(gallerieCondiviseBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -304,7 +336,7 @@ public class Home extends JFrame  {
                                 .addComponent(creaGallCButton)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(caricaFoto, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(27, Short.MAX_VALUE))
+                        .addContainerGap(17, Short.MAX_VALUE))
             );
         }
 
@@ -338,6 +370,7 @@ public class Home extends JFrame  {
     private JLabel label1;
     private JComboBox ricercaComboBox;
     private JButton cercaButton;
-    private JComboBox gallerieCondiviseBox;
+    protected JComboBox gallerieCondiviseBox;
+    private JButton top3Button;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

@@ -99,4 +99,40 @@ public class LuogoImplementazionePostgresDAO implements LuogoDAO {
         connection.close();
         return luogo;
     }
+
+    @Override
+    public ArrayList<Luogo> ricercaLuoghiTop3() throws SQLException {
+        ArrayList<Luogo> luoghi = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM galleria_schema.top3;");
+            ResultSet rs = ps.executeQuery();
+            Luogo luogo;
+            while (rs.next()) {
+                int codLuogo = rs.getInt(1);
+                ps = connection.prepareStatement("SELECT * FROM galleria_schema.luogo WHERE codLuogo = ?;");
+                ps.setInt(1, codLuogo);
+                ResultSet rs2 = ps.executeQuery();
+                double latitudine;
+                double longitudine;
+                String nomeLuogo;
+                while (rs2.next()){
+                    codLuogo = rs2.getInt(1);
+                    latitudine = rs2.getDouble(2);
+                    longitudine = rs2.getDouble(3);
+                    nomeLuogo = rs2.getString(4);
+                    luogo = new Luogo(codLuogo, nomeLuogo, latitudine, longitudine);
+                    luogo.setNumeroFoto(rs.getInt(2));
+                    luoghi.add(luogo);
+                }
+                rs2.close();
+
+            }
+            rs.close();
+            connection.close();
+            return luoghi;
+        } catch (SQLException s){
+            s.printStackTrace();
+        }
+        return luoghi;
+    }
 }

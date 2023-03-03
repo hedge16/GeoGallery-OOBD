@@ -48,8 +48,19 @@ public class UtenteImplementazionePostgresDAO implements UtenteDAO {
     public void aggiungiUtente(String nome, String cognome, String username, String password, String email, Date d) throws PSQLException {
         try {
             // Prepara la query di inserimento
-            PreparedStatement aggiungiUser = connection.prepareStatement("INSERT INTO galleria_schema.utente VALUES('" + nome + "','" + cognome + "','" + username + "','" + password + "','" + email + "','" + d + "');");
+            PreparedStatement aggiungiUser = connection.prepareStatement("INSERT INTO galleria_schema.utente VALUES(?,?,?,?,?,?);");
+            // Imposta i parametri della query
+            aggiungiUser.setString(1, nome);
+            aggiungiUser.setString(2, cognome);
+            aggiungiUser.setString(3, username);
+            aggiungiUser.setString(4, password);
+            aggiungiUser.setString(5, email);
+            aggiungiUser.setDate(6, new java.sql.Date(d.getTime()));
             // Esegue la query di inserimento
+            aggiungiUser.executeUpdate();
+            // crea una nuova galleria personale per l'utente
+            aggiungiUser = connection.prepareStatement("INSERT INTO galleria_schema.galleria_personale VALUES(DEFAULT,?);");
+            aggiungiUser.setString(1, username);
             aggiungiUser.executeUpdate();
             // Chiude la connnsesione al database
             connection.close();
@@ -105,7 +116,6 @@ public class UtenteImplementazionePostgresDAO implements UtenteDAO {
             ps.setString(1, username);
             ps.executeUpdate();
             connection.close();
-
         }catch(SQLException s){
             throw new SQLException();
 

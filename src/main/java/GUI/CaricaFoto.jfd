@@ -4,13 +4,13 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {comp panel1::l:::x}"
+			"$horizontalGroup": "par l {seq l {comp panel1:::p::p, space :0:3:x}}"
 			"$verticalGroup": "par l {comp panel1::l:::x}"
 		} ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq l {space :p:36:p, par t {seq t {comp fotoPanel:::p::p, space :p:34:p, par t {seq t {comp tagsLabel:::p::p, space s:::p, comp tagsText:::p:140:p}, seq {comp dispLabel:::p::p, space :::p, comp selDisp:::p:157:p}, comp apriFoto::t:p::p, comp privataSwitch:::p:86:p}, space ::188:x}, seq t {space :0:0:x, comp goBackButton:::p::p, space :p:30:p, comp avantiButton:::p::p, space :p:166:p}}}}"
-				"$verticalGroup": "par l {seq t {space :p:48:p, par l:::p {seq {par b {comp selDisp::b:p::p, comp dispLabel::b:p::p}, space :::p, comp apriFoto:::p::p, space :p:141:p, par b {comp tagsText::b:p::p, comp tagsLabel::b:p::p}, space :::x, comp privataSwitch:::p::p}, comp fotoPanel:::p::p}, space s:::p, par b {comp avantiButton::b:p::p, comp goBackButton::b:p::p}, space ::42:x}}"
+				"$horizontalGroup": "par l {seq l {space :351:26:x, comp fotoPanel:::p::p, space s:::p, par t:::p {seq {comp goBackButton::::0:x, space s:::p, comp avantiButton:::p::p}, comp apriFoto::t:p::p, seq {comp dispLabel:::p::p, space :::p, comp selDisp:::p:157:p}, seq t {comp tagsLabel:::p::p, space s:::p, comp tagsText:::p:140:p}, comp privataSwitch:::p:86:p}, space ::36:x}}"
+				"$verticalGroup": "par l {seq t {space :p:48:p, par l:::p {seq {par b {comp selDisp::b:p::p, comp dispLabel::b:p::p}, space :::p, comp apriFoto:::p::p, space :::x, par b {comp tagsText::b:p::p, comp tagsLabel::b:p::p}, space :p:18:p, comp privataSwitch:::p::p}, comp fotoPanel:::p::p}, space u:::p, par b {comp avantiButton::b:p::p, comp goBackButton::b:p::p}, space ::48:x}}"
 			} ) {
 				name: "panel1"
 				add( new FormComponent( "javax.swing.JButton" ) {
@@ -56,7 +56,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 780, 430 )
+			"size": new java.awt.Dimension( 605, 430 )
 		} )
 	}
 }

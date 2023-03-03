@@ -43,8 +43,10 @@ public class FotoPanel extends JPanel {
         this.photos = foto;
         numFoto = foto.size();
         labelFoto = new ArrayList<>();
-        setLayout(new FlowLayout(FlowLayout.LEFT));
-        setPreferredSize(new Dimension(339, 800));
+
+
+        setLayout(new GridLayout(0, 3, 5, 5));
+
 
         isSelected = new boolean[foto.size()];
 
@@ -93,6 +95,7 @@ public class FotoPanel extends JPanel {
 
             // Imposta le dimensioni preferenziali per la label
             labelFoto.get(i).setPreferredSize(new Dimension(newWidth, newHeight));
+            setToolTipText("Fai doppio click per aprire la foto");
             add(labelFoto.get(i));
 
             if (!isHome){
@@ -115,28 +118,24 @@ public class FotoPanel extends JPanel {
 
         }
 
-        if (isHome) {
-            for (int i = 0; i < numFoto; i++) {
-                Foto foto1 = foto.get(i);
-                labelFoto.get(i).addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        super.mouseClicked(e);
-                        if (e.getClickCount() == 2) {
-                            Preview preview = new Preview(getController(), foto1, home);
-                            preview.frame.setVisible(true);
-                        }
+        for (int i = 0; i < numFoto; i++) {
+            Foto foto1 = foto.get(i);
+            labelFoto.get(i).addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    if (e.getClickCount() == 2) {
+                        Preview preview = new Preview(controller, foto1, home, isHome);
+                        preview.frame.setVisible(true);
                     }
-                });
-            }
+                }
+            });
         }
+
     }
 
     public boolean[] getSelectedPhotos () {
         return isSelected;
-    }
-    private Controller getController() {
-        return this.controller;
     }
 
 

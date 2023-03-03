@@ -2,6 +2,7 @@ package ImplementazionePostgresDAO;
 
 import DAO.FotoDAO;
 import Database.ConnessioneDatabase;
+import Model.Dispositivo;
 import Model.Foto;
 import Model.Luogo;
 import Model.SoggettoFoto;
@@ -43,7 +44,6 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
             ResultSet rs = ps.executeQuery();
             // Itera sui risultati della query
             while (rs.next()) {
-
                 // Recupera i dati dal risultato della query
                 int codFoto = rs.getInt(1);
                 boolean privata = rs.getBoolean(2);
@@ -110,7 +110,6 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
             // Esegue la query di inserimento
             ps.executeUpdate();
 
-
             // Esegue la query per recuperare il valore attuale della sequenza
             ps = connection.prepareStatement("SELECT codFoto FROM galleria_schema.foto ORDER BY codFoto DESC LIMIT 1;");
             ResultSet rs = ps.executeQuery();
@@ -119,8 +118,6 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
             if (rs.next()) {
                 codFoto = rs.getInt(1);
             }
-
-
 
             // Chiude lo stream e la connessione al database
             fis.close();
@@ -153,21 +150,30 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM galleria_schema.foto ORDER BY codFoto DESC LIMIT 1;");
             ResultSet rs = ps.executeQuery();
+            int codFoto;
+            boolean privata;
+            boolean rimossa;
+            Date dataScatto;
+            int codGalleria;
+            String autore;
+            int codDispositivo;
+            byte[] barr;
             while (rs.next()) {
                 // Recupera i dati dal risultato della query
-                int codFoto = rs.getInt(1);
-                boolean privata = rs.getBoolean(2);
-                boolean rimossa = rs.getBoolean(3);
-                Date dataScatto = rs.getDate(4);
-                int codGalleria = rs.getInt(5);
-                String autore = rs.getString(6);
-                int codDispositivo = rs.getInt(7);
-                byte[] barr = rs.getBytes(8);
+                codFoto = rs.getInt(1);
+                privata = rs.getBoolean(2);
+                rimossa = rs.getBoolean(3);
+                dataScatto = rs.getDate(4);
+                codGalleria = rs.getInt(5);
+                autore = rs.getString(6);
+                codDispositivo = rs.getInt(7);
+                barr = rs.getBytes(8);
                 // Crea un oggetto InputStream a partire dall'array di byte
                 ByteArrayInputStream bis = new ByteArrayInputStream(barr);
                 // Crea un oggetto ImageIcon a partire dallo stream di byte
                 ImageIcon immagine = new ImageIcon(ImageIO.read(bis));
                 bis.close();
+
                 // Crea un oggetto Foto con i dati recuperati
                 foto = new Foto(codFoto, privata, rimossa, dataScatto, codGalleria, autore, codDispositivo, immagine);
             }
@@ -223,7 +229,6 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
             rs.close();
             connection.close();
             return photos;
-
         } catch (Exception s) {
             s.printStackTrace();
             throw new SQLException();

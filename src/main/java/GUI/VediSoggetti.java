@@ -31,9 +31,6 @@ public class VediSoggetti extends JFrame {
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(frameChiamante);
         mainFrame.setVisible(true);
-
-
-
     }
 
     private void initComponents() {

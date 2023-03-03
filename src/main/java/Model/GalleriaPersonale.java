@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 public class GalleriaPersonale {
     private int codGalleria;
-    private String proprietario;
+    private Utente proprietario;
     private ArrayList<Foto> foto; // chiavi esterne
 
-    public GalleriaPersonale(int codGalleria, String proprietario) {
+    public GalleriaPersonale(int codGalleria, Utente proprietario) {
         this.codGalleria = codGalleria;
         this.proprietario = proprietario;
         this.foto = new ArrayList<>();
@@ -21,11 +21,11 @@ public class GalleriaPersonale {
         this.codGalleria = codGalleria;
     }
 
-    public String getProprietario() {
+    public Utente getProprietario() {
         return proprietario;
     }
 
-    public void setProprietario(String proprietario) {
+    public void setProprietario(Utente proprietario) {
         this.proprietario = proprietario;
     }
 
@@ -33,7 +33,7 @@ public class GalleriaPersonale {
         return foto;
     }
 
-    public void setFoto(ArrayList<Foto> foto) {
+    public void setPhotos(ArrayList<Foto> foto) {
         this.foto = foto;
     }
 
@@ -44,4 +44,5 @@ public class GalleriaPersonale {
     public void removeFoto(Foto foto) {
         this.foto.remove(foto);
     }
+
 }

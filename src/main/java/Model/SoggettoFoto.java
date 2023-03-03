@@ -6,6 +6,7 @@ public class SoggettoFoto {
     private int id;
     private String nome;
     private String categoria;
+    private ArrayList<Foto> photos;
 
 
     public SoggettoFoto(int id, String nome, String categoria) {

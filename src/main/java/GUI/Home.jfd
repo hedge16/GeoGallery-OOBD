@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "8.0.1.0.199" Java: "17.0.5" encoding: "UTF-8"
+JFDML JFormDesigner: "8.0.2.0.220" Java: "17.0.5" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -9,11 +9,11 @@ new FormModel {
 		} ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :p:28:p, par l:::p {comp scrollPanel:::::x, comp benvenutoLabel:::p:323:p}, space ::37:x, par l {seq t {comp ricercaComboBox:::p::p, space :::p, comp searchText:::p:169:p}, comp cercaButton::t:p::p, par l:t {comp gallerieCondiviseBox:::p:153:p, par l:::p {comp creaGallCButton::t::0:x, comp caricaFoto::t:::x, comp label1::t:::x}}}, space ::92:x}}"
-				"$verticalGroup": "par l {seq {space :::x, par l {seq {comp benvenutoLabel:::p::p, space :::p, comp scrollPanel:::p:409:p}, seq {par b {comp searchText::b:p::p, comp ricercaComboBox::b:p::p}, space u:::p, comp cercaButton:::p::p, space :p:197:p, comp label1:::p::p, space u:::p, comp gallerieCondiviseBox:::p::p, space :p:45:p, comp creaGallCButton:::p::p, space u:::p, comp caricaFoto:::p:36:p}}, space ::27:x}}"
+				"$horizontalGroup": "par l {seq {space :p:28:p, par l:::p {comp scrollPanel:::::x, comp benvenutoLabel:::p:323:p}, space ::37:x, par l {seq t {comp ricercaComboBox:::p::p, space :::p, comp searchText:::p:169:p}, par l:t {comp gallerieCondiviseBox:::p:153:p, par l:::p {comp creaGallCButton::t::0:x, comp caricaFoto::t:::x, comp label1::t:::x}}, par l:t {comp top3Button:::p::p, comp cercaButton:::p::p}}, space ::92:x}}"
+				"$verticalGroup": "par l {seq {space :::x, par l {seq {comp benvenutoLabel:::p::p, space :::p, comp scrollPanel:::p:409:p}, seq {par b {comp searchText::b:p::p, comp ricercaComboBox::b:p::p}, space u:::p, comp cercaButton:::p::p, space s:::p, comp top3Button:::p::p, space :p:159:p, comp label1:::p::p, space u:::p, comp gallerieCondiviseBox:::p::p, space :p:45:p, comp creaGallCButton:::p::p, space u:::p, comp caricaFoto:::p:36:p}}, space ::17:x}}"
 			} ) {
 				name: "panel"
-				"background": new java.awt.Color( 42, 60, 76, 255 )
+				"background": new java.awt.Color( 0, 51, 102, 255 )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "caricaFoto"
 					"text": "CARICA FOTO"
@@ -55,6 +55,10 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JComboBox" ) {
 					name: "gallerieCondiviseBox"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "top3Button"
+					"text": "TOP 3"
 				} )
 			} )
 			menuBar: new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {

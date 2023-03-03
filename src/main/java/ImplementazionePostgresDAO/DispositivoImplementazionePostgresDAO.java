@@ -15,13 +15,11 @@ public class DispositivoImplementazionePostgresDAO implements DispositivoDAO {
     private Connection connection;
 
     public DispositivoImplementazionePostgresDAO(){
-
         try{
             connection = ConnessioneDatabase.getInstance().connection;
         }catch(SQLException s){
             s.printStackTrace();
         }
-
     }
 
 
@@ -91,8 +89,5 @@ public class DispositivoImplementazionePostgresDAO implements DispositivoDAO {
         rs.close();
         connection.close();
         return disp;
-
     }
-
-
 }

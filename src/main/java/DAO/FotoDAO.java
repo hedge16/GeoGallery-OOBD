@@ -21,5 +21,4 @@ public interface FotoDAO {
     ArrayList<Foto> ricercaFotoPerLuogo (String nomeLuogo) throws SQLException;
     ArrayList<Foto> ricercaFotoPerSoggetto (String categoria, String nome) throws SQLException;
     void caricaFoto (boolean privata, boolean nuovo, Date data, String username, int idDispositivo, String filePath, Luogo luogo, ArrayList<SoggettoFoto> soggettiNuovi, ArrayList<SoggettoFoto> soggettiEsistenti, String[] tags) throws SQLException ;
-
 }

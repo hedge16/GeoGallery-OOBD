@@ -4,6 +4,7 @@ import Controller.Controller;
 import org.postgresql.util.PSQLException;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -42,24 +43,29 @@ public class Register {
            @Override
            public void actionPerformed(ActionEvent e) {
                // qui ci vuole la verifica dei dati e l'eventuale inserimento nella base di dati
-               Date data = new Date();
-               String passwordOut = new String(passwordField.getPassword());
-               if (passwordOut == null || passwordOut.isEmpty()) {
-                   // mostra un messaggio di errore all'utente e non esegui il metodo aggiungiUtente()
-                   JOptionPane.showMessageDialog(frame, "La password non può essere nulla o vuota", "Errore", JOptionPane.ERROR_MESSAGE);
+               if (usernameText.getText().isEmpty() || passwordField.getPassword().length == 0) {
+                   JOptionPane.showMessageDialog(frame, "Uno o più campi sono vuoti", "Errore", JOptionPane.ERROR_MESSAGE);
+                   if (usernameText.getText().isEmpty()) {
+                       usernameText.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
+                   } else {
+                       usernameText.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
+                   }
+                   if (passwordField.getPassword().length == 0) {
+                       passwordField.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
+                   } else {
+                       passwordField.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
+                   }
                } else {
-                   // esegui il metodo aggiungiUtente()
                    try{
-                       controller.aggiungiUtente(nomeText.getText(), cognomeText.getText(), usernameText.getText(), passwordOut, emailText.getText(), data);
-                       //controller.creaGalleria(username);
+                       String passwordOut = new String(passwordField.getPassword());
+                       controller.aggiungiUtente(nomeText.getText(), cognomeText.getText(), usernameText.getText(), passwordOut, emailText.getText(), new Date());
                        JOptionPane.showMessageDialog(frame, "Registrazione andata a buon fine.");
                        frame.setVisible(false);
                        frameChiamante.setVisible(true);
                        frame.dispose();
-                       }
+                   }
                    catch (PSQLException p1){
                        JOptionPane.showMessageDialog(frame, "Registrazione non andata a buon fine, username già utilizzato.", "Errore Registrazione", JOptionPane.ERROR_MESSAGE);
-
                    }catch(SQLException s){
                        JOptionPane.showMessageDialog(frame, "Errore nella creazione della Galleria.", "Errore", JOptionPane.ERROR_MESSAGE);
                    }

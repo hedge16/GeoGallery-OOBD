@@ -34,7 +34,7 @@ public class CaricaFoto extends JFrame {
     private String[] tags;
     private Dispositivo dispositivo;
     private ArrayList<Dispositivo> dispositivi;
-    String[] nomeDisp;
+    String[] nomiDisp;
     private Luogo luogo;
     private Luogo nuovoLuogo;
     private ArrayList<Luogo> luoghi;
@@ -49,15 +49,15 @@ public class CaricaFoto extends JFrame {
             s.printStackTrace();
         }
         if (dispositivi != null) {
-            nomeDisp = new String[dispositivi.size() + 1];
+            nomiDisp = new String[dispositivi.size() + 1];
 
             for (int i = 0; i < dispositivi.size(); i++) {
-                nomeDisp[i] = dispositivi.get(i).getNome();
+                nomiDisp[i] = dispositivi.get(i).getNome();
             }
-            nomeDisp[nomeDisp.length-1] = "<Aggiungi Dispositivo>";
+            nomiDisp[nomiDisp.length-1] = "<Aggiungi Dispositivo>";
         } else {
-            nomeDisp = new String[1];
-            nomeDisp[0] = "<Aggiungi Dispositivo>";
+            nomiDisp = new String[1];
+            nomiDisp[0] = "<Aggiungi Dispositivo>";
         }
         initMainComponents(controller, username);
         initLuogoComponents();
@@ -318,7 +318,7 @@ public class CaricaFoto extends JFrame {
         aggiungiSoggettoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (nomeSoggettoText.getText().isEmpty()){
+                if (nomeSoggettoText.getText().equals("")){
                     Border border = BorderFactory.createLineBorder(Color.RED, 1);
                     nomeSoggettoText.setBorder(border);
                     JOptionPane.showMessageDialog(mainFrame, "Inserisci un nome al soggetto", "Errore", JOptionPane.ERROR_MESSAGE);
@@ -346,81 +346,6 @@ public class CaricaFoto extends JFrame {
                 }
             }
         });
-
-        /* confermaButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (result == JFileChooser.APPROVE_OPTION) {
-
-                    // Carica l'immagine nel DB
-                    try {
-                        int codLuogo = controller.aggiungiLuogoDB(Double.parseDouble((String) latitudineSpinner.getValue()), Double.parseDouble((String) latitudineSpinner.getValue()), nomeLuogoText.getText());
-                        codFoto = controller.aggiungiFoto(privataSwitch.isSelected(), false, new Date(), controller.getCodG(username), username, controller.getCodDisp((String)selDisp.getSelectedItem(), username), filePath);
-                        controller.aggiungiPresenzaLuogo(codFoto, codLuogo);
-                        int i = 0;
-                        if (!tags.getText().equals("")) {
-                            String[] tagArr = tags.getText().split(",");
-                            int numTag = tagArr.length;
-                            while (i < numTag) {
-                                controller.aggiungiTagFoto(tagArr[i], codFoto);
-                                i++;
-                            }
-                        }
-                        for (SoggettoFoto s : soggetti) {
-                            int codSogg = controller.aggiungiSoggettoFoto(s.getCategoria(), s.getNome());
-                            controller.aggiungiPresenzaSoggetto(codFoto, codSogg);
-                        }
-                        JOptionPane.showMessageDialog(mainFrame, "Foto caricata con successo.");
-                        mainFrame.setVisible(false);
-                        mainFrame.dispose();
-                        home.aggiungiFotoGalleria(controller.getLastFotoDB(username));
-                        home.mainFrame.setVisible(true);
-                    } catch (SQLException s) {
-                        JOptionPane.showMessageDialog(mainFrame, "Errore nel caricamento del file.", "Errore col DB", JOptionPane.ERROR_MESSAGE);
-                    } catch (FileNotFoundException f) {
-                        JOptionPane.showMessageDialog(mainFrame, "File non trovato.", "File not found error", JOptionPane.ERROR_MESSAGE);
-
-                    }
-
-
-                } else if (result == JFileChooser.ERROR) {
-                    JOptionPane.showMessageDialog(mainFrame, "Non è stato possibile caricare il file.", "Errore file", JOptionPane.ERROR_MESSAGE);
-
-
-                }else{
-                    JOptionPane.showMessageDialog(mainFrame, "Non è stato selezionato alcun file o non sono stati compilati tutti i campi obbligatori.", "Errore", JOptionPane.ERROR_MESSAGE);
-                    Border border = BorderFactory.createLineBorder(Color.RED, 1);
-
-                    if (luogoCheckBox.isSelected()) {
-                        if (latitudineText.getText().isEmpty() && coordinateCheckBox.isSelected()) {
-                            latitudineText.setBorder(border);
-                        } else {
-                            latitudineText.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
-                        }
-                        if (longitudineText.getText().isEmpty() && coordinateCheckBox.isSelected()) {
-                            longitudineText.setBorder(border);
-                        } else {
-                            longitudineText.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
-                        }
-                        if (nomeLuogoText.getText().isEmpty() && nomeLuogoCheckBox.isSelected()) {
-                            nomeLuogoText.setBorder(border);
-                        } else {
-                            nomeLuogoText.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
-                        }
-                    } else {
-                        nomeLuogoText.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
-                        longitudineText.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
-                        latitudineText.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
-                    }
-                    if (nomeSoggTextField.getText().isEmpty()){
-                        nomeSoggTextField.setBorder(border);
-                    } else {
-                        nomeSoggTextField.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
-                    }
-                }
-
-            }
-        }); */
 
         confermaButton.addActionListener(new ActionListener() {
             @Override
@@ -496,7 +421,7 @@ public class CaricaFoto extends JFrame {
 
     /*  QUALORA SI DOVESSE MODIFICARE IN AUTOMATICO INITCOMPONENTS
     *   
-    selDisp = new JComboBox(nomeDisp);
+    selDisp = new JComboBox(nomiDisp);
 
     * */
 
@@ -505,7 +430,7 @@ public class CaricaFoto extends JFrame {
         panel1 = new JPanel();
         apriFoto = new JButton();
         privataSwitch = new JRadioButton();
-        selDisp = new JComboBox(nomeDisp);
+        selDisp = new JComboBox(nomiDisp);
         goBackButton = new JButton();
         fotoPanel = new JPanel();
         fotoAnteprima = new JLabel();
@@ -564,29 +489,25 @@ public class CaricaFoto extends JFrame {
             panel1Layout.setHorizontalGroup(
                 panel1Layout.createParallelGroup()
                     .addGroup(panel1Layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
-                        .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                        .addGap(26, 26, Short.MAX_VALUE)
+                        .addComponent(fotoPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
                             .addGroup(panel1Layout.createSequentialGroup()
-                                .addComponent(fotoPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addGap(34, 34, 34)
-                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                    .addGroup(panel1Layout.createSequentialGroup()
-                                        .addComponent(tagsLabel)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(tagsText, GroupLayout.PREFERRED_SIZE, 140, GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panel1Layout.createSequentialGroup()
-                                        .addComponent(dispLabel)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(selDisp, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(apriFoto)
-                                    .addComponent(privataSwitch, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(188, Short.MAX_VALUE))
+                                .addComponent(goBackButton, GroupLayout.DEFAULT_SIZE, 1, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(avantiButton))
+                            .addComponent(apriFoto)
                             .addGroup(panel1Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(goBackButton)
-                                .addGap(30, 30, 30)
-                                .addComponent(avantiButton)
-                                .addGap(166, 166, 166))))
+                                .addComponent(dispLabel)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(selDisp, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addComponent(tagsLabel)
+                                .addGap(18, 18, 18)
+                                .addComponent(tagsText, GroupLayout.PREFERRED_SIZE, 140, GroupLayout.PREFERRED_SIZE))
+                            .addComponent(privataSwitch, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(36, Short.MAX_VALUE))
             );
             panel1Layout.setVerticalGroup(
                 panel1Layout.createParallelGroup()
@@ -599,18 +520,18 @@ public class CaricaFoto extends JFrame {
                                     .addComponent(dispLabel))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(apriFoto)
-                                .addGap(141, 141, 141)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(tagsText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(tagsLabel))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
                                 .addComponent(privataSwitch))
                             .addComponent(fotoPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                             .addComponent(avantiButton)
                             .addComponent(goBackButton))
-                        .addContainerGap(42, Short.MAX_VALUE))
+                        .addContainerGap(48, Short.MAX_VALUE))
             );
         }
 
@@ -618,7 +539,9 @@ public class CaricaFoto extends JFrame {
         contentPane.setLayout(contentPaneLayout);
         contentPaneLayout.setHorizontalGroup(
             contentPaneLayout.createParallelGroup()
-                .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                    .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 3, Short.MAX_VALUE))
         );
         contentPaneLayout.setVerticalGroup(
             contentPaneLayout.createParallelGroup()

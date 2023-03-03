@@ -1,5 +1,6 @@
 package GUI;
 
+import java.awt.*;
 import GUI.Components.FotoPanel;
 
 import javax.swing.*;
@@ -24,6 +25,7 @@ public class RisultatoRicerca extends JFrame {
         scrollPanel = new JScrollPane(panel);
 
         //======== this ========
+        setMaximumSize(new Dimension(800, 800));
         var contentPane = getContentPane();
 
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);

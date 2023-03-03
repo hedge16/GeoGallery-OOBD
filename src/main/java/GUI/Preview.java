@@ -24,7 +24,7 @@ public class Preview extends JFrame {
 
     public JFrame frame;
     Luogo luogo;
-    public Preview (Controller controller, Foto f, Home home) {
+    public Preview (Controller controller, Foto f, Home home, boolean isHome) {
 
         initComponents();
         Image newimg = f.getFoto().getImage().getScaledInstance(275, 275, Image.SCALE_SMOOTH);
@@ -38,7 +38,7 @@ public class Preview extends JFrame {
         }
 
         try {
-            Dispositivo disp = controller.getDispositivo(f.getDispositivo());
+            Dispositivo disp = controller.getDispositivo(f.getCodDispositivo());
             dispINLabel.setText(disp.getNome());
         } catch (SQLException s) {
             s.printStackTrace();
@@ -57,17 +57,23 @@ public class Preview extends JFrame {
                 luogoINLabel2.setText("Lat : "+ luogo.getLatitudine() + " Long : " + luogo.getLongitudine());
             } else {
                 luogoINLabel.setText("Nessun luogo");
+                luogoINLabel2.setText("");
             }
         } catch (Exception e){
             e.printStackTrace();
         }
 
+        if (!isHome){
+            deleteButton.setVisible(false);
+            changePrivacyButton.setVisible(false);
+        }
 
         frame = new JFrame();
         frame.setContentPane(panel1);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.pack();
         frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
 
         deleteButton.addActionListener(new ActionListener() {
             @Override
@@ -96,8 +102,8 @@ public class Preview extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try{
                     controller.setPrivacyDB(f.getCodFoto(), !f.isPrivata());
-                    JOptionPane.showMessageDialog(panel1, "Privacy cambiata correttamente", "OK", JOptionPane.INFORMATION_MESSAGE);
                     Home home = new Home(controller, null, f.getAutore());
+                    JOptionPane.showMessageDialog(panel1, "Privacy cambiata correttamente", "OK", JOptionPane.INFORMATION_MESSAGE);
                     frame.setVisible(false);
                     frame.dispose();
                     home.mainFrame.setVisible(true);

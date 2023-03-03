@@ -19,8 +19,6 @@ public class Controller {
 
     }
 
-
-
     public void aggiungiUtente (String nome, String cognome, String username, String password, String email , Date data) throws PSQLException, SQLException {
         UtenteDAO u = new UtenteImplementazionePostgresDAO();
         try{
@@ -359,4 +357,19 @@ public class Controller {
             throw new SQLException();
         }
     }
+
+    public ArrayList<Luogo> ricercaLuoghiTop3 () throws SQLException {
+        ArrayList<Luogo> luoghi;
+        try {
+            LuogoDAO l = new LuogoImplementazionePostgresDAO();
+            luoghi = l.ricercaLuoghiTop3();
+            return luoghi;
+        } catch (SQLException s) {
+            s.printStackTrace();
+            throw new SQLException();
+        }
+
+    }
+
+
 }
