@@ -7,6 +7,7 @@ import Model.Utente;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -33,13 +34,12 @@ public class Login extends JFrame {
         initComponents();
 
 
-        String userDir = System.getProperty("user.dir");
-        ImageIcon icon = new ImageIcon(userDir + "/src/icons/logo.png");
-        logoLabel.setIcon(icon);
-
-
-        ImageIcon sfondo = new ImageIcon(userDir + "/src/icons/wallpaper.png");
+        URL logoUrl = ClassLoader.getSystemResource("logo.png");
+        URL sfondoUrl = ClassLoader.getSystemResource("wallpaper.png");
+        ImageIcon icon = new ImageIcon(logoUrl);
+        ImageIcon sfondo = new ImageIcon(sfondoUrl);
         JLabel labelSfondo = new JLabel(sfondo);
+        logoLabel.setIcon(icon);
         labelSfondo.setSize(rootPanel.getSize());
         rootPanel.add(labelSfondo);
 
@@ -84,12 +84,28 @@ public class Login extends JFrame {
                     if (found) {
                         JProgressBar progressBar = new JProgressBar();
                         progressBar.setIndeterminate(true);
-                        Home home = new Home(controller, frame1, userInput);
-                        progressBar.setIndeterminate(false);
-                        progressBar.setVisible(false);
-                        frame1.setVisible(false);
-                        frame1.dispose();
-                        home.mainFrame.setVisible(true);
+                        JOptionPane optionPane = new JOptionPane(progressBar, JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+                        JDialog dialog = optionPane.createDialog(frame1, "Caricamento in corso...");
+                        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                            @Override
+                            protected Void doInBackground() throws Exception {
+                                Home home = new Home(controller, frame1, userInput);
+                                frame1.setVisible(false);
+                                frame1.dispose();
+                                home.mainFrame.setVisible(true);
+                                return null;
+                            }
+
+                            @Override
+                            protected void done() {
+                                dialog.setVisible(false);
+                                dialog.dispose();
+                            }
+                        };
+                        worker.execute();
+                        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+                        dialog.setVisible(true);
+
 
                     } else {
                         JOptionPane.showMessageDialog(frame1, "Username o password non corretti", "Errore inserimento dati", JOptionPane.ERROR_MESSAGE);
@@ -109,6 +125,8 @@ public class Login extends JFrame {
 
     public static void main(String[] args) {
 
+
+        frame1 = new JFrame("Login");
         try {
             //set icon for mac
             Taskbar.getTaskbar().setIconImage(Toolkit.getDefaultToolkit().getImage("src/icons/icona.png"));
@@ -116,7 +134,6 @@ public class Login extends JFrame {
             //set icon for windows
             frame1.setIconImage(Toolkit.getDefaultToolkit().getImage("src/icons/icona.png"));
         }
-        frame1 = new JFrame("Login");
         frame1.setIconImage(Toolkit.getDefaultToolkit().getImage("src/icons/icona.png"));
         frame1.setContentPane(new Login().rootPanel);
         frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

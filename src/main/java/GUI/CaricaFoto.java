@@ -126,21 +126,29 @@ public class CaricaFoto extends JFrame {
                     public String getDescription() {
                         return "File immagine (*.png, *.jpg)";
                     }
+
+
+
                 });
 
                 fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
                 result = fileChooser.showOpenDialog(apriFoto);
 
                 if (result == JFileChooser.APPROVE_OPTION) {
-                    filePath = fileChooser.getSelectedFile().getAbsolutePath();
-                    try{
-                        ImageIcon foto = new ImageIcon(new ImageIcon(filePath).getImage().getScaledInstance(fotoAnteprima.getWidth(), fotoAnteprima.getHeight(), Image.SCALE_SMOOTH));
-                        fotoAnteprima.setIcon(foto);
+                    long fileSize = fileChooser.getSelectedFile().length();
+                    double fileSizeInMB = (double) fileSize / (1024 * 1024);
+                    if (fileSizeInMB > 5) {
+                        JOptionPane.showMessageDialog(mainFrame, "Il file selezionato supera la dimensione massima di 5MB.", "Errore", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        filePath = fileChooser.getSelectedFile().getAbsolutePath();
+                        try {
+                            ImageIcon foto = new ImageIcon(new ImageIcon(filePath).getImage().getScaledInstance(fotoAnteprima.getWidth(), fotoAnteprima.getHeight(), Image.SCALE_SMOOTH));
+                            fotoAnteprima.setIcon(foto);
 
-                    } catch (Exception e1){
-                        e1.printStackTrace();
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
                     }
-
                 }
 
             }
@@ -188,10 +196,15 @@ public class CaricaFoto extends JFrame {
         nomeLuogoCheckBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!nomeLuogoCheckBox.isSelected()){
-                    nomeLuogoText.setEnabled(false);
-                }else {
-                    nomeLuogoText.setEnabled(true);
+
+                if (coordinateCheckBox.isSelected()){
+                    if(!nomeLuogoCheckBox.isSelected()){
+                        nomeLuogoText.setEnabled(false);
+                    }else {
+                        nomeLuogoText.setEnabled(true);
+                    }
+                } else {
+                    nomeLuogoCheckBox.setSelected(true);
                 }
             }
         });
@@ -199,12 +212,16 @@ public class CaricaFoto extends JFrame {
         coordinateCheckBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!coordinateCheckBox.isSelected()){
-                    latitudineSpinner.setEnabled(false);
-                    longitudineSpinner.setEnabled(false);
-                }else {
-                    latitudineSpinner.setEnabled(true);
-                    longitudineSpinner.setEnabled(true);
+                if (nomeLuogoCheckBox.isSelected()) {
+                    if (!coordinateCheckBox.isSelected()) {
+                        latitudineSpinner.setEnabled(false);
+                        longitudineSpinner.setEnabled(false);
+                    } else {
+                        latitudineSpinner.setEnabled(true);
+                        longitudineSpinner.setEnabled(true);
+                    }
+                } else {
+                    coordinateCheckBox.setSelected(true);
                 }
             }
         });

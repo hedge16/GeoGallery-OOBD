@@ -39,10 +39,6 @@
             <systemPath>${basedir}/src/lib/imgscalr-lib-4.2.jar</systemPath>
         </dependency>
 
-
     </dependencies>
-
-
-
 
 </project>

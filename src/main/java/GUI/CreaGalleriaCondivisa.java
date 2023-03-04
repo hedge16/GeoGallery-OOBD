@@ -52,20 +52,22 @@ public class CreaGalleriaCondivisa extends JFrame {
                         home.gallerieCondiviseBox.addItem(nomeGalleriaText.getText());
                         home.mainFrame.setVisible(true);
                     } else {
-                        if (!tagsCheck) {
-                            JOptionPane.showMessageDialog(mainFrame, "Uno o più tag non sono validi.", "Errore", JOptionPane.ERROR_MESSAGE);
-                        } else {
-                            JOptionPane.showMessageDialog(mainFrame, "Inserire tutti i campi.", "Errore", JOptionPane.ERROR_MESSAGE);
-                        }
-                        if (nomeGalleriaText.getText().equals("")) {
+                        if (nomeGalleriaText.getText().equals("") && collabText.getText().equals("")) {
+                            JOptionPane.showMessageDialog(mainFrame, "Uno o più campi sono vuoti.", "Errore", JOptionPane.ERROR_MESSAGE);
                             nomeGalleriaText.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
-                        } else {
-                            nomeGalleriaText.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
-                        }
-                        if (collabText.getText().equals("")) {
                             collabText.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
-                        } else {
+                        } else if (nomeGalleriaText.getText().equals("") && !tagsCheck && !collabText.getText().equals("")) {
+                            JOptionPane.showMessageDialog(mainFrame, "Il campo nome galleria è vuoto.", "Errore", JOptionPane.ERROR_MESSAGE);
+                            nomeGalleriaText.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
                             collabText.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
+                        } else if (collabText.getText().equals("") && !tagsCheck && !nomeGalleriaText.getText().equals("")) {
+                            JOptionPane.showMessageDialog(mainFrame, "Il campo collaboratori è vuoto.", "Errore", JOptionPane.ERROR_MESSAGE);
+                            collabText.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
+                            nomeGalleriaText.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
+                        } else if (!tagsCheck && !nomeGalleriaText.getText().equals("") && !collabText.getText().equals("")) {
+                            JOptionPane.showMessageDialog(mainFrame, "Uno o più collaboratori non esistono.", "Errore", JOptionPane.ERROR_MESSAGE);
+                            collabText.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
+                            nomeGalleriaText.setBorder(UIManager.getLookAndFeelDefaults().getBorder("TextField.border"));
                         }
                     }
                 } catch (SQLException s) {

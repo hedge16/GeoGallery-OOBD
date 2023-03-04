@@ -10,8 +10,8 @@ public class ConnessioneDatabase {
     private static ConnessioneDatabase instance;
     public Connection connection = null;
     private String nome = "postgres";
-    private String password = "Barcavincy98!";
-    private String url = "jdbc:postgresql://localhost:5432/Galleria";
+    private String password = "password";
+    private String url = "jdbc:postgresql://galleria-geolicalizzata.c7j83gieo8bc.us-east-1.rds.amazonaws.com:5432/Galleria";
     private String driver = "org.postgresql.Driver";
 
     // COSTRUTTORE
