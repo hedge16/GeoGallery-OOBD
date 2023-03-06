@@ -17,6 +17,7 @@ public class Foto {
     private ArrayList<SoggettoFoto> soggetti;
     private ImageIcon foto;
     private ArrayList<Utente> tags;
+    private String[] tagsUsernames;
     private Luogo luogo;
     ArrayList<GalleriaCondivisa> gallerieCondivise;
     GalleriaPersonale galleriaPersonale;
@@ -184,6 +185,12 @@ public class Foto {
 
     public void setDispositivo(Dispositivo dispositivo) {
         this.dispositivo = dispositivo;
+    }
+    public String[] getTagsUsernames() {
+        return tagsUsernames;
+    }
+    public void setTagsUsernames(String[] tagsUsernames) {
+        this.tagsUsernames = tagsUsernames;
     }
 
 

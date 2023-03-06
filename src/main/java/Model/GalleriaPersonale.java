@@ -29,7 +29,7 @@ public class GalleriaPersonale {
         this.proprietario = proprietario;
     }
 
-    public ArrayList<Foto> getFoto() {
+    public ArrayList<Foto> getPhotos() {
         return foto;
     }
 

@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -17,6 +18,7 @@ import GUI.Components.FotoPanel;
 import Model.Foto;
 import Model.GalleriaCondivisa;
 import Model.Luogo;
+import Model.Utente;
 
 
 public class Home extends JFrame  {
@@ -24,31 +26,61 @@ public class Home extends JFrame  {
     private ArrayList<Foto> photos;
     Home home;
     FotoPanel fotoPanel;
+    Controller controller;
 
-    public Home (Controller controller, JFrame frameChiamante, String username){
+    public Home (Controller controller, JFrame frameChiamante) {
 
-        photos = controller.recuperaGallUtente(username);
-        home = this;
-
-        fotoPanel = new FotoPanel(photos, true, controller, username, this);
-
-        initComponents(controller);
-
-        try {
-            ArrayList<GalleriaCondivisa> gallerieCondivise = controller.recuperaGallerieCondivise(username);
-            for (GalleriaCondivisa gc : gallerieCondivise) {
-                gallerieCondiviseBox.addItem(gc.getNomeGalleria());
-            }
+        try{
+            photos = controller.recuperaGallUtenteDB(controller.getUtente().getUsername());
+            controller.getUtente().getGalleriaPersonale().setPhotos(photos);
         } catch (SQLException s){
             s.printStackTrace();
         }
-        searchText.setText("");
+        home = this;
+        this.controller = controller;
+
+        fotoPanel = new FotoPanel(controller.getUtente().getGalleriaPersonale().getPhotos(), true, controller, controller.getUtente().getUsername(), this);
+
+        initComponents();
+        scrollPanel.setViewportView(fotoPanel);
+        scrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        URL sfondoUrl = ClassLoader.getSystemResource("wallpaper.png");
+        ImageIcon sfondoIcon = new ImageIcon(sfondoUrl);
+        JLabel sfondoLabel = new JLabel(sfondoIcon);
+        panel.add(sfondoLabel);
+        sfondoLabel.setBounds(0, 0, 800, 600);
+        sfondoLabel.setVisible(true);
+        sfondoLabel.setOpaque(true);
+        panel.setComponentZOrder(sfondoLabel, 10);
+
+        top3Button.setText("");
+        URL top3URL = ClassLoader.getSystemResource("vecteezy_trophy-icon-vector-in-trendy-flat-style-isolated-on-white_6713297.png");
+        top3Button.setIcon(new ImageIcon(top3URL));
+
+
+        try {
+            ArrayList<GalleriaCondivisa> gallerieCondivise = controller.recuperaGallerieCondiviseDB(controller.getUtente().getUsername());
+            if (gallerieCondivise.size() == 0) {
+                gallerieCondiviseBox.setEnabled(false);
+            } else {
+                gallerieCondiviseBox.setEnabled(true);
+                controller.getUtente().setGallerieCondivise(gallerieCondivise);
+                for (GalleriaCondivisa gc : gallerieCondivise) {
+                    gallerieCondiviseBox.addItem(gc.getNomeGalleria());
+                }
+            }
+        } catch (SQLException s){
+            gallerieCondiviseBox.setEnabled(false);
+            s.printStackTrace();
+        }
+        searchText.setText("nome luogo");
         searchText.setForeground(Color.GRAY);
 
         ricercaComboBox.addItem("Luogo");
         ricercaComboBox.addItem("Soggetto");
 
-        benvenutoLabel.setText("Benvenuto "+username+" !");
+        benvenutoLabel.setText("Benvenuto "+controller.getUtente().getUsername()+" !");
 
         mainFrame = new JFrame("Home");
 
@@ -61,8 +93,7 @@ public class Home extends JFrame  {
         caricaFoto.addActionListener (new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                CaricaFoto caricaFoto = new CaricaFoto(controller, mainFrame, username, home);
+                CaricaFoto caricaFoto = new CaricaFoto(controller, mainFrame, home);
                 mainFrame.setVisible(false);
                 caricaFoto.mainFrame.setVisible(true);
             }
@@ -81,7 +112,7 @@ public class Home extends JFrame  {
         creaGallCButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CreaGalleriaCondivisa cgc = new CreaGalleriaCondivisa(username, controller, home, photos);
+                CreaGalleriaCondivisa cgc = new CreaGalleriaCondivisa(controller, home);
                 mainFrame.setVisible(false);
                 cgc.mainFrame.setVisible(true);
             }
@@ -99,11 +130,11 @@ public class Home extends JFrame  {
                             String categoria = searchTerms[0];
                             String nomeSoggetto = searchTerms[1];
                             try {
-                                ArrayList<Foto> foto = controller.ricercaFotoPerSoggetto(categoria, nomeSoggetto);
+                                ArrayList<Foto> foto = controller.ricercaFotoPerSoggettoDB(categoria, nomeSoggetto);
                                 if (foto.isEmpty()){
                                     JOptionPane.showMessageDialog(mainFrame, "La ricerca non ha prodotto risultati", "Nessun risultato", JOptionPane.INFORMATION_MESSAGE);
                                 }else {
-                                    RisultatoRicerca rr = new RisultatoRicerca(new FotoPanel(foto, false, controller, username, home), mainFrame, foto.size());
+                                    RisultatoRicerca rr = new RisultatoRicerca(new FotoPanel(foto, false, controller, controller.getUtente().getUsername(), home), mainFrame, foto.size());
                                     rr.mainFrame.setVisible(true);
                                 }
                             } catch (SQLException ex) {
@@ -115,11 +146,11 @@ public class Home extends JFrame  {
                         }
                     } else {
                         try {
-                            ArrayList<Foto> foto = controller.ricercaFotoPerLuogo(searchText.getText());
+                            ArrayList<Foto> foto = controller.ricercaFotoPerLuogoDB(searchText.getText());
                             if (foto.isEmpty()){
                                 JOptionPane.showMessageDialog(mainFrame, "La ricerca non ha prodotto risultati", "Nessun risultato", JOptionPane.INFORMATION_MESSAGE);
                             }else {
-                                RisultatoRicerca rr = new RisultatoRicerca(new FotoPanel(foto, false, controller, username, home), mainFrame, foto.size());
+                                RisultatoRicerca rr = new RisultatoRicerca(new FotoPanel(foto, false, controller, controller.getUtente().getUsername(), home), mainFrame, foto.size());
                                 rr.mainFrame.setVisible(true);
                             }
                         } catch (SQLException ex) {
@@ -134,7 +165,7 @@ public class Home extends JFrame  {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    ArrayList<Luogo> luoghi = controller.ricercaLuoghiTop3();
+                    ArrayList<Luogo> luoghi = controller.ricercaLuoghiTop3DB();
                     if (luoghi.isEmpty()) {
                         JOptionPane.showMessageDialog(mainFrame, "Non ci sono luoghi in TOP 3", "Nessun risultato", JOptionPane.INFORMATION_MESSAGE);
                     } else {
@@ -210,14 +241,14 @@ public class Home extends JFrame  {
 
 
 
-    private void initComponents (Controller controller) {
+    private void initComponents () {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         menuBar = new JMenuBar();
-        azioniMenu = new JMenu();
+        utenteMenu = new JMenu();
         logoutItem = new JMenuItem();
         panel = new JPanel();
         caricaFoto = new JButton();
-        scrollPanel = new JScrollPane(fotoPanel);
+        scrollPanel = new JScrollPane();
         benvenutoLabel = new JLabel();
         searchText = new JTextField();
         creaGallCButton = new JButton();
@@ -234,22 +265,22 @@ public class Home extends JFrame  {
         {
             menuBar.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 
-            //======== azioniMenu ========
+            //======== utenteMenu ========
             {
-                azioniMenu.setText("Azioni");
-                azioniMenu.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+                utenteMenu.setText("Utente");
+                utenteMenu.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 
                 //---- logoutItem ----
                 logoutItem.setText("Logout");
-                azioniMenu.add(logoutItem);
+                utenteMenu.add(logoutItem);
             }
-            menuBar.add(azioniMenu);
+            menuBar.add(utenteMenu);
         }
         setJMenuBar(menuBar);
 
         //======== panel ========
         {
-            panel.setBackground(new Color(0x003366));
+            panel.setBackground(Color.white);
 
             //---- caricaFoto ----
             caricaFoto.setText("CARICA FOTO");
@@ -359,18 +390,18 @@ public class Home extends JFrame  {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
     private JMenuBar menuBar;
-    private JMenu azioniMenu;
+    private JMenu utenteMenu;
     private JMenuItem logoutItem;
     private JPanel panel;
     private JButton caricaFoto;
-    private JScrollPane scrollPanel;
+    public JScrollPane scrollPanel;
     private JLabel benvenutoLabel;
     private JTextField searchText;
     private JButton creaGallCButton;
     private JLabel label1;
     private JComboBox ricercaComboBox;
     private JButton cercaButton;
-    protected JComboBox gallerieCondiviseBox;
+    public JComboBox gallerieCondiviseBox;
     private JButton top3Button;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

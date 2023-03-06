@@ -13,7 +13,7 @@ new FormModel {
 				"$verticalGroup": "par l {seq {space :::x, par l {seq {comp benvenutoLabel:::p::p, space :::p, comp scrollPanel:::p:409:p}, seq {par b {comp searchText::b:p::p, comp ricercaComboBox::b:p::p}, space u:::p, comp cercaButton:::p::p, space s:::p, comp top3Button:::p::p, space :p:159:p, comp label1:::p::p, space u:::p, comp gallerieCondiviseBox:::p::p, space :p:45:p, comp creaGallCButton:::p::p, space u:::p, comp caricaFoto:::p:36:p}}, space ::17:x}}"
 			} ) {
 				name: "panel"
-				"background": new java.awt.Color( 0, 51, 102, 255 )
+				"background": new java.awt.Color( 255, 255, 255, 255 )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "caricaFoto"
 					"text": "CARICA FOTO"
@@ -65,8 +65,8 @@ new FormModel {
 				name: "menuBar"
 				"componentOrientation": sfield java.awt.ComponentOrientation RIGHT_TO_LEFT
 				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
-					name: "azioniMenu"
-					"text": "Azioni"
+					name: "utenteMenu"
+					"text": "Utente"
 					"componentOrientation": sfield java.awt.ComponentOrientation LEFT_TO_RIGHT
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "logoutItem"

@@ -46,12 +46,21 @@ public class DispositivoImplementazionePostgresDAO implements DispositivoDAO {
     }
 
     @Override
-    public void addDispDB(String username, String nomeDisp) throws SQLException {
+    public Dispositivo addDispDB(String username, String nomeDisp) throws SQLException {
         PreparedStatement ps = connection.prepareStatement("INSERT INTO galleria_schema.dispositivo VALUES (DEFAULT, ?, ?);");
         ps.setString(1, nomeDisp);
         ps.setString(2, username);
         ps.executeUpdate();
+        ps = connection.prepareStatement("SELECT codDisp FROM galleria_schema.dispositivo ORDER BY codDisp DESC LIMIT 1;");
+        ResultSet rs = ps.executeQuery();
+        int codDisp = -1;
+        while(rs.next()){
+            codDisp = rs.getInt(1);
+        }
+        rs.close();
+        Dispositivo dispositivo = new Dispositivo(codDisp, nomeDisp, username);
         connection.close();
+        return dispositivo;
     }
 
     @Override

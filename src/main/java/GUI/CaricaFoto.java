@@ -7,18 +7,14 @@ import javax.swing.filechooser.FileFilter;
 
 import Controller.Controller;
 import GUI.Components.TagTextField;
-import Model.Dispositivo;
-import Model.Luogo;
-import Model.SoggettoFoto;
-import Model.Utente;
+import Model.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 
 public class CaricaFoto extends JFrame {
 
@@ -39,18 +35,19 @@ public class CaricaFoto extends JFrame {
     private Luogo nuovoLuogo;
     private ArrayList<Luogo> luoghi;
     Controller controller;
-    public CaricaFoto (Controller controller, JFrame frameChiamante, String username, Home home) {
+    public CaricaFoto (Controller controller, JFrame frameChiamante, Home home) {
 
         this.controller = controller;
         dispositivi = null;
+
         try {
-            dispositivi = controller.getAllDisp(username);
+            dispositivi = controller.getAllDispDB(controller.getUtente().getUsername());
+            controller.getUtente().setDispositivi(dispositivi);
         } catch (SQLException s) {
             s.printStackTrace();
         }
         if (dispositivi != null) {
             nomiDisp = new String[dispositivi.size() + 1];
-
             for (int i = 0; i < dispositivi.size(); i++) {
                 nomiDisp[i] = dispositivi.get(i).getNome();
             }
@@ -59,8 +56,13 @@ public class CaricaFoto extends JFrame {
             nomiDisp = new String[1];
             nomiDisp[0] = "<Aggiungi Dispositivo>";
         }
-        initMainComponents(controller, username);
+        initMainComponents(controller, controller.getUtente().getUsername());
         initLuogoComponents();
+        nomeLuogoCheckBox.setEnabled(false);
+        coordinateCheckBox.setEnabled(false);
+        nomeLuogoText.setEnabled(false);
+        latitudineSpinner.setEnabled(false);
+        longitudineSpinner.setEnabled(false);
         initSoggettoComponents();
 
         SpinnerNumberModel latModel = new SpinnerNumberModel(0.0, -90.0, 90.0, 0.1);
@@ -100,17 +102,11 @@ public class CaricaFoto extends JFrame {
             dbSoggettoComboBox.addItem("Nome: " + sf.getNome() + ", Categoria: " + sf.getCategoria());
         }
 
-
-
-
-
         mainFrame = new JFrame("Carica la tua foto");
         mainFrame.setContentPane(panel1);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(frameChiamante);
-
-
         apriFoto.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -137,8 +133,8 @@ public class CaricaFoto extends JFrame {
                 if (result == JFileChooser.APPROVE_OPTION) {
                     long fileSize = fileChooser.getSelectedFile().length();
                     double fileSizeInMB = (double) fileSize / (1024 * 1024);
-                    if (fileSizeInMB > 5) {
-                        JOptionPane.showMessageDialog(mainFrame, "Il file selezionato supera la dimensione massima di 5MB.", "Errore", JOptionPane.ERROR_MESSAGE);
+                    if (fileSizeInMB > 1) {
+                        JOptionPane.showMessageDialog(mainFrame, "Il file selezionato supera la dimensione massima di 1MB.", "Errore", JOptionPane.ERROR_MESSAGE);
                     } else {
                         filePath = fileChooser.getSelectedFile().getAbsolutePath();
                         try {
@@ -160,20 +156,18 @@ public class CaricaFoto extends JFrame {
 
                 String selezione = (String)selDisp.getSelectedItem();
 
-
                 if (selezione.equals("<Aggiungi Dispositivo>")){
 
                     String input = JOptionPane.showInputDialog("Inserisci nome dispositivo: ");
                     if(!input.equals("")) {
                         try {
-                            controller.addDisp(username, input);
+                            Dispositivo dispositivo = controller.addDispDB(controller.getUtente().getUsername(), input);
                             JOptionPane.showMessageDialog(mainFrame, "Registrazione dispositivo andata a buon fine.");
-                            selDisp.addItem(input);
-
+                            selDisp.insertItemAt(input, selDisp.getItemCount() - 1);
+                            selDisp.setSelectedItem(input);
+                            controller.getUtente().addDispositivo(dispositivo);
                         } catch (SQLException s) {
-
                             JOptionPane.showMessageDialog(mainFrame, "Errore nella creazione dispositivo", "DB error", JOptionPane.ERROR_MESSAGE);
-
                         }
                     }else {
                         JOptionPane.showMessageDialog(mainFrame, "Inserisci un nome dispositivo valido.","Errore input", JOptionPane.ERROR_MESSAGE);
@@ -262,6 +256,11 @@ public class CaricaFoto extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(nuovoButton.isSelected()) {
+                    nomeLuogoCheckBox.setEnabled(true);
+                    coordinateCheckBox.setEnabled(true);
+                    nomeLuogoText.setEnabled(true);
+                    latitudineSpinner.setEnabled(true);
+                    longitudineSpinner.setEnabled(true);
                     nomeLuogoCheckBox.setSelected(true);
                     coordinateCheckBox.setSelected(true);
                     if (esistenteButton.isSelected()) {
@@ -270,6 +269,12 @@ public class CaricaFoto extends JFrame {
                     if (nessunoButton.isSelected()) {
                         nessunoButton.setSelected(false);
                     }
+                } else {
+                    nomeLuogoText.setEnabled(false);
+                    latitudineSpinner.setEnabled(false);
+                    longitudineSpinner.setEnabled(false);
+                    nomeLuogoCheckBox.setEnabled(false);
+                    coordinateCheckBox.setEnabled(false);
                 }
             }
         });
@@ -283,6 +288,11 @@ public class CaricaFoto extends JFrame {
                     }
                     if (nuovoButton.isSelected()) {
                         nuovoButton.setSelected(false);
+                        nomeLuogoText.setEnabled(false);
+                        latitudineSpinner.setEnabled(false);
+                        longitudineSpinner.setEnabled(false);
+                        nomeLuogoCheckBox.setEnabled(false);
+                        coordinateCheckBox.setEnabled(false);
                     }
                 }
             }
@@ -294,6 +304,11 @@ public class CaricaFoto extends JFrame {
                 if(nessunoButton.isSelected()) {
                     if (nuovoButton.isSelected()) {
                         nuovoButton.setSelected(false);
+                        nomeLuogoText.setEnabled(false);
+                        latitudineSpinner.setEnabled(false);
+                        longitudineSpinner.setEnabled(false);
+                        nomeLuogoCheckBox.setEnabled(false);
+                        coordinateCheckBox.setEnabled(false);
                     }
                     if (esistenteButton.isSelected()) {
                         esistenteButton.setSelected(false);
@@ -369,21 +384,25 @@ public class CaricaFoto extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (!soggettiSelezionatiDB.isEmpty() || !nuoviSoggetti.isEmpty()){
                     try {
+                        Foto foto;
+                        Utente utente = controller.getUtente();
                         if (nuovoButton.isSelected()) {
-                            controller.caricaFoto(privataSwitch.isSelected(), true, new Date(), username, dispositivi.get(selDisp.getSelectedIndex()).getId(), filePath, nuovoLuogo, nuoviSoggetti, soggettiSelezionatiDB, tags);
+                            foto = controller.caricaFotoDB(privataSwitch.isSelected(), true, new Date(), utente.getUsername(), dispositivi.get(selDisp.getSelectedIndex()).getId(), filePath, nuovoLuogo, nuoviSoggetti, soggettiSelezionatiDB, tags);
+                        } else if (esistenteButton.isSelected()) {
+                            foto = controller.caricaFotoDB(privataSwitch.isSelected(), false, new Date(), utente.getUsername(), dispositivi.get(selDisp.getSelectedIndex()).getId(), filePath, luogo, nuoviSoggetti, soggettiSelezionatiDB, tags);
                         } else {
-                            controller.caricaFoto(privataSwitch.isSelected(), false, new Date(), username, dispositivi.get(selDisp.getSelectedIndex()).getId(), filePath, luogo, nuoviSoggetti, soggettiSelezionatiDB, tags);
+                            foto = controller.caricaFotoDB(privataSwitch.isSelected(), false, new Date(), utente.getUsername(), dispositivi.get(selDisp.getSelectedIndex()).getId(), filePath, null, nuoviSoggetti, soggettiSelezionatiDB, tags);
                         }
+                        utente.getGalleriaPersonale().addFoto(foto);
                         JOptionPane.showMessageDialog(mainFrame, "Foto caricata con successo", "", JOptionPane.INFORMATION_MESSAGE);
-                        Home home = new Home(controller, null, username);
+                        home.fotoPanel.addFoto(foto);
                         mainFrame.setVisible(true);
                         mainFrame.dispose();
                         home.mainFrame.setVisible(true);
 
                     } catch (Exception s){
                         JOptionPane.showMessageDialog(mainFrame, "Ops, qualcosa è andato storto", "Errore", JOptionPane.ERROR_MESSAGE);
-                        Home home = new Home(controller, null, username);
-                        mainFrame.setVisible(true);
+                        mainFrame.setVisible(false);
                         mainFrame.dispose();
                         home.mainFrame.setVisible(true);
                         s.printStackTrace();
@@ -411,24 +430,27 @@ public class CaricaFoto extends JFrame {
             boolean hasMatch;
             int i = 0;
             ArrayList<Utente> utenti = null;
+            //Rimuovo eventuali duplicati dal vettore dei tags inizizializzando un HashSet con i tags
+            HashSet<String> tagsHashSet = new HashSet<>(Arrays.asList(tags));
             try {
                 utenti = controller.leggiUtentiDB();
-            } catch (SQLException s) {
-                s.printStackTrace();
-            }
-            while (i < tags.length) {
-                hasMatch = false;
-                for (Utente utente : utenti) {
-                    if (utente.getUsername().equals(tags[i])) {
-                        hasMatch = true;
+                for (String tag : tagsHashSet){
+                    hasMatch = false;
+                    for (Utente utente : utenti) {
+                        if (utente.getUsername().equals(tag) && !controller.getUtente().getUsername().equals(tag)) {
+                            hasMatch = true;
+                            break;
+                        }
+                    }
+                    if (!hasMatch) {
+                        return false;
                     }
                 }
-                if (!hasMatch) {
-                    return false;
-                }
-                i++;
+                return true;
+            } catch (SQLException s) {
+                s.printStackTrace();
+                return false;
             }
-            return true;
         } else {
             return true;
         }

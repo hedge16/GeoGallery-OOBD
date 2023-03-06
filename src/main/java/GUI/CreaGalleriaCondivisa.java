@@ -16,15 +16,16 @@ import java.util.ArrayList;
 public class CreaGalleriaCondivisa extends JFrame {
 
     protected JFrame mainFrame;
-    private ArrayList<Foto> photos;
     FotoPanel fotoPanel;
     Controller controller;
+    ArrayList<Foto> photos;
 
-    public CreaGalleriaCondivisa (String username, Controller controller, Home home, ArrayList<Foto> photos) {
+    public CreaGalleriaCondivisa (Controller controller, Home home) {
 
-        this.photos = photos;
         this.controller = controller;
-        fotoPanel = new FotoPanel(photos, false, controller, username, home);
+        photos = controller.getUtente().getGalleriaPersonale().getPhotos();
+
+        fotoPanel = new FotoPanel(photos, false, controller, controller.getUtente().getUsername(), home);
         initComponents(controller);
 
         mainFrame = new JFrame("Crea galleria condivisa");
@@ -39,17 +40,18 @@ public class CreaGalleriaCondivisa extends JFrame {
                 try {
                     boolean tagsCheck = checkTags(collabText.getText().split(","));
                     if (!nomeGalleriaText.getText().equals("") && !collabText.getText().equals("") && tagsCheck) {
-                        int codg = controller.aggiungiGalleriaCondivisa(username, collabText.getText(), nomeGalleriaText.getText());
+                        int codg = controller.aggiungiGalleriaCondivisaDB(controller.getUtente().getUsername(), collabText.getText(), nomeGalleriaText.getText());
                         boolean[] selectedPhotos = fotoPanel.getSelectedPhotos();
                         for (int i = 0; i < photos.size(); i++) {
                             if (selectedPhotos[i]) {
-                                controller.aggiungiPresenzaFoto(photos.get(i).getCodFoto(), codg);
+                                controller.aggiungiPresenzaFotoDB(photos.get(i).getCodFoto(), codg);
                             }
                         }
                         JOptionPane.showMessageDialog(mainFrame, "Galleria condivisa creata con successo.", "Successo", JOptionPane.INFORMATION_MESSAGE);
                         mainFrame.setVisible(false);
                         mainFrame.dispose();
                         home.gallerieCondiviseBox.addItem(nomeGalleriaText.getText());
+                        home.gallerieCondiviseBox.setEnabled(true);
                         home.mainFrame.setVisible(true);
                     } else {
                         if (nomeGalleriaText.getText().equals("") && collabText.getText().equals("")) {
@@ -94,6 +96,14 @@ public class CreaGalleriaCondivisa extends JFrame {
             boolean hasMatch;
             int i = 0;
             ArrayList<Utente> utenti;
+            // rimuovo eventuali duplicati
+            for (int j = 0; j < tags.length; j++) {
+                for (int k = j + 1; k < tags.length; k++) {
+                    if (tags[j].equals(tags[k])) {
+                        tags[k] = "";
+                    }
+                }
+            }
             try {
                 utenti = controller.leggiUtentiDB();
                 while (i < tags.length) {

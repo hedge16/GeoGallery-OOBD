@@ -2,6 +2,7 @@ package GUI;
 import java.awt.*;
 
 import Controller.Controller;
+import Model.GalleriaPersonale;
 import Model.Utente;
 
 import javax.swing.*;
@@ -21,7 +22,6 @@ public class Login extends JFrame {
     private JLabel userPassLabel;
     private JLabel loginLabel;
     private Controller controller;
-
 
     public Login() {
 
@@ -43,14 +43,7 @@ public class Login extends JFrame {
         labelSfondo.setSize(rootPanel.getSize());
         rootPanel.add(labelSfondo);
 
-        rootPanel.setComponentZOrder(labelSfondo, 1);
-        rootPanel.setComponentZOrder(loginButton, 0);
-        rootPanel.setComponentZOrder(registerButton, 0);
-        rootPanel.setComponentZOrder(userIDField, 0);
-        rootPanel.setComponentZOrder(userPassField, 0);
-        rootPanel.setComponentZOrder(logoLabel, 0);
-        rootPanel.setComponentZOrder(usernameLabel, 0);
-        rootPanel.setComponentZOrder(passwordLabel, 0);
+        rootPanel.setComponentZOrder(labelSfondo, 7);
 
         controller = new Controller();
 
@@ -77,35 +70,34 @@ public class Login extends JFrame {
                     while (found == false && i < listaUtenti.size()) {
                         if (userInput.equals(listaUtenti.get(i).getUsername()) && passInput.equals(listaUtenti.get(i).getPassword())) {
                             found = true;
+                            controller.setUtente(listaUtenti.get(i));
+                            int codg = controller.getCodGalleriaDB(controller.getUtente().getUsername());
+                            controller.getUtente().setGalleriaPersonale(new GalleriaPersonale(codg, controller.getUtente()));
                         }
                         i++;
                     }
-
                     if (found) {
                         JProgressBar progressBar = new JProgressBar();
                         progressBar.setIndeterminate(true);
                         JOptionPane optionPane = new JOptionPane(progressBar, JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
                         JDialog dialog = optionPane.createDialog(frame1, "Caricamento in corso...");
+                        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
                         SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
                             @Override
                             protected Void doInBackground() throws Exception {
-                                Home home = new Home(controller, frame1, userInput);
+                                Home home = new Home(controller, frame1);
+                                dialog.dispose();
                                 frame1.setVisible(false);
-                                frame1.dispose();
                                 home.mainFrame.setVisible(true);
                                 return null;
                             }
-
                             @Override
                             protected void done() {
-                                dialog.setVisible(false);
                                 dialog.dispose();
                             }
                         };
                         worker.execute();
-                        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
                         dialog.setVisible(true);
-
 
                     } else {
                         JOptionPane.showMessageDialog(frame1, "Username o password non corretti", "Errore inserimento dati", JOptionPane.ERROR_MESSAGE);
@@ -126,16 +118,16 @@ public class Login extends JFrame {
     public static void main(String[] args) {
 
 
-        frame1 = new JFrame("Login");
+        URL iconUrl = ClassLoader.getSystemResource("icona.png");
         try {
             //set icon for mac
-            Taskbar.getTaskbar().setIconImage(Toolkit.getDefaultToolkit().getImage("src/icons/icona.png"));
+            Taskbar.getTaskbar().setIconImage(Toolkit.getDefaultToolkit().getImage(iconUrl));
         } catch (Exception e) {
-            //set icon for windows
-            frame1.setIconImage(Toolkit.getDefaultToolkit().getImage("src/icons/icona.png"));
+            System.out.println("Non è possibile impostare l'icona per mac");
         }
-        frame1.setIconImage(Toolkit.getDefaultToolkit().getImage("src/icons/icona.png"));
+        frame1 = new JFrame("Login");
         frame1.setContentPane(new Login().rootPanel);
+        frame1.setIconImage(Toolkit.getDefaultToolkit().getImage(iconUrl));
         frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame1.pack();
         frame1.setLocationRelativeTo(null);

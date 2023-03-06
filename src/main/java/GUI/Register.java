@@ -58,7 +58,7 @@ public class Register {
                } else {
                    try{
                        String passwordOut = new String(passwordField.getPassword());
-                       controller.aggiungiUtente(nomeText.getText(), cognomeText.getText(), usernameText.getText(), passwordOut, emailText.getText(), new Date());
+                       controller.aggiungiUtenteDB(nomeText.getText(), cognomeText.getText(), usernameText.getText(), passwordOut, emailText.getText(), new Date());
                        JOptionPane.showMessageDialog(frame, "Registrazione andata a buon fine.");
                        frame.setVisible(false);
                        frameChiamante.setVisible(true);

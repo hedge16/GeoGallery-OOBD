@@ -7,38 +7,43 @@ import org.postgresql.util.PSQLException;
 import org.postgresql.util.ServerErrorMessage;
 
 
-import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Controller {
 
+    Utente utente;
+    String[] categorieSoggettoFoto = {"Paesaggi", "Eventi sportivi", "Gruppi di persone", "Ritratti", "Selfie", "Animali", "Cibo", "Matrimoni", "Viaggi", "Natura", "Altro"};
 
     public Controller(){
 
     }
 
-    public void aggiungiUtente (String nome, String cognome, String username, String password, String email , Date data) throws PSQLException, SQLException {
-        UtenteDAO u = new UtenteImplementazionePostgresDAO();
+    public void setUtente (Utente utente) {
+        this.utente = utente;
+    }
+
+    public Utente getUtente () {
+        return utente;
+    }
+
+    public void aggiungiUtenteDB (String nome, String cognome, String username, String password, String email , Date data) throws PSQLException, SQLException {
         try{
+            UtenteDAO u = new UtenteImplementazionePostgresDAO();
             u.aggiungiUtente(nome, cognome, username, password, email, data);
-            u = new UtenteImplementazionePostgresDAO();
-            u.creaGallUt(username);
         }catch(PSQLException p){
             ServerErrorMessage errorMessage = new ServerErrorMessage("Errore nell'inserimento dei dati");
             throw new PSQLException(errorMessage);
         }catch(SQLException s){
             throw new SQLException();
         }
-
-
     }
 
     public ArrayList<Utente> leggiUtentiDB () throws SQLException {
-        UtenteDAO u = new UtenteImplementazionePostgresDAO();
         ArrayList<Utente> listaUtenti;
         try{
+            UtenteDAO u = new UtenteImplementazionePostgresDAO();
             listaUtenti=u.leggiUtenti();
             return listaUtenti;
         }catch(SQLException s ){
@@ -48,46 +53,23 @@ public class Controller {
 
     }
 
-    public ArrayList<Foto> recuperaGallUtente (String username){
-        ArrayList<Foto> photos = null;
-        FotoDAO f = new FotoImplementazionePostgresDAO();
+    public ArrayList<Foto> recuperaGallUtenteDB (String username) throws SQLException{
+        ArrayList<Foto> photos;
         try{
+            FotoDAO f = new FotoImplementazionePostgresDAO();
             photos = f.recuperaFotoDB(username);
+            return photos;
         }catch(SQLException p){
-
-        }
-        return photos;
-    }
-
-    public int aggiungiFoto (boolean privata, boolean rimossa, Date dataScatto, int codgalleriap, String autore, int codDispositivo, String percorsoFoto) throws SQLException, FileNotFoundException {
-        int codFoto = -1;
-        FotoDAO u = new FotoImplementazionePostgresDAO();
-        try{
-            codFoto = u.inserisciFotoDB(privata, rimossa, dataScatto, codgalleriap, autore, codDispositivo, percorsoFoto);
-            if (codFoto == -1){
-                throw new SQLException();
-            }
-            return codFoto;
-
-        }catch(SQLException s){
-            s.printStackTrace();
+            p.printStackTrace();
             throw new SQLException();
-
-        }catch(FileNotFoundException f){
-            f.printStackTrace();
-            throw new FileNotFoundException();
-
         }
-
-
     }
 
-    public int getCodG (String username) throws SQLException {
+    public int getCodGalleriaDB (String username) throws SQLException {
        int codG=-1;
-       Galleria_personaleDAO g= new GalleriaPImplementazionePostgresDAO();
        try{
+           Galleria_personaleDAO g= new GalleriaPImplementazionePostgresDAO();
            codG = g.getCodGDB(username);
-
        }catch(SQLException s){
            throw new SQLException();
 
@@ -95,10 +77,10 @@ public class Controller {
        return codG;
     }
 
-    public ArrayList<Dispositivo> getAllDisp (String username) throws SQLException{
-        ArrayList<Dispositivo> dispositivi = new ArrayList<>();
-        DispositivoDAO d = new DispositivoImplementazionePostgresDAO();
+    public ArrayList<Dispositivo> getAllDispDB (String username) throws SQLException{
+        ArrayList<Dispositivo> dispositivi;
         try{
+            DispositivoDAO d = new DispositivoImplementazionePostgresDAO();
             dispositivi = d.getAllDispDB(username);
         }catch(SQLException s){
             s.printStackTrace();
@@ -108,10 +90,12 @@ public class Controller {
 
     }
 
-    public void addDisp (String username, String nomeDisp) throws SQLException{
-        DispositivoDAO d = new DispositivoImplementazionePostgresDAO();
+    public Dispositivo addDispDB (String username, String nomeDisp) throws SQLException{
         try{
-            d.addDispDB(username, nomeDisp);
+            Dispositivo dispositivo;
+            DispositivoDAO d = new DispositivoImplementazionePostgresDAO();
+            dispositivo = d.addDispDB(username, nomeDisp);
+            return dispositivo;
         }catch (SQLException s){
             s.printStackTrace();
             throw new SQLException();
@@ -119,12 +103,11 @@ public class Controller {
 
     }
 
-    public int getCodDisp (String nomeDisp, String username) throws SQLException{
+    public int getCodDispDB (String nomeDisp, String username) throws SQLException{
         int codiceDisp=-1;
-        DispositivoDAO d = new DispositivoImplementazionePostgresDAO();
         try{
+            DispositivoDAO d = new DispositivoImplementazionePostgresDAO();
             codiceDisp = d.getCodDispDB(nomeDisp, username);
-
         }catch( SQLException s ){
             s.printStackTrace();
             throw new SQLException();
@@ -142,11 +125,10 @@ public class Controller {
         return usernames;
     }
 
-    public void aggiungiTagFoto (String username, int codFoto) throws SQLException{
-        TagDAO t = new TagImplementazionePostgresDAO();
+    public void aggiungiTagFotoDB (String username, int codFoto) throws SQLException{
         try {
+            TagDAO t = new TagImplementazionePostgresDAO();
             t.aggiungiTagDB(username, codFoto);
-
         } catch (SQLException s){
             s.printStackTrace();
             throw new SQLException();
@@ -155,14 +137,13 @@ public class Controller {
     }
 
     public String [] getCategorie () {
-        String[] categorie = {"Paesaggi", "Eventi sportivi", "Gruppi di persone", "Ritratti", "Selfie", "Animali", "Cibo", "Matrimoni", "Viaggi", "Natura"};
-        return categorie;
+        return categorieSoggettoFoto;
     }
 
-    public int aggiungiSoggettoFoto (String categoria, String nomeSogg) throws SQLException{
-        SoggettoFotoDAO s = new SoggettoFotoImplementazionePostgresDAO();
+    public int aggiungiSoggettoFotoDB (String categoria, String nomeSogg) throws SQLException{
         int codSogg;
         try{
+            SoggettoFotoDAO s = new SoggettoFotoImplementazionePostgresDAO();
             codSogg = s.aggiungiSoggettoFotoDB(categoria, nomeSogg);
             return codSogg;
         }catch (SQLException s1){
@@ -184,11 +165,11 @@ public class Controller {
         return codLuogo;
     }
 
-    public int aggiungiGalleriaCondivisa (String fondatore, String cofondatori, String nomeGalleria) throws SQLException {
+    public int aggiungiGalleriaCondivisaDB (String fondatore, String cofondatori, String nomeGalleria) throws SQLException {
         String[] cofondatoriArray = cofondatori.split(",");
-        Galleria_condivisaDAO gc = new GalleriaCondivisaImplementazionePostgresDAO();
         int codg;
         try {
+            Galleria_condivisaDAO gc = new GalleriaCondivisaImplementazionePostgresDAO();
             codg = gc.creaGalleriaCondivisaDB(fondatore, cofondatoriArray, nomeGalleria);
             return codg;
         } catch(SQLException s) {
@@ -197,9 +178,9 @@ public class Controller {
         }
     }
 
-    public void aggiungiPresenzaFoto (int codfoto, int codg) throws SQLException {
-        PresenzaFotoDAO pf = new PresenzaFotoImplementazionePostgresDAO();
+    public void aggiungiPresenzaFotoDB (int codfoto, int codg) throws SQLException {
         try {
+            PresenzaFotoDAO pf = new PresenzaFotoImplementazionePostgresDAO();
             pf.aggiungiPresenzaFotoDB(codfoto, codg);
         } catch (SQLException s){
             s.printStackTrace();
@@ -242,7 +223,7 @@ public class Controller {
 
     }
 
-    public ArrayList<Foto> ricercaFotoPerLuogo (String input) throws SQLException{
+    public ArrayList<Foto> ricercaFotoPerLuogoDB (String input) throws SQLException{
         ArrayList<Foto> photos;
         try {
             FotoDAO f = new FotoImplementazionePostgresDAO();
@@ -255,7 +236,7 @@ public class Controller {
 
     }
 
-    public ArrayList<Foto> ricercaFotoPerSoggetto (String categoria, String nome) throws SQLException{
+    public ArrayList<Foto> ricercaFotoPerSoggettoDB (String categoria, String nome) throws SQLException{
         ArrayList<Foto> photos;
         try {
             FotoDAO f = new FotoImplementazionePostgresDAO();
@@ -269,8 +250,8 @@ public class Controller {
     }
 
     public void aggiungiPresenzaSoggetto (int codFoto, int codSogg) throws SQLException{
-        PresenzaSoggettoDAO ps = new PresenzaSoggettoImplementazionePostgresDAO();
         try {
+            PresenzaSoggettoDAO ps = new PresenzaSoggettoImplementazionePostgresDAO();
             ps.aggiungiPresenzaSoggetto(codFoto, codSogg);
         } catch (SQLException s) {
             s.printStackTrace();
@@ -279,8 +260,8 @@ public class Controller {
     }
 
     public void aggiungiPresenzaLuogo (int codFoto, int codLuogo) {
-        PresenzaLuogoDAO pl = new PresenzaLuogoImplementazionePostgresDAO();
         try {
+            PresenzaLuogoDAO pl = new PresenzaLuogoImplementazionePostgresDAO();
             pl.aggiungiPresenzaLuogo(codFoto, codLuogo);
         } catch (SQLException s) {
             s.printStackTrace();
@@ -289,8 +270,8 @@ public class Controller {
 
     public ArrayList<Luogo> recuperaTuttiLuoghiDB () throws SQLException{
         ArrayList<Luogo> luoghi;
-        LuogoDAO l = new LuogoImplementazionePostgresDAO();
         try{
+            LuogoDAO l = new LuogoImplementazionePostgresDAO();
             luoghi=l.recuperaTuttiLuoghiDB();
             return luoghi;
         } catch (SQLException s) {
@@ -301,8 +282,8 @@ public class Controller {
 
     public ArrayList<SoggettoFoto> recuperaTuttiSoggettiDB () throws SQLException {
         ArrayList<SoggettoFoto> soggetti;
-        SoggettoFotoDAO sf = new SoggettoFotoImplementazionePostgresDAO();
         try{
+            SoggettoFotoDAO sf = new SoggettoFotoImplementazionePostgresDAO();
             soggetti = sf.recuperaTuttiSoggettiDB();
             return soggetti;
         } catch (SQLException s){
@@ -312,10 +293,10 @@ public class Controller {
 
     }
 
-    public Luogo getLuogoFromFoto (int codfoto) throws SQLException {
-        LuogoDAO l = new LuogoImplementazionePostgresDAO();
+    public Luogo getLuogoFromFotoDB (int codfoto) throws SQLException {
         Luogo luogo = null;
         try {
+            LuogoDAO l = new LuogoImplementazionePostgresDAO();
             luogo = l.getLuogoFromFoto(codfoto);
             return luogo;
         } catch (SQLException s){
@@ -324,10 +305,10 @@ public class Controller {
         }
     }
 
-    public ArrayList<GalleriaCondivisa> recuperaGallerieCondivise (String username) throws SQLException {
+    public ArrayList<GalleriaCondivisa> recuperaGallerieCondiviseDB (String username) throws SQLException {
         ArrayList<GalleriaCondivisa> gallerie = null;
-        Galleria_condivisaDAO gc = new GalleriaCondivisaImplementazionePostgresDAO();
         try {
+            Galleria_condivisaDAO gc = new GalleriaCondivisaImplementazionePostgresDAO();
             gallerie = gc.recuperaGallerieCondivise(username);
             return gallerie;
         } catch (SQLException s){
@@ -336,10 +317,10 @@ public class Controller {
         }
     }
 
-    public Dispositivo getDispositivo (int codDisp) throws SQLException {
-        DispositivoDAO d = new DispositivoImplementazionePostgresDAO();
+    public Dispositivo getDispositivoDB(int codDisp) throws SQLException {
         Dispositivo disp;
         try {
+            DispositivoDAO d = new DispositivoImplementazionePostgresDAO();
             disp = d.getDispositivo(codDisp);
             return disp;
         } catch (SQLException s){
@@ -348,17 +329,19 @@ public class Controller {
         }
     }
 
-    public void caricaFoto(boolean privata, boolean nuovo, Date data, String username, int idDispositivo, String filePath, Luogo luogo, ArrayList<SoggettoFoto> soggettiNuovi, ArrayList<SoggettoFoto> soggettiEsistenti, String[] tags) throws SQLException {
-        FotoDAO f = new FotoImplementazionePostgresDAO();
+    public Foto caricaFotoDB(boolean privata, boolean nuovo, Date data, String username, int idDispositivo, String filePath, Luogo luogo, ArrayList<SoggettoFoto> soggettiNuovi, ArrayList<SoggettoFoto> soggettiEsistenti, String[] tags) throws SQLException {
         try {
-            f.caricaFoto(privata, nuovo, data, username, idDispositivo, filePath, luogo, soggettiNuovi, soggettiEsistenti, tags);
+            Foto foto;
+            FotoDAO f = new FotoImplementazionePostgresDAO();
+            foto = f.caricaFoto(privata, nuovo, data, username, idDispositivo, filePath, luogo, soggettiNuovi, soggettiEsistenti, tags);
+            return foto;
         } catch (SQLException s) {
             s.printStackTrace();
             throw new SQLException();
         }
     }
 
-    public ArrayList<Luogo> ricercaLuoghiTop3 () throws SQLException {
+    public ArrayList<Luogo> ricercaLuoghiTop3DB () throws SQLException {
         ArrayList<Luogo> luoghi;
         try {
             LuogoDAO l = new LuogoImplementazionePostgresDAO();

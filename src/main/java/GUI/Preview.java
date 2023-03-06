@@ -37,12 +37,7 @@ public class Preview extends JFrame {
             privacyINLabel.setText("Privata");
         }
 
-        try {
-            Dispositivo disp = controller.getDispositivo(f.getCodDispositivo());
-            dispINLabel.setText(disp.getNome());
-        } catch (SQLException s) {
-            s.printStackTrace();
-        }
+        dispINLabel.setText(f.getDispositivo().getNome());
         // Definisci il formato della data
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         // Converti la data in formato stringa
@@ -50,18 +45,16 @@ public class Preview extends JFrame {
 
         dataINLabel.setText(formattedDate);
         autoreINLabel.setText(f.getAutore());
-        try{
-            luogo = controller.getLuogoFromFoto(f.getCodFoto());
-            if (luogo != null ){
-                luogoINLabel.setText(luogo.getNomeMnemonico());
-                luogoINLabel2.setText("Lat : "+ luogo.getLatitudine() + " Long : " + luogo.getLongitudine());
-            } else {
-                luogoINLabel.setText("Nessun luogo");
-                luogoINLabel2.setText("");
-            }
-        } catch (Exception e){
-            e.printStackTrace();
+
+        luogo = f.getLuogo();
+        if (luogo != null ){
+            luogoINLabel.setText(luogo.getNomeMnemonico());
+            luogoINLabel2.setText("Lat : "+ luogo.getLatitudine() + " Long : " + luogo.getLongitudine());
+        } else {
+            luogoINLabel.setText("Nessun luogo");
+            luogoINLabel2.setText("");
         }
+
 
         if (!isHome){
             deleteButton.setVisible(false);
@@ -79,18 +72,18 @@ public class Preview extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    if (JOptionPane.showConfirmDialog(frame, "Sei sicuro?") == JOptionPane.OK_OPTION) {
+                    if (JOptionPane.showConfirmDialog(frame, "Sei sicuro di voler eliminare questa foto?") == JOptionPane.OK_OPTION) {
                         controller.eliminaFotoDB(f);
                         home.mainFrame.setVisible(false);
-                        home.mainFrame.dispose();
-                        Home newHome = new Home(controller, home, f.getAutore());
+                        home.fotoPanel.removeFoto(f);
                         JOptionPane.showMessageDialog(frame, "Foto eliminata con successo.", "", JOptionPane.WARNING_MESSAGE);
                         frame.setVisible(false);
                         frame.dispose();
-                        newHome.mainFrame.setVisible(true);
+                        home.mainFrame.setVisible(true);
                     }
                 } catch (SQLException s) {
                     s.printStackTrace();
+                    JOptionPane.showMessageDialog(panel1, "Errore nella connessione col DB", "ERRORE", JOptionPane.ERROR_MESSAGE);
                     frame.setVisible(false);
                     frame.dispose();
                 }
@@ -102,7 +95,7 @@ public class Preview extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try{
                     controller.setPrivacyDB(f.getCodFoto(), !f.isPrivata());
-                    Home home = new Home(controller, null, f.getAutore());
+                    f.setPrivata(!f.isPrivata());
                     JOptionPane.showMessageDialog(panel1, "Privacy cambiata correttamente", "OK", JOptionPane.INFORMATION_MESSAGE);
                     frame.setVisible(false);
                     frame.dispose();
@@ -117,9 +110,6 @@ public class Preview extends JFrame {
 
             }
         });
-
-
-
 
 
     }

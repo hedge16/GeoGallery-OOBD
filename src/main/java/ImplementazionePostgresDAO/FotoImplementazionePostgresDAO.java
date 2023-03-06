@@ -88,8 +88,9 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
      * @throws FileNotFoundException se il file specificato dal percorso non esiste o non può essere aperto
      */
     @Override
-    public int inserisciFotoDB(boolean privata, boolean rimossa, Date dataScatto, int codgalleriap, String autore, int codDispositivo, String percorsoFoto) throws SQLException, FileNotFoundException {
+    public Foto inserisciFotoDB(boolean privata, boolean rimossa, Date dataScatto, int codgalleriap, String autore, int codDispositivo, String percorsoFoto) throws SQLException, FileNotFoundException {
         int codFoto = -1;
+        Foto foto;
         try {
 
             // Apre il file specificato dal percorso
@@ -114,15 +115,16 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
             ps = connection.prepareStatement("SELECT codFoto FROM galleria_schema.foto ORDER BY codFoto DESC LIMIT 1;");
             ResultSet rs = ps.executeQuery();
 
-            // Recupera il valore della sequenza
+            // Recupera il codice della foto appena inserita
             if (rs.next()) {
                 codFoto = rs.getInt(1);
             }
 
+            foto = new Foto(codFoto, privata, rimossa, dataScatto, codgalleriap, autore, codDispositivo, new ImageIcon(percorsoFoto));
             // Chiude lo stream e la connessione al database
             fis.close();
             rs.close();
-            return codFoto;
+            return foto;
 
         } catch(SQLException s) {
             // In caso di errore durante l'esecuzione della query, solleva un'eccezione SQLException
@@ -275,8 +277,9 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
     }
 
     @Override
-    public void caricaFoto(boolean privata, boolean nuovo, Date data, String username, int idDispositivo, String filePath, Luogo luogo, ArrayList<SoggettoFoto> soggettiNuovi, ArrayList<SoggettoFoto> soggettiEsistenti, String[] tags) throws SQLException {
+    public Foto caricaFoto(boolean privata, boolean nuovo, Date data, String username, int idDispositivo, String filePath, Luogo luogo, ArrayList<SoggettoFoto> soggettiNuovi, ArrayList<SoggettoFoto> soggettiEsistenti, String[] tags) throws SQLException {
         try {
+            Foto foto;
             int codGallP = -1;
             connection.setAutoCommit(false);
             PreparedStatement ps = connection.prepareStatement("SELECT codGalleria FROM galleria_schema.galleria_personale WHERE proprietario = ?;");
@@ -285,7 +288,10 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
             while (rs.next()) {
                 codGallP = rs.getInt(1);
             }
-            int codfoto = inserisciFotoDB(privata, false, data, codGallP, username, idDispositivo, filePath);
+
+            foto = inserisciFotoDB(privata, false, data, codGallP, username, idDispositivo, filePath);
+            foto.setLuogo(luogo);
+
             if (nuovo){
                 ps = connection.prepareStatement("INSERT INTO galleria_schema.luogo VALUES (DEFAULT,?,?,?);");
                 ps.setDouble(1, luogo.getLatitudine());
@@ -301,21 +307,24 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
                 }
                 rs.close();
                 ps = connection.prepareStatement("INSERT INTO galleria_schema.presenzaLuogo VALUES (?,?);");
-                ps.setInt(1, codfoto);
+                ps.setInt(1, foto.getCodFoto());
                 ps.setInt(2, codLuogo);
                 ps.executeUpdate();
-            } else {
+            } else if (luogo != null){
                 ps = connection.prepareStatement("INSERT INTO galleria_schema.presenzaLuogo VALUES (?,?);");
-                ps.setInt(1, codfoto);
+                ps.setInt(1, foto.getCodFoto());
                 ps.setInt(2, luogo.getCodLuogo());
                 ps.executeUpdate();
             }
+
+            foto.setTagsUsernames(tags);
+
             if (tags != null) {
                 int i = 0;
                 int numTag = tags.length;
                 while (i < numTag) {
                     ps = connection.prepareStatement("INSERT INTO galleria_schema.tag VALUES (?,?);");
-                    ps.setInt(1, codfoto);
+                    ps.setInt(1, foto.getCodFoto());
                     ps.setString(2, username);
                     ps.executeUpdate();
                     i++;
@@ -337,7 +346,7 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
                     }
                     rs.close();
                     ps = connection.prepareStatement("INSERT INTO galleria_schema.presenzaSoggetto VALUES (?,?);");
-                    ps.setInt(1, codfoto);
+                    ps.setInt(1, foto.getCodFoto());
                     ps.setInt(2, codSogg);
                     ps.executeUpdate();
                 }
@@ -345,18 +354,21 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
             if (!soggettiEsistenti.isEmpty()) {
                 for (SoggettoFoto sf : soggettiEsistenti) {
                     ps = connection.prepareStatement("INSERT INTO galleria_schema.presenzaSoggetto VALUES (?,?);");
-                    ps.setInt(1, codfoto);
+                    ps.setInt(1, foto.getCodFoto());
                     ps.setInt(2, sf.getId());
                     ps.executeUpdate();
                 }
             }
+            soggettiEsistenti.addAll(soggettiNuovi);
+            foto.setSoggetti(soggettiEsistenti);
             connection.commit();
+            connection.close();
+            return foto;
         } catch (Exception s){
             connection.rollback();
+            connection.close();
             s.printStackTrace();
             throw new SQLException();
-        } finally {
-            connection.close();
         }
     }
 

@@ -62,6 +62,8 @@ public class UtenteImplementazionePostgresDAO implements UtenteDAO {
             aggiungiUser = connection.prepareStatement("INSERT INTO galleria_schema.galleria_personale VALUES(DEFAULT,?);");
             aggiungiUser.setString(1, username);
             aggiungiUser.executeUpdate();
+            // Creazione della galleria personale dell'utente sul DB
+            creaGallUt(username);
             // Chiude la connnsesione al database
             connection.close();
         } catch (PSQLException e) {

@@ -11,8 +11,10 @@ public class Utente {
     private String password;
     Date dataReg;
     private int codGalleria;
+    private GalleriaPersonale galleriaPersonale;
     private ArrayList<Foto> photos;
-
+    private ArrayList<GalleriaCondivisa> gallerieCondivise;
+    private ArrayList<Dispositivo> dispositivi;
 
     public Utente (String name, String surname, String user, String pass, String email1, Date d){
         this.username=user;
@@ -43,10 +45,6 @@ public class Utente {
     public Date getDataReg() {
         return dataReg;
     }
-
-    public void setDataReg(Date dataReg) {
-        this.dataReg = dataReg;
-    }
     public String getNome() {
         return nome;
     }
@@ -76,6 +74,33 @@ public class Utente {
     }
     public void setPhotos(ArrayList<Foto> photos) {
         this.photos = photos;
+    }
+    public ArrayList<GalleriaCondivisa> getGallerieCondivise() {
+        return gallerieCondivise;
+    }
+    public void setGallerieCondivise(ArrayList<GalleriaCondivisa> gallerieCondivise) {
+        this.gallerieCondivise = gallerieCondivise;
+    }
+    public ArrayList<Dispositivo> getDispositivi() {
+        return dispositivi;
+    }
+    public void setDispositivi(ArrayList<Dispositivo> dispositivi) {
+        this.dispositivi = dispositivi;
+    }
+    public void addDispositivo(Dispositivo d){
+        this.dispositivi.add(d);
+    }
+    public void removeDispositivo(Dispositivo d){
+        this.dispositivi.remove(d);
+    }
+    public GalleriaPersonale getGalleriaPersonale() {
+        return galleriaPersonale;
+    }
+    public void setGalleriaPersonale(GalleriaPersonale galleriaPersonale) {
+        this.galleriaPersonale = galleriaPersonale;
+    }
+    public void addGalleriaCondivisa(GalleriaCondivisa g){
+        this.gallerieCondivise.add(g);
     }
 
 
