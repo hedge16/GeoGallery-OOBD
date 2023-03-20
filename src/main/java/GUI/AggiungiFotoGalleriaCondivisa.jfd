@@ -1,0 +1,29 @@
+JFDML JFormDesigner: "8.0.3.0.246" Java: "17.0.6" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq l {comp panel1:::p::p, space :0:28:x}}"
+			"$verticalGroup": "par l {seq l {comp panel1:::::x, space :::p}}"
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq l {space :p:42:p, comp scrollPanel:::p:309:p, space s:::p, comp confermaSelezioneButton:::p:160:p, space ::36:x}}"
+				"$verticalGroup": "par l {seq {space ::47:x, par t {comp confermaSelezioneButton:::p:41:p, comp scrollPanel:::p:301:p}, space ::65:x}}"
+			} ) {
+				name: "panel1"
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "scrollPanel"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "confermaSelezioneButton"
+					"text": "CONFERMA SELEZIONE"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 595, 450 )
+		} )
+	}
+}

@@ -1,0 +1,29 @@
+JFDML JFormDesigner: "8.0.3.0.246" Java: "17.0.6" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq l {comp panel1:::p::p, space :0:0:x}}"
+			"$verticalGroup": "par l {seq l {comp panel1:::p::p, space :0:0:x}}"
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq l {space :p:40:p, comp scrollPanel:::p:311:p, space s:::p, comp aggiungiFotoButton:::p::p, space ::37:x}}"
+				"$verticalGroup": "par l {seq t {space ::37:x, par t {comp aggiungiFotoButton:::p::p, comp scrollPanel:::p:316:p}, space :p:30:p}}"
+			} ) {
+				name: "panel1"
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "scrollPanel"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "aggiungiFotoButton"
+					"text": "AGGIUNGI FOTO"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 535, 410 )
+		} )
+	}
+}

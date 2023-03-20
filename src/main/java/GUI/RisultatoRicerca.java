@@ -5,9 +5,24 @@ import GUI.Components.FotoPanel;
 
 import javax.swing.*;
 
+/**
+ * The type Risultato ricerca.
+ */
 public class RisultatoRicerca extends JFrame {
+    /**
+     * The Main frame.
+     */
     protected JFrame mainFrame;
 
+    private JScrollPane scrollPanel;
+
+    /**
+     * Instantiates a new Risultato ricerca.
+     *
+     * @param panel          the panel
+     * @param frameChiamante the frame chiamante
+     * @param results        the results
+     */
     public RisultatoRicerca (FotoPanel panel, JFrame frameChiamante, int results) {
         initComponents(panel);
 
@@ -21,7 +36,6 @@ public class RisultatoRicerca extends JFrame {
     }
 
     private void initComponents(FotoPanel panel) {
-        // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         scrollPanel = new JScrollPane(panel);
 
         //======== this ========
@@ -40,10 +54,6 @@ public class RisultatoRicerca extends JFrame {
         );
         pack();
         setLocationRelativeTo(getOwner());
-        // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
     }
 
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-    private JScrollPane scrollPanel;
-    // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

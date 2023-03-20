@@ -10,10 +10,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * The type Galleria condivisa implementazione postgres dao.
+ */
 public class GalleriaCondivisaImplementazionePostgresDAO implements Galleria_condivisaDAO {
 
     private Connection connection;
 
+    /**
+     * Instantiates a new Galleria condivisa implementazione postgres dao.
+     */
     public GalleriaCondivisaImplementazionePostgresDAO () {
         try {
             connection = ConnessioneDatabase.getInstance().connection;

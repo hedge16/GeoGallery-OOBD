@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "8.0.2.0.220" Java: "17.0.5" encoding: "UTF-8"
+JFDML JFormDesigner: "8.0.3.0.246" Java: "17.0.6" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -9,8 +9,8 @@ new FormModel {
 		} ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :p:47:p, comp miniatura:::p:275:p, space :p:41:p, par l {seq {par l {seq t {space :0:0:x, par l:::p {comp deleteButton:::::x, comp changePrivacyButton:::::x}}, seq t {par l {seq l {comp privacyLabel:::p::p, space :p:103:p}, seq {par l {comp dataLabel::l:::x, seq {par l {comp dispLabel::l:p:114:p, comp autoreLabel::l:p::p}, space :0:0:x}}, space :::p}}, par l {comp autoreINLabel:::p::p, comp dataINLabel:::p::p, comp dispINLabel:::p::p, comp privacyINLabel:::p::p, comp luogoINLabel::l:p::p, comp luogoINLabel2::l:p::p}}}, space :p:59:p}, seq {comp luogoLabel:::p::p, space :::x}}}}"
-				"$verticalGroup": "par l {seq {space :p:39:p, par l:::p {comp miniatura:::p:275:p, seq {par t {seq t {comp dataINLabel:::p::p, space s:::p, comp dispINLabel:::p::p}, seq t {comp dataLabel:::p::p, space s:::p, comp dispLabel:::p::p}}, space s:::p, par b {comp privacyLabel::b:p::p, comp privacyINLabel::b:p::p}, space s:::p, par b {comp autoreLabel::b:p::p, comp autoreINLabel::b:p::p}, space s:::p, par b {comp luogoLabel::b:p::p, comp luogoINLabel::b:p::p}, space :::p, comp luogoINLabel2:::p::p, space :::x, comp changePrivacyButton:::p::p, space :::p, comp deleteButton:::p::p}}, space ::41:x}}"
+				"$horizontalGroup": "par l {seq {space :p:47:p, comp miniatura:::p:275:p, space :p:41:p, par l {seq {par l {comp dispLabel::::173:x, seq l {par l {comp privacyLabel::l:p::p, comp luogoLabel::l:p::p, comp autoreLabel::l:p::p}, space ::121:x}, seq l {comp luogoLabel2:::p::p, space :0:99:x}}, space :::p, par l {comp autoreINLabel:::p::p, comp dataINLabel:::p::p, comp dispINLabel:::p::p, comp privacyINLabel:::p::p, comp luogoINLabel::l:p::p, comp luogoINLabel2::l:p::p}, space :p:23:p}, comp vediSoggettiButton:::::x, comp changePrivacyButton::l::219:x, comp deleteButton::l::219:x, seq l {comp dataLabel:::p:123:p, space :0:96:x}}, space :p:59:p}}"
+				"$verticalGroup": "par l {seq {space :p:39:p, par l:::p {seq {par l {seq {comp dataLabel:::p::p, space s:::p, comp dispLabel:::p::p, space s:::p, comp privacyLabel:::p::p, space s:::p, comp autoreLabel:::p::p, space s:::p, comp luogoLabel:::p::p, space u:::p, par b {comp luogoLabel2::b:p::p, comp luogoINLabel2::b:p::p}}, seq {comp dataINLabel:::p::p, space s:::p, comp dispINLabel:::p::p, space s:::p, comp privacyINLabel:::p::p, space s:::p, comp autoreINLabel:::p::p, space s:::p, comp luogoINLabel:::p::p}}, space :::x, comp vediSoggettiButton:::p:20:p, space :::x, comp changePrivacyButton:::p:20:p, space :p:13:p, comp deleteButton:::p:22:p}, comp miniatura:::p:275:p}, space ::41:x}}"
 			} ) {
 				name: "panel1"
 				add( new FormComponent( "javax.swing.JLabel" ) {
@@ -81,10 +81,18 @@ new FormModel {
 					"horizontalTextPosition": 4
 					"horizontalAlignment": 4
 				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "vediSoggettiButton"
+					"text": "VEDI SOGGETTI"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "luogoLabel2"
+					"text": "Coordinate :"
+				} )
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 590, 385 )
+			"size": new java.awt.Dimension( 605, 395 )
 		} )
 	}
 }

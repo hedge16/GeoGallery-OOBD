@@ -5,6 +5,9 @@ import Database.ConnessioneDatabase;
 
 import java.sql.*;
 
+/**
+ * The type Galleria p implementazione postgres dao.
+ */
 public class GalleriaPImplementazionePostgresDAO implements Galleria_personaleDAO {
 
     // Variabile che rappresenta la connessione al database

@@ -18,6 +18,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * The type Foto implementazione postgres dao.
+ */
 public class FotoImplementazionePostgresDAO implements FotoDAO {
 
     // Variabile che rappresenta la connessione al database
@@ -239,6 +242,50 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
     }
 
     @Override
+    public ArrayList<Foto> ricercaFotoPerLuogo(String nomeLuogo, double latitudine, double longitudine) throws SQLException {
+        try {
+            PreparedStatement ps;
+            if (nomeLuogo.equals("") || nomeLuogo.equals("nome luogo")) {
+                ps = connection.prepareStatement("SELECT * FROM galleria_schema.foto WHERE codFoto IN (SELECT codFoto FROM galleria_schema.presenzaLuogo WHERE codLuogo = (SELECT codLuogo FROM galleria_schema.luogo WHERE latitudine = ? AND longitudine = ?)) AND privata = false AND rimossa = false;");
+                ps.setDouble(1, latitudine);
+                ps.setDouble(2, longitudine);
+            } else {
+                ps = connection.prepareStatement("SELECT * FROM galleria_schema.foto WHERE codFoto IN (SELECT codFoto FROM galleria_schema.presenzaLuogo WHERE codLuogo = (SELECT codLuogo FROM galleria_schema.luogo WHERE nomeLuogo = ? AND latitudine = ? AND longitudine = ?)) AND privata = false AND rimossa = false;");
+                ps.setString(1, nomeLuogo);
+                ps.setDouble(2, latitudine);
+                ps.setDouble(3, longitudine);
+            }
+            ResultSet rs = ps.executeQuery();
+            ArrayList<Foto> photos = new ArrayList<>();
+            while (rs.next()) {
+                int codFoto = rs.getInt(1);
+                boolean privata = rs.getBoolean(2);
+                boolean rimossa = rs.getBoolean(3);
+                Date dataScatto = rs.getDate(4);
+                int codGalleria = rs.getInt(5);
+                String autore = rs.getString(6);
+                int codDispositivo = rs.getInt(7);
+                byte[] barr = rs.getBytes(8);
+
+                // Crea un oggetto InputStream a partire dall'array di byte
+                ByteArrayInputStream bis = new ByteArrayInputStream(barr);
+                // Crea un oggetto ImageIcon a partire dallo stream di byte
+                ImageIcon immagine = new ImageIcon(ImageIO.read(bis));
+                bis.close();
+                Foto f = new Foto(codFoto, privata, rimossa, dataScatto, codGalleria, autore, codDispositivo, immagine);
+                photos.add(f);
+            }
+            rs.close();
+            connection.close();
+            return photos;
+
+        } catch (Exception s) {
+            s.printStackTrace();
+            throw new SQLException();
+        }
+    }
+
+    @Override
     public ArrayList<Foto> ricercaFotoPerSoggetto(String categoria, String nome) throws SQLException {
         ArrayList<Foto> photos = new ArrayList<>();
         try {
@@ -371,6 +418,54 @@ public class FotoImplementazionePostgresDAO implements FotoDAO {
             throw new SQLException();
         }
     }
+
+    @Override
+    public ArrayList<Foto> getFotoGalleriaC(ArrayList<Integer> codPhotos) throws SQLException {
+        ArrayList<Foto> photos;
+        try {
+            int i = 0;
+            int numFoto = codPhotos.size();
+            photos = new ArrayList<>();
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM galleria_schema.foto WHERE codFoto = ? AND privata = false;");
+            ResultSet rs = null;
+            int codFoto;
+            boolean privata;
+            boolean rimossa;
+            Date dataScatto;
+            int codGalleria;
+            String autore;
+            int codDispositivo;
+            byte[] barr;
+            while (i < numFoto){
+                ps.setInt(1, codPhotos.get(i));
+                rs = ps.executeQuery();
+                while (rs.next()){
+                    codFoto = rs.getInt(1);
+                    privata = rs.getBoolean(2);
+                    rimossa = rs.getBoolean(3);
+                    dataScatto = rs.getDate(4);
+                    codGalleria = rs.getInt(5);
+                    autore = rs.getString(6);
+                    codDispositivo = rs.getInt(7);
+                    barr = rs.getBytes(8);
+                    ByteArrayInputStream bis = new ByteArrayInputStream(barr);
+                    ImageIcon immagine = new ImageIcon(ImageIO.read(bis));
+                    bis.close();
+                    Foto f = new Foto(codFoto, privata, rimossa, dataScatto, codGalleria, autore, codDispositivo, immagine);
+                    photos.add(f);
+                }
+                rs.close();
+                i++;
+            }
+
+            connection.close();
+            return photos;
+        } catch (Exception s) {
+            s.printStackTrace();
+            throw new SQLException();
+        }
+    }
+
 
     /**
      * Costruttore che inizializza la connessione al database.

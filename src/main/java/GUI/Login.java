@@ -15,14 +15,28 @@ import java.util.ArrayList;
 import com.formdev.flatlaf.FlatDarculaLaf;
 
 
+/**
+ * The type Login.
+ */
 public class Login extends JFrame {
 
+    /**
+     * The constant frame1.
+     */
     protected static JFrame frame1;
-    private JLabel userIDLabel;
-    private JLabel userPassLabel;
-    private JLabel loginLabel;
     private Controller controller;
+    private JPanel rootPanel;
+    private JButton registerButton;
+    private JButton loginButton;
+    private JPasswordField userPassField;
+    private JTextField userIDField;
+    private JLabel logoLabel;
+    private JLabel usernameLabel;
+    private JLabel passwordLabel;
 
+    /**
+     * Instantiates a new Login.
+     */
     public Login() {
 
         try{
@@ -115,6 +129,11 @@ public class Login extends JFrame {
 
     }
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
 
 
@@ -135,19 +154,7 @@ public class Login extends JFrame {
         frame1.setVisible(true);
     }
 
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-    private JPanel rootPanel;
-    private JButton registerButton;
-    private JButton loginButton;
-    private JPasswordField userPassField;
-    private JTextField userIDField;
-    private JLabel logoLabel;
-    private JLabel usernameLabel;
-    private JLabel passwordLabel;
-    // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
-
     private void initComponents() {
-        // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         rootPanel = new JPanel();
         registerButton = new JButton();
         loginButton = new JButton();
@@ -237,7 +244,6 @@ public class Login extends JFrame {
         );
         pack();
         setLocationRelativeTo(getOwner());
-        // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
     }
 }
 

@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * The type Utente implementazione postgres dao.
+ */
 public class UtenteImplementazionePostgresDAO implements UtenteDAO {
 
     // Variabile che rappresenta la connessione al database

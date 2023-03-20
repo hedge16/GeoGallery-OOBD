@@ -1,0 +1,67 @@
+JFDML JFormDesigner: "8.0.3.0.246" Java: "17.0.6" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq t {space :::p, comp luogoPanel::::602:x}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp luogoPanel:::p::p, space :::x}}"
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq t {space :::x, par t {seq {comp indietroLuogoButton:::p::p, space s:::p, comp avantiLuogoButton:::p::p}, comp nessunoButton:::p::p}, space :p:76:p}, seq l {space :p:53:p, par l {comp label1:::p::p, seq {par l {seq l {space :p:37:p, comp nuovoButton:::p::p}, seq l {par l {seq l {comp latitudineSpinner:::p:66:p, space :::p, comp longitudineSpinner:::p:62:p}, comp nomeLuogoText::l:p:134:p}, space u:::p, par l {comp coordinateCheckBox:::p::p, comp nomeLuogoCheckBox:::p::p}}}, space :p:6:p, par l {seq {space :p:43:p, comp esistenteButton:::p::p}, seq l {space :p:21:p, comp exLuogoComboBox:::p:155:p}}}}, space ::203:x}}"
+				"$verticalGroup": "par l {seq l {space :p:38:p, comp label1:::p::p, space :p:66:p, par b {comp nessunoButton::b:p::p, comp nuovoButton::b:p::p, comp esistenteButton::b:p::p}, par l:::p {seq t {space :::x, comp nomeLuogoCheckBox:::p:32:p}, seq l {space :p:24:p, par b {comp nomeLuogoText::b:p::p, comp exLuogoComboBox::b:p::p}}}, par l {seq l {space u:::p, par b {comp latitudineSpinner::b:p::p, comp longitudineSpinner::b:p::p}, space :79::x}, seq t {space :p:20:p, comp coordinateCheckBox:::p::p, space :p:85:p, par b {comp avantiLuogoButton::b:p::p, comp indietroLuogoButton::b:p::p}, space :p:38:p}}}}"
+			} ) {
+				name: "luogoPanel"
+				"preferredSize": new java.awt.Dimension( 600, 399 )
+				"background": new java.awt.Color( 22, 22, 22, 255 )
+				add( new FormComponent( "javax.swing.JRadioButton" ) {
+					name: "nuovoButton"
+					"text": "NUOVO"
+				} )
+				add( new FormComponent( "javax.swing.JRadioButton" ) {
+					name: "esistenteButton"
+					"text": "ESISTENTE"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "coordinateCheckBox"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "nomeLuogoCheckBox"
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "nomeLuogoText"
+				} )
+				add( new FormComponent( "javax.swing.JSpinner" ) {
+					name: "latitudineSpinner"
+				} )
+				add( new FormComponent( "javax.swing.JSpinner" ) {
+					name: "longitudineSpinner"
+				} )
+				add( new FormComponent( "javax.swing.JComboBox" ) {
+					name: "exLuogoComboBox"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "avantiLuogoButton"
+					"text": "AVANTI"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "indietroLuogoButton"
+					"text": "INDIETRO"
+				} )
+				add( new FormComponent( "javax.swing.JRadioButton" ) {
+					name: "nessunoButton"
+					"text": "NESSUNO"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label1"
+					"text": "INSERISCI UN LUOGO :"
+					"font": new java.awt.Font( ".AppleSystemUIFont", 0, 24 )
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 610, 435 )
+		} )
+	}
+}

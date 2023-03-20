@@ -13,8 +13,24 @@ import javax.swing.table.TableModel;
 import java.util.ArrayList;
 
 
+/**
+ * The type Vedi soggetti.
+ */
 public class VediSoggetti extends JFrame {
+    /**
+     * The Main frame.
+     */
     protected JFrame mainFrame;
+
+    private JScrollPane scrollPane1;
+    private JTable tabellaSoggetti;
+
+    /**
+     * Instantiates a new Vedi soggetti.
+     *
+     * @param soggetti       the soggetti
+     * @param frameChiamante the frame chiamante
+     */
     public VediSoggetti(ArrayList<SoggettoFoto> soggetti, JFrame frameChiamante) {
 
         initComponents();
@@ -34,7 +50,6 @@ public class VediSoggetti extends JFrame {
     }
 
     private void initComponents() {
-        // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         scrollPane1 = new JScrollPane();
         tabellaSoggetti = new JTable();
 
@@ -58,11 +73,6 @@ public class VediSoggetti extends JFrame {
         );
         pack();
         setLocationRelativeTo(getOwner());
-        // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
     }
 
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-    private JScrollPane scrollPane1;
-    private JTable tabellaSoggetti;
-    // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

@@ -17,21 +17,47 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.Border;
 
+/**
+ * The type Foto panel.
+ */
 public class FotoPanel extends JPanel {
     private ArrayList<Foto> photos;
     private ArrayList<JLabel> labelFoto;
     private int numFoto;
     private JFrame frame;
+    /**
+     * The Is selected.
+     */
     boolean[] isSelected;
+    /**
+     * The Controller.
+     */
     Controller controller;
     private boolean isHome;
+    /**
+     * The Username.
+     */
     String username;
+    /**
+     * The Home.
+     */
     Home home;
 
+    /**
+     * The Border.
+     */
     Border border = BorderFactory.createLineBorder(Color.CYAN, 3);
 
 
-
+    /**
+     * Instantiates a new Foto panel.
+     *
+     * @param foto       the foto
+     * @param isHome     the is home
+     * @param controller the controller
+     * @param username   the username
+     * @param home       the home
+     */
     public FotoPanel(ArrayList<Foto> foto, boolean isHome, Controller controller, String username, Home home) {
 
         this.username = username;
@@ -92,10 +118,14 @@ public class FotoPanel extends JPanel {
                     super.mouseClicked(e);
                     if (e.getClickCount() == 2) {
                         try {
-                            Luogo luogo = controller.getLuogoFromFotoDB(foto1.getCodFoto());
-                            foto1.setLuogo(luogo);
-                            Dispositivo dispositivo = controller.getDispositivoDB(foto1.getCodDispositivo());
-                            foto1.setDispositivo(dispositivo);
+                            if (foto1.getLuogo() == null) {
+                                Luogo luogo = controller.getLuogoFromFotoDB(foto1.getCodFoto());
+                                foto1.setLuogo(luogo);
+                            }
+                            if (foto1.getDispositivo() == null) {
+                                Dispositivo dispositivo = controller.getDispositivoDB(foto1.getCodDispositivo());
+                                foto1.setDispositivo(dispositivo);
+                            }
                             Preview preview = new Preview(controller, foto1, home, isHome);
                             preview.frame.setVisible(true);
                         } catch (Exception ex) {
@@ -117,6 +147,11 @@ public class FotoPanel extends JPanel {
 
     }
 
+    /**
+     * Get selected photos boolean [ ].
+     *
+     * @return the boolean [ ]
+     */
     public boolean[] getSelectedPhotos () {
         return isSelected;
     }
@@ -165,6 +200,11 @@ public class FotoPanel extends JPanel {
         return newImage;
     }
 
+    /**
+     * Add foto.
+     *
+     * @param foto the foto
+     */
     public void addFoto (Foto foto) {
 
         BufferedImage newImage = cropAndResize(foto);
@@ -208,6 +248,11 @@ public class FotoPanel extends JPanel {
         home.scrollPanel.revalidate();
     }
 
+    /**
+     * Remove foto.
+     *
+     * @param foto the foto
+     */
     public void removeFoto (Foto foto) {
         int index = photos.indexOf(foto);
         photos.remove(foto);

@@ -10,10 +10,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * The type Dispositivo implementazione postgres dao.
+ */
 public class DispositivoImplementazionePostgresDAO implements DispositivoDAO {
 
     private Connection connection;
 
+    /**
+     * Instantiates a new Dispositivo implementazione postgres dao.
+     */
     public DispositivoImplementazionePostgresDAO(){
         try{
             connection = ConnessioneDatabase.getInstance().connection;

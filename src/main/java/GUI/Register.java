@@ -11,9 +11,14 @@ import java.sql.SQLException;
 import java.util.Date;
 
 
-
+/**
+ * The type Register.
+ */
 public class Register {
 
+    /**
+     * The Frame.
+     */
     protected JFrame frame;
     private JPanel mainPanel;
     private JLabel nome;
@@ -21,6 +26,7 @@ public class Register {
     private JLabel username;
     private JLabel password;
     private JLabel email;
+    private JLabel campiObbligatori;
     private JButton registrati;
     private JButton tornaIndietro;
     private JTextField nomeText;
@@ -31,6 +37,12 @@ public class Register {
     private JPasswordField passwordField;
 
 
+    /**
+     * Instantiates a new Register.
+     *
+     * @param controller     the controller
+     * @param frameChiamante the frame chiamante
+     */
     public Register (Controller controller, JFrame frameChiamante){
 
         frame = new JFrame("Register");
@@ -44,7 +56,7 @@ public class Register {
            public void actionPerformed(ActionEvent e) {
                // qui ci vuole la verifica dei dati e l'eventuale inserimento nella base di dati
                if (usernameText.getText().isEmpty() || passwordField.getPassword().length == 0) {
-                   JOptionPane.showMessageDialog(frame, "Uno o più campi sono vuoti", "Errore", JOptionPane.ERROR_MESSAGE);
+                   JOptionPane.showMessageDialog(frame, "Uno o più campi obbligatori sono vuoti", "Errore", JOptionPane.ERROR_MESSAGE);
                    if (usernameText.getText().isEmpty()) {
                        usernameText.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
                    } else {
@@ -65,13 +77,11 @@ public class Register {
                        frame.dispose();
                    }
                    catch (PSQLException p1){
-                       JOptionPane.showMessageDialog(frame, "Registrazione non andata a buon fine, username già utilizzato.", "Errore Registrazione", JOptionPane.ERROR_MESSAGE);
+                       JOptionPane.showMessageDialog(frame, "Registrazione non andata a buon fine, username già utilizzato o troppo lungo.", "Errore Registrazione", JOptionPane.ERROR_MESSAGE);
                    }catch(SQLException s){
                        JOptionPane.showMessageDialog(frame, "Errore nella creazione della Galleria.", "Errore", JOptionPane.ERROR_MESSAGE);
                    }
-
                }
-
            }
        });
 
@@ -85,7 +95,5 @@ public class Register {
        });
 
     }
-
-
 
 }

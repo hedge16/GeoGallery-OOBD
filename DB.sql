@@ -1,5 +1,4 @@
-DROP SCHEMA galleria_schema CASCADE; 
-CREATE SCHEMA galleria_schema;
+--DROP SCHEMA galleria_schema CASCADE; 
 CREATE SCHEMA IF NOT EXISTS galleria_schema;
 
 CREATE TABLE IF NOT EXISTS galleria_schema.utente (
@@ -204,3 +203,48 @@ EXECUTE FUNCTION galleria_schema.nomeluogo_unique();
 
 
 
+-- Popolamento tabella soggettofoto
+INSERT INTO galleria_schema.soggettofoto (nome, categoria)
+VALUES
+('Monte', 'Paesaggi'),
+('Spiaggia', 'Paesaggi'),
+('Parco', 'Paesaggi'),
+('Gran Premio d''Italia', 'Eventi sportivi'),
+('Partita di calcio', 'Eventi sportivi'),
+('Podio olimpico', 'Eventi sportivi'),
+('Amici in piazza', 'Gruppi di persone'),
+('Compleanno di Alice', 'Gruppi di persone'),
+('Matrimonio di Marco e Chiara', 'Matrimoni'),
+('Ritratto di Maria', 'Ritratti'),
+('Selfie a New York', 'Selfie'),
+('Cane Carlino', 'Animali'),
+('Gatto certosino', 'Animali'),
+('Tigre siberiana', 'Animali'),
+('Pizza margherita', 'Cibo'),
+('Spaghetti alla carbonara', 'Cibo'),
+('Bistecca fiorentina', 'Cibo'),
+('Cammino di Santiago', 'Viaggi'),
+('Safari in Tanzania', 'Viaggi'),
+('Spiaggia di Copacabana', 'Viaggi'),
+('Montagna nel Cilento', 'Natura'),
+('Cascata del Niagara', 'Natura'),
+('Parco del Gran Paradiso', 'Natura'),
+('Opera d''arte', 'Altro'),
+('Costruzione in acciaio', 'Altro');
+
+-- Popolamento tabella luogo
+INSERT INTO galleria_schema.luogo (latitudine, longitudine, nomeLuogo)
+VALUES
+(45.8325, 6.8642, 'Monte Bianco'),
+(44.0575, 12.5633, 'Rimini'),
+(45.5844, 9.2731, 'Monza'),
+(45.6031, 9.2646, 'Autodromo Nazionale di Monza'),
+(41.8902, 12.4922, 'Stadio Olimpico di Roma'),
+(40.6134, 14.5350, 'Sorrento'),
+(43.8099, 11.2554, 'Firenze'),
+(40.7589, -73.9851, 'New York'),
+(43.6247, 13.5172, 'Fano'),
+(42.7783, 11.1188, 'Monte Amiata'),
+(37.8055, -122.4100, 'San Francisco'),
+(37.8210, -122.4229, 'Golden Gate Park'),
+(40.7580, -73.9855, 'Times Square');

@@ -11,8 +11,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * The type Luogo implementazione postgres dao.
+ */
 public class LuogoImplementazionePostgresDAO implements LuogoDAO {
     private Connection connection;
+
+    /**
+     * Instantiates a new Luogo implementazione postgres dao.
+     */
     public LuogoImplementazionePostgresDAO () {
         try{
             connection = ConnessioneDatabase.getInstance().connection;

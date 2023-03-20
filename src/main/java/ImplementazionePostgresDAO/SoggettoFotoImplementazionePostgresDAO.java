@@ -10,8 +10,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * The type Soggetto foto implementazione postgres dao.
+ */
 public class SoggettoFotoImplementazionePostgresDAO implements SoggettoFotoDAO {
     private Connection connection;
+
+    /**
+     * Instantiates a new Soggetto foto implementazione postgres dao.
+     */
     public SoggettoFotoImplementazionePostgresDAO (){
         try{
             connection = ConnessioneDatabase.getInstance().connection;
@@ -57,6 +64,26 @@ public class SoggettoFotoImplementazionePostgresDAO implements SoggettoFotoDAO {
             soggetti.add(sf);
         }
         rs.close();
+        connection.close();
+        return soggetti;
+    }
+
+    @Override
+    public ArrayList<SoggettoFoto> recuperaSoggettiDB(ArrayList<Integer> codSoggetti) throws SQLException {
+        ArrayList<SoggettoFoto> soggetti = new ArrayList<>();
+        for (int i = 0; i < codSoggetti.size(); i++){
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM galleria_schema.soggettofoto WHERE codSogg = ?;");
+            ps.setInt(1, codSoggetti.get(i));
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                int codSogg = rs.getInt(1);
+                String nomeSogg = rs.getString(2);
+                String categoria = rs.getString(3);
+                SoggettoFoto sf = new SoggettoFoto(codSogg, nomeSogg, categoria);
+                soggetti.add(sf);
+            }
+            rs.close();
+        }
         connection.close();
         return soggetti;
     }

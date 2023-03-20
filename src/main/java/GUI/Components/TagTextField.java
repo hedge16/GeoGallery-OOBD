@@ -18,12 +18,23 @@ import java.util.stream.Collectors;
 import Controller.Controller;
 import Model.Utente;
 
+/**
+ * The type Tag text field.
+ */
 public class TagTextField extends JTextField {
     private ArrayList<String> suggestions; // lista di suggerimenti
     private JList suggestionList; // oggetto JList per visualizzare i suggerimenti
     private JPopupMenu suggestionPopup; // oggetto JPopupMenu per mostrare i suggerimenti
+    /**
+     * The Utenti.
+     */
     ArrayList<Utente> utenti;
 
+    /**
+     * Instantiates a new Tag text field.
+     *
+     * @param controller the controller
+     */
     public TagTextField(Controller controller) {
         // crea il DocumentFilter per filtrare gli input dell'utente
         DocumentFilter filter = new DocumentFilter() {

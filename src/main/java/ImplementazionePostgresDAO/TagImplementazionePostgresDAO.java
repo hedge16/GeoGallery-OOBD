@@ -7,9 +7,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/**
+ * The type Tag implementazione postgres dao.
+ */
 public class TagImplementazionePostgresDAO implements TagDAO {
 
     private Connection connection;
+
+    /**
+     * Instantiates a new Tag implementazione postgres dao.
+     */
     public TagImplementazionePostgresDAO (){
         try{
             connection = ConnessioneDatabase.getInstance().connection;

@@ -4,17 +4,27 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * The type Connessione database.
+ */
 public class ConnessioneDatabase {
 
     // ATTRIBUTI
     private static ConnessioneDatabase instance;
+    /**
+     * la connessione al database
+     */
     public Connection connection = null;
     private String nome = "postgres";
     private String password = "password";
     private String url = "jdbc:postgresql://galleria-geolicalizzata.c7j83gieo8bc.us-east-1.rds.amazonaws.com:5432/Galleria";
     private String driver = "org.postgresql.Driver";
 
-    // COSTRUTTORE
+    /**
+     * Costruttore della classe ConnessioneDatabase
+     *
+     * @throws SQLException l'eccezione sql che viene lanciata nel caso in cui la connessione al database non vada a buon fine
+     */
     private ConnessioneDatabase() throws SQLException {
         try {
             Class.forName(driver);
@@ -27,6 +37,12 @@ public class ConnessioneDatabase {
     }
 
 
+    /**
+     * Questo metodo restituisce l'istanza della classe ConnessioneDatabase
+     *
+     * @return l 'istanza della classe ConnessioneDatabase
+     * @throws SQLException l'eccezione sql che viene lanciata nel caso in cui la connessione al database non vada a buon fine
+     */
     public static ConnessioneDatabase getInstance() throws SQLException {
         if (instance == null) {
             instance = new ConnessioneDatabase();
