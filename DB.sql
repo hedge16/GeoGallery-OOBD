@@ -1,116 +1,116 @@
---DROP SCHEMA galleria_schema CASCADE; 
+-- DROP SCHEMA galleria_schema CASCADE;
 CREATE SCHEMA IF NOT EXISTS galleria_schema;
 
 CREATE TABLE IF NOT EXISTS galleria_schema.utente (
-	nome VARCHAR(100),
-	cognome VARCHAR(100),
-	username VARCHAR(20),
-	passkey VARCHAR(50) NOT NULL,
-	email VARCHAR(100),
-	dataReg DATE,
-	CONSTRAINT pk_utente PRIMARY KEY (username)
+    nome VARCHAR(100),
+    cognome VARCHAR(100),
+    username VARCHAR(20),
+    passkey VARCHAR(50) NOT NULL,
+    email VARCHAR(100),
+    dataReg DATE,
+    CONSTRAINT pk_utente PRIMARY KEY (username)
 
 );
 
 CREATE TABLE IF NOT EXISTS galleria_schema.luogo (
-	codLuogo SERIAL,
-	latitudine DOUBLE PRECISION,
-	longitudine DOUBLE PRECISION,
-	nomeLuogo VARCHAR(50),
-	CONSTRAINT pk_luogo PRIMARY KEY (codLuogo),
-	CONSTRAINT unq_luogo UNIQUE(nomeLuogo, latitudine, longitudine),
-	CONSTRAINT chk_lat CHECK (latitudine <= 90 AND latitudine >= -90),
-	CONSTRAINT chk_lon CHECK (longitudine <= 180 AND longitudine >= -180)
+    codLuogo SERIAL,
+    latitudine DOUBLE PRECISION,
+    longitudine DOUBLE PRECISION,
+    nomeLuogo VARCHAR(50),
+    CONSTRAINT pk_luogo PRIMARY KEY (codLuogo),
+    CONSTRAINT unq_luogo UNIQUE(nomeLuogo, latitudine, longitudine),
+    CONSTRAINT chk_lat CHECK (latitudine <= 90 AND latitudine >= -90),
+    CONSTRAINT chk_lon CHECK (longitudine <= 180 AND longitudine >= -180)
 );
 
 CREATE TABLE IF NOT EXISTS galleria_schema.galleria_condivisa(
-	codGalleria SERIAL,
-	nomeGalleria VARCHAR(50),
-	CONSTRAINT pk_galleriaC PRIMARY KEY (codGalleria)
+    codGalleria SERIAL,
+    nomeGalleria VARCHAR(50),
+    CONSTRAINT pk_galleriaC PRIMARY KEY (codGalleria)
 
 );
 
 CREATE TABLE IF NOT EXISTS galleria_schema.galleria_personale(
-	codGalleria SERIAL,
-	proprietario VARCHAR(20),
-	CONSTRAINT pk_galleriap PRIMARY KEY (codGalleria),
-	CONSTRAINT fk_galleriap FOREIGN KEY (proprietario) REFERENCES galleria_schema.utente(username) ON DELETE CASCADE
+    codGalleria SERIAL,
+    proprietario VARCHAR(20),
+    CONSTRAINT pk_galleriap PRIMARY KEY (codGalleria),
+    CONSTRAINT fk_galleriap FOREIGN KEY (proprietario) REFERENCES galleria_schema.utente(username) ON DELETE CASCADE
 
 );
 
 
 CREATE TABLE IF NOT EXISTS galleria_schema.dispositivo (
-	codDisp SERIAL,
-	nomeDisp VARCHAR(30),
-	proprietario VARCHAR(20),
-	CONSTRAINT pk_disp PRIMARY KEY (codDisp),
-	CONSTRAINT fk_disputente FOREIGN KEY (proprietario) REFERENCES galleria_schema.utente(username) ON DELETE CASCADE,
-	CONSTRAINT unq_propnomedisp UNIQUE (nomeDisp, proprietario)
+    codDisp SERIAL,
+    nomeDisp VARCHAR(30),
+    proprietario VARCHAR(20),
+    CONSTRAINT pk_disp PRIMARY KEY (codDisp),
+    CONSTRAINT fk_disputente FOREIGN KEY (proprietario) REFERENCES galleria_schema.utente(username) ON DELETE CASCADE,
+    CONSTRAINT unq_propnomedisp UNIQUE (nomeDisp, proprietario)
 
 );
 
 
 CREATE TABLE IF NOT EXISTS galleria_schema.soggettofoto(
-	codSogg SERIAL,
-	nome VARCHAR(50),
-	categoria VARCHAR(100),
-	CONSTRAINT pk_soggettofoto PRIMARY KEY (codSogg),
-	CONSTRAINT unq_nomecategoria UNIQUE (nome, categoria)
+    codSogg SERIAL,
+    nome VARCHAR(50),
+    categoria VARCHAR(100),
+    CONSTRAINT pk_soggettofoto PRIMARY KEY (codSogg),
+    CONSTRAINT unq_nomecategoria UNIQUE (nome, categoria)
 );
 
 CREATE TABLE IF NOT EXISTS galleria_schema.foto(
-	codFoto SERIAL ,
-	privata BOOLEAN NOT NULL ,
-	rimossa BOOLEAN NOT NULL ,
-	dataScatto DATE,
-	codGalleriaP INTEGER,
-	autoreScatto VARCHAR(20),
-	dispositivo INTEGER,
-	img BYTEA NOT NULL,
-	CONSTRAINT pk_foto PRIMARY KEY (codFoto),
-	CONSTRAINT fk_fotogalleria FOREIGN KEY (codGalleriaP) REFERENCES galleria_schema.galleria_personale(codGalleria) ON DELETE CASCADE,
-	CONSTRAINT fk_fotoutente FOREIGN KEY (autoreScatto) REFERENCES galleria_schema.utente(username) ON DELETE CASCADE,
-	CONSTRAINT fk_fotodispositivo FOREIGN KEY (dispositivo) REFERENCES galleria_schema.dispositivo(codDisp)
+    codFoto SERIAL ,
+    privata BOOLEAN NOT NULL ,
+    rimossa BOOLEAN NOT NULL ,
+    dataScatto DATE,
+    codGalleriaP INTEGER,
+    autoreScatto VARCHAR(20),
+    dispositivo INTEGER,
+    img BYTEA NOT NULL,
+    CONSTRAINT pk_foto PRIMARY KEY (codFoto),
+    CONSTRAINT fk_fotogalleria FOREIGN KEY (codGalleriaP) REFERENCES galleria_schema.galleria_personale(codGalleria) ON DELETE CASCADE,
+    CONSTRAINT fk_fotoutente FOREIGN KEY (autoreScatto) REFERENCES galleria_schema.utente(username) ON DELETE CASCADE,
+    CONSTRAINT fk_fotodispositivo FOREIGN KEY (dispositivo) REFERENCES galleria_schema.dispositivo(codDisp)
 );
 
 CREATE TABLE IF NOT EXISTS galleria_schema.partecipazione(
 
-	codUtente VARCHAR(20),
-	codGalleriaC INTEGER,
-	CONSTRAINT pk_part PRIMARY KEY (codUtente, codGalleriaC),
-	CONSTRAINT fk_partutente FOREIGN KEY (codUtente) REFERENCES galleria_schema.utente(username) ON DELETE CASCADE,
-	CONSTRAINT fk_partfoto FOREIGN KEY (codGalleriaC) REFERENCES galleria_schema.galleria_condivisa(codGalleria) ON DELETE CASCADE
+    codUtente VARCHAR(20),
+    codGalleriaC INTEGER,
+    CONSTRAINT pk_part PRIMARY KEY (codUtente, codGalleriaC),
+    CONSTRAINT fk_partutente FOREIGN KEY (codUtente) REFERENCES galleria_schema.utente(username) ON DELETE CASCADE,
+    CONSTRAINT fk_partfoto FOREIGN KEY (codGalleriaC) REFERENCES galleria_schema.galleria_condivisa(codGalleria) ON DELETE CASCADE
 
 );
 
 
 CREATE TABLE IF NOT EXISTS galleria_schema.tag (
 
-	codFoto INTEGER NOT NULL,
-	codUtente VARCHAR(20) NOT NULL,
-	CONSTRAINT pk_tag PRIMARY KEY (codUtente, codFoto),
-	CONSTRAINT fk_tagutente FOREIGN KEY (codUtente) REFERENCES galleria_schema.utente(username) ON DELETE CASCADE,
-	CONSTRAINT fk_tagtfoto FOREIGN KEY (codFoto) REFERENCES galleria_schema.foto(codFoto) ON DELETE CASCADE
+    codFoto INTEGER NOT NULL,
+    codUtente VARCHAR(20) NOT NULL,
+    CONSTRAINT pk_tag PRIMARY KEY (codUtente, codFoto),
+    CONSTRAINT fk_tagutente FOREIGN KEY (codUtente) REFERENCES galleria_schema.utente(username) ON DELETE CASCADE,
+    CONSTRAINT fk_tagtfoto FOREIGN KEY (codFoto) REFERENCES galleria_schema.foto(codFoto) ON DELETE CASCADE
 
 );
 
 
 CREATE TABLE IF NOT EXISTS galleria_schema.presenzafoto(
 
-	codGalleriaC INTEGER NOT NULL,
-	codFoto INTEGER NOT NULL,
-	CONSTRAINT pk_presfoto PRIMARY KEY (codGalleriaC, codFoto),
-	CONSTRAINT fk_presfgall FOREIGN KEY (codGalleriaC) REFERENCES galleria_schema.galleria_condivisa(codGalleria) ON DELETE CASCADE,
-	CONSTRAINT fk_presffoto FOREIGN KEY (codFoto) REFERENCES galleria_schema.foto(codFoto) ON DELETE CASCADE
-	
+    codGalleriaC INTEGER NOT NULL,
+    codFoto INTEGER NOT NULL,
+    CONSTRAINT pk_presfoto PRIMARY KEY (codGalleriaC, codFoto),
+    CONSTRAINT fk_presfgall FOREIGN KEY (codGalleriaC) REFERENCES galleria_schema.galleria_condivisa(codGalleria) ON DELETE CASCADE,
+    CONSTRAINT fk_presffoto FOREIGN KEY (codFoto) REFERENCES galleria_schema.foto(codFoto) ON DELETE CASCADE
+    
 );
 
 CREATE TABLE IF NOT EXISTS galleria_schema.contenuto (
-	soggetto INTEGER,
-	codFoto INTEGER,
-	CONSTRAINT pk_contenuto PRIMARY KEY (soggetto, codFoto),
-	CONSTRAINT fk_contsog FOREIGN KEY (soggetto) REFERENCES galleria_schema.soggettofoto(codSogg) ON DELETE CASCADE,
-	CONSTRAINT fk_contfoto FOREIGN KEY (codFoto) REFERENCES galleria_schema.foto(codFoto) ON DELETE CASCADE
+    soggetto INTEGER,
+    codFoto INTEGER,
+    CONSTRAINT pk_contenuto PRIMARY KEY (soggetto, codFoto),
+    CONSTRAINT fk_contsog FOREIGN KEY (soggetto) REFERENCES galleria_schema.soggettofoto(codSogg) ON DELETE CASCADE,
+    CONSTRAINT fk_contfoto FOREIGN KEY (codFoto) REFERENCES galleria_schema.foto(codFoto) ON DELETE CASCADE
 
 );
 
@@ -130,12 +130,12 @@ CREATE TABLE IF NOT EXISTS galleria_schema.presenzaSoggetto (
 
 
 
-CREATE OR REPLACE VIEW galleria_schema.top3 AS (	
-	SELECT codluogo, COUNT(codluogo) AS numero 
-	FROM galleria_schema.presenzaluogo 
-	GROUP BY codluogo 
-	ORDER BY numero DESC 
-	LIMIT 3
+CREATE OR REPLACE VIEW galleria_schema.top3 AS (    
+    SELECT codluogo, COUNT(codluogo) AS numero 
+    FROM galleria_schema.presenzaluogo 
+    GROUP BY codluogo 
+    ORDER BY numero DESC 
+    LIMIT 3
 );
 
 
@@ -146,19 +146,19 @@ DECLARE
     nomeLuogo galleria_schema.luogo.nomeluogo%TYPE;
     isNotUnique BOOLEAN := FALSE;
 BEGIN
-	IF (NEW.nomeluogo IS NOT NULL) THEN
-	    OPEN scansiona_luogo;
-	    LOOP	    	
-	        FETCH scansiona_luogo INTO nomeLuogo;     
-	        EXIT WHEN NOT FOUND OR isNotUnique = TRUE;
-	        IF nomeLuogo = NEW.nomeluogo THEN
-	            isNotUnique := TRUE;
-	        END IF;
-	    END LOOP;
-	    CLOSE scansiona_luogo;
-	    IF isNotUnique THEN 
-	        RAISE EXCEPTION 'Un luogo con lo stesso nome è già presente nel sistema.';
-	    END IF;
+    IF (NEW.nomeluogo IS NOT NULL) THEN
+        OPEN scansiona_luogo;
+        LOOP            
+            FETCH scansiona_luogo INTO nomeLuogo;     
+            EXIT WHEN NOT FOUND OR isNotUnique = TRUE;
+            IF nomeLuogo = NEW.nomeluogo THEN
+                isNotUnique := TRUE;
+            END IF;
+        END LOOP;
+        CLOSE scansiona_luogo;
+        IF isNotUnique THEN 
+            RAISE EXCEPTION 'Un luogo con lo stesso nome è già presente nel sistema.';
+        END IF;
     END IF;
     RETURN NEW;
 END;
@@ -172,19 +172,19 @@ DECLARE
     long DOUBLE PRECISION;
     isNotUnique BOOLEAN := FALSE;
 BEGIN
-	IF (NEW.latitudine IS NOT NULL AND NEW.longitudine IS NOT NULL) THEN
-	    OPEN scansiona_luogo;
-	    LOOP
-	        FETCH scansiona_luogo INTO lat, long;        
-			EXIT WHEN NOT FOUND OR isNotUnique = TRUE;
-	        IF NEW.latitudine = lat AND NEW.longitudine = long THEN
-	            isNotUnique := TRUE;
-	        END IF;
-	    END LOOP;
-	    CLOSE scansiona_luogo;
-	    IF isNotUnique THEN 
-	        RAISE EXCEPTION 'Un luogo con le stesse coordinate è già presente nel sistema.';
-	    END IF;
+    IF (NEW.latitudine IS NOT NULL AND NEW.longitudine IS NOT NULL) THEN
+        OPEN scansiona_luogo;
+        LOOP
+            FETCH scansiona_luogo INTO lat, long;        
+            EXIT WHEN NOT FOUND OR isNotUnique = TRUE;
+            IF NEW.latitudine = lat AND NEW.longitudine = long THEN
+                isNotUnique := TRUE;
+            END IF;
+        END LOOP;
+        CLOSE scansiona_luogo;
+        IF isNotUnique THEN 
+            RAISE EXCEPTION 'Un luogo con le stesse coordinate è già presente nel sistema.';
+        END IF;
     END IF;
     RETURN NEW;
 END;

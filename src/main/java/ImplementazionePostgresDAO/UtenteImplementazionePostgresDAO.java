@@ -61,10 +61,6 @@ public class UtenteImplementazionePostgresDAO implements UtenteDAO {
             aggiungiUser.setDate(6, new java.sql.Date(d.getTime()));
             // Esegue la query di inserimento
             aggiungiUser.executeUpdate();
-            // crea una nuova galleria personale per l'utente
-            aggiungiUser = connection.prepareStatement("INSERT INTO galleria_schema.galleria_personale VALUES(DEFAULT,?);");
-            aggiungiUser.setString(1, username);
-            aggiungiUser.executeUpdate();
             // Creazione della galleria personale dell'utente sul DB
             creaGallUt(username);
             // Chiude la connnsesione al database
@@ -126,6 +122,5 @@ public class UtenteImplementazionePostgresDAO implements UtenteDAO {
 
         }
     }
-
 
 }

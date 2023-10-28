@@ -136,7 +136,6 @@ public class Login extends JFrame {
      */
     public static void main(String[] args) {
 
-
         URL iconUrl = ClassLoader.getSystemResource("icona.png");
         try {
             //set icon for mac

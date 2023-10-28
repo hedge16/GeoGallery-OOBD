@@ -40,4 +40,5 @@ public interface UtenteDAO {
      * @throws SQLException the sql exception
      */
     void creaGallUt (String username) throws SQLException;
+
 }

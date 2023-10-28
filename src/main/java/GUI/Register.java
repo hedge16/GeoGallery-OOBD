@@ -77,6 +77,7 @@ public class Register {
                        frame.dispose();
                    }
                    catch (PSQLException p1){
+                       p1.printStackTrace();
                        JOptionPane.showMessageDialog(frame, "Registrazione non andata a buon fine, username già utilizzato o troppo lungo.", "Errore Registrazione", JOptionPane.ERROR_MESSAGE);
                    }catch(SQLException s){
                        JOptionPane.showMessageDialog(frame, "Errore nella creazione della Galleria.", "Errore", JOptionPane.ERROR_MESSAGE);
