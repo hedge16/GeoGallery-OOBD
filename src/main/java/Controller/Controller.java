@@ -159,8 +159,6 @@ public class Controller {
         }catch(PSQLException p){
             ServerErrorMessage errorMessage = new ServerErrorMessage("Errore nell'inserimento dei dati");
             throw new PSQLException(errorMessage);
-        }catch(SQLException s){
-            throw new SQLException();
         }
     }
 

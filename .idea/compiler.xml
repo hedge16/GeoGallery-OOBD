@@ -7,8 +7,10 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="GalleriaGeolocalizzata" />
-        <module name="Galleria_Geolocalizzata" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Run" target="19" />
+    </bytecodeTargetLevel>
   </component>
 </project>
